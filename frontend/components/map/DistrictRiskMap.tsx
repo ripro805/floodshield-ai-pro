@@ -135,6 +135,14 @@ interface DistrictRiskMapProps {
   height?: string;
   showSatellite?: boolean;
   hotspotDistricts?: HotspotDistrict[];
+  /**
+   * Optional callback that receives the imperative handle
+   * (`flyToDistrict`, `flyToCountry`)
+   * once the map is ready. Preferred over `ref` because
+   * `next/dynamic` returns a LoadableComponent that does NOT
+   * forward refs; a callback works through the dynamic wrapper.
+   */
+  onReady?: (handle: DistrictRiskMapHandle) => void;
 }
 
 // Bangladesh centroid + zoom
@@ -207,6 +215,7 @@ const DistrictRiskMap = forwardRef<DistrictRiskMapHandle, DistrictRiskMapProps>(
   height = '100%',
   showSatellite = false,
   hotspotDistricts = [],
+  onReady,
 }, ref) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
@@ -265,6 +274,18 @@ const DistrictRiskMap = forwardRef<DistrictRiskMapHandle, DistrictRiskMapProps>(
     // unmounts and remounts (double-fires the effect), the first async import
     // will see cancelled=true and bail out, leaving the second to initialise cleanly.
     let cancelled = false;
+    // Track the post-mount `invalidateSize` timer so the cleanup
+    // function can clear it. Otherwise in React StrictMode (or on
+    // Fast Refresh) the timer from the first effect run fires AFTER
+    // the map has been removed, and `map.invalidateSize()` crashes
+    // with `Cannot read properties of undefined (reading `_leaflet_pos`) `
+    // because the map panes have been torn down.
+    let invalidateTimer: ReturnType<typeof setTimeout> | null = null;
+    // Same for the resize handler: keep a stable ref so the cleanup
+    // can `removeEventListener` it. Without this, every effect run adds
+    // another listener and the old ones call `invalidateSize()` on a
+    // disposed map instance.
+    let resizeHandler: (() => void) | null = null;
 
     // Clear any stale Leaflet state left on the DOM node (e.g. after Fast Refresh)
     const container = mapContainerRef.current as HTMLDivElement & { _leaflet_id?: number };
@@ -309,8 +330,23 @@ const DistrictRiskMap = forwardRef<DistrictRiskMapHandle, DistrictRiskMapProps>(
       // Recompute the cached container size -- if the map mounted inside
       // a responsive container whose size is computed after this init,
       // flyToBounds silently no-ops. invalidateSize() forces a recalc.
-      setTimeout(() => map.invalidateSize(), 0);
-      window.addEventListener('resize', () => map.invalidateSize());
+      //
+      // Guard the call: the map pane (`map._mapPane`) must still be
+      // attached to the document, and the container node must still
+      // be in the DOM, otherwise Leaflet throws
+      // `Cannot read properties of undefined (reading `_leaflet_pos`)`
+      // from inside `_getMapPanePos` during the post-mount pan.
+      invalidateTimer = setTimeout(() => {
+        if (cancelled) return;
+        if (!mapContainerRef.current || !mapContainerRef.current.isConnected) return;
+        try { map.invalidateSize(); } catch { /* map already torn down */ }
+      }, 0);
+      resizeHandler = () => {
+        if (cancelled) return;
+        if (!mapContainerRef.current || !mapContainerRef.current.isConnected) return;
+        try { map.invalidateSize(); } catch { /* map already torn down */ }
+      };
+      window.addEventListener('resize', resizeHandler);
 
       mapRef.current = map;
 
@@ -325,6 +361,14 @@ const DistrictRiskMap = forwardRef<DistrictRiskMapHandle, DistrictRiskMapProps>(
 
     return () => {
       cancelled = true;
+      if (invalidateTimer !== null) {
+        clearTimeout(invalidateTimer);
+        invalidateTimer = null;
+      }
+      if (resizeHandler) {
+        window.removeEventListener('resize', resizeHandler);
+        resizeHandler = null;
+      }
       mapRef.current?.remove();
       mapRef.current = null;
     };
@@ -434,36 +478,80 @@ const DistrictRiskMap = forwardRef<DistrictRiskMapHandle, DistrictRiskMapProps>(
                 { sticky: true, className: 'leaflet-risk-tooltip', opacity: 1 }
               );
 
-              let tooltipRoot: any = null;
+              // Per-layer tooltip mount handle. Tracked on a closure so two
+              // districts can't clobber each other's `tooltipRoot` when the
+              // user mouses from one polygon straight to the next.
+              type TooltipMount = { root: any; container: HTMLElement | null; closed: boolean };
+              const mount: TooltipMount = { root: null, container: null, closed: false };
+
               layer.on('tooltipopen', () => {
-                const container = document.getElementById(`gauge-container-${key}`);
-                if (container) {
-                  import('react-dom/client').then(({ createRoot }) => {
-                    import('@/components/three/RiskGaugeTube').then((mod) => {
-                      const RiskGaugeTube = mod.default;
-                      tooltipRoot = createRoot(container);
-                      tooltipRoot.render(
-                        <RiskGaugeTube
-                          value={Math.min(score / 3, 1)}
-                          riskLevel={risk.toLowerCase() as any}
-                          size="sm"
-                        />
-                      );
-                    });
-                  });
+                const container = document.getElementById(`gauge-container-${key}`) as HTMLElement | null;
+                if (!container) return;
+                // A previous close on this same layer may have left a stale
+                // root attached to the same container. Detach it first so
+                // the new mount claims the slot cleanly.
+                if (mount.root) {
+                  try { mount.root.unmount(); } catch { /* container already gone */ }
+                  mount.root = null;
                 }
+                mount.container = container;
+                mount.closed = false;
+
+                // Async dynamic import - by the time `.then` resolves, the
+                // tooltip may have already closed (user mouses off). Re-check
+                // the closed flag before mounting to avoid creating a React
+                // tree that's about to be torn down (which is what triggers
+                // the `NotFoundError: removeChild` crash from the original
+                // implementation).
+                Promise.all([
+                  import('react-dom/client'),
+                  import('@/components/three/RiskGaugeTube'),
+                ]).then(([clientMod, gaugeMod]) => {
+                  if (mount.closed) return;
+                  if (!mount.container || !mount.container.isConnected) return;
+                  if (mount.root) return; // someone else mounted already
+                  const { createRoot } = clientMod;
+                  const RiskGaugeTube = gaugeMod.default;
+                  mount.root = createRoot(mount.container);
+                  mount.root.render(
+                    <RiskGaugeTube
+                      value={Math.min(score / 3, 1)}
+                      riskLevel={risk.toLowerCase() as any}
+                      size="sm"
+                    />
+                  );
+                }).catch(() => { /* dynamic import failed; leave tooltip text-only */ });
               });
 
               layer.on('tooltipclose', () => {
-                if (tooltipRoot) {
-                  // Small delay to allow fade out
-                  setTimeout(() => {
-                    tooltipRoot?.unmount();
-                    tooltipRoot = null;
-                  }, 200);
+                // Mark closed synchronously so any pending `tooltipopen`
+                // async import bails out instead of creating a doomed mount.
+                mount.closed = true;
+                if (!mount.root) return;
+                const root = mount.root;
+                const container = mount.container;
+                // Leaflet has already detached the tooltip pane from the
+                // document by the time `tooltipclose` fires (or is about
+                // to). If the container is no longer in the DOM, React
+                // 18's createRoot `.unmount()` will throw
+                // NotFoundError: removeChild because the container node
+                // is orphaned. In that case there's nothing left to
+                // unmount - Leaflet already disposed of the DOM. Skip.
+                if (!container || !container.isConnected) {
+                  mount.root = null;
+                  mount.container = null;
+                  return;
                 }
+                try {
+                  root.unmount();
+                } catch {
+                  // Defensive: fast-pan or hot-reload can race us even
+                  // with the isConnected check. Swallow and let React GC
+                  // the orphaned fiber on the next render.
+                }
+                mount.root = null;
+                mount.container = null;
               });
-
               layer.on({
                 mouseover: (e) => {
                   (e.target as Path).setStyle({
@@ -677,6 +765,20 @@ const DistrictRiskMap = forwardRef<DistrictRiskMapHandle, DistrictRiskMapProps>(
     }),
     [geojsonReady]
   );
+
+  // Fire the imperative handle via callback too. next/dynamic
+  // wraps this component in a LoadableComponent that does NOT
+  // forward refs, so a callback is the only way for the parent
+  // to call our imperative methods. We pass the same handle on
+  // every change of geojsonReady so a late-arriving parent
+  // still gets a live handle.
+  useEffect(() => {
+    if (!onReady) return;
+    onReady({
+      flyToDistrict: (name: string) => { flyToDistrict(name); },
+      flyToCountry: () => { flyToCountry(); },
+    });
+  }, [onReady, geojsonReady]);
 
   const riskLegend: { level: RiskLevel; label: string }[] = [
     { level: 'Critical', label: 'Critical' },

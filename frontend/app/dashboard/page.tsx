@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
@@ -42,6 +42,19 @@ export default function DashboardPage() {
       window.history.replaceState({}, '', url.toString());
     }
   }, [selectedDistrict]);
+
+  // Callback ref for the map. next/dynamic wraps DistrictRiskMap in a
+  // LoadableComponent that does NOT forward refs, so we can not use
+  // `ref={mapRef}` on the JSX. Instead the map fires `onReady(handle)`
+  // once it is mounted; we keep the latest handle in a ref so the
+  // existing `mapRef.current?.flyToDistrict(...)` calls in the
+  // district-select / location-search handlers still work unchanged.
+  const handleMapReady = useCallback(
+    (handle: { flyToDistrict: (name: string) => void; flyToCountry: () => void }) => {
+      mapRef.current = handle;
+    },
+    []
+  );
 
   const weatherQuery = useWeather(selectedDistrict);
   // Belt-and-braces: kick an initial flyTo once the dynamic-imported map
@@ -117,7 +130,7 @@ export default function DashboardPage() {
           <motion.div custom={1} variants={cardVariants} className="xl:col-span-2">
             <GlassCard className="overflow-hidden" style={{ height: 520 }}>
               <DistrictRiskMap
-                ref={mapRef}
+                onReady={handleMapReady}
                 height="520px"
                 selectedDistrict={selectedDistrict}
                 onDistrictClick={(d) => {
