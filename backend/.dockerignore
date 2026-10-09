@@ -1,0 +1,42 @@
+# Anything in here is NOT copied into the Docker image build context.
+# Keeping the image lean reduces build time and avoids accidentally
+# shipping secrets or generated artifacts.
+
+# Secrets (must NEVER ship)
+.env
+
+# Python / build artifacts
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+.mypy_cache/
+
+# Test / scratch
+tests/
+
+# Local databases (we always talk to the production Postgres at runtime)
+*.db
+*.sqlite
+
+# Node / frontend (we never ship the frontend from the backend image)
+node_modules/
+.next/
+.puku/
+
+# VCS / IDE
+.git/
+.gitignore
+.gitkeep
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large / generated artefacts we don't need inside the image
+*.log
+dist/
+build/

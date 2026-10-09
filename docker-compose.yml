@@ -1,0 +1,102 @@
+# Docker Compose for local deploy-simulation.
+#
+# Two services:
+#   - backend  : FastAPI on :8000 (uvicorn app.main:app), seeded on startup
+#   - frontend : Next.js on :3000 (npm run dev), pointed at the backend
+#
+# The backend reads DATABASE_URL from the env_file.  By default it points at
+# the production Neon instance so the dashboard shows real data; flip to the
+# commented-out `postgres` service below for a fully-offline simulation.
+#
+# Usage:
+#   cp backend/.env.example backend/.env  (and fill in DATABASE_URL etc.)
+#   docker compose up --build
+#
+# Then visit:
+#   - http://localhost:8000/docs        (FastAPI Swagger UI)
+#   - http://localhost:3000             (Next.js dashboard)
+
+services:
+  backend:
+    build:
+      dockerfile: backend/Dockerfile
+      context: .
+    container_name: floodshield-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - backend/.env
+    environment:
+      # Inside the docker network, the backend is reachable as `backend:8000`.
+      # Frontend (see below) reads NEXT_PUBLIC_API_URL from .env.local,
+      # but the browser hits it at http://localhost:8000.
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-60}
+      WEATHER_API_KEY: ${WEATHER_API_KEY:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEE_SERVICE_ACCOUNT_JSON: ${GEE_SERVICE_ACCOUNT_JSON:-}
+      HF_TOKEN: ${HF_TOKEN:-}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/').status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s   # give the seed + TF warm-up time on first run
+
+  frontend:
+    image: node:20-bookworm-slim
+    container_name: floodshield-frontend
+    restart: unless-stopped
+    working_dir: /app
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      # The browser hits the backend via the host's localhost port (8000),
+      # because the Next.js dev server renders in the browser, not in Node.
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    volumes:
+      - ./frontend:/app
+      # node_modules lives in a named volume so the host's checkouts (and
+      # Windows file-permission edge cases) don't slow `next dev`.
+      - frontend_node_modules:/app/node_modules
+    command: sh -c "npm install --no-audit --no-fund && npm run dev -- -p 3000"
+
+volumes:
+  frontend_node_modules:
+
+# ---------------------------------------------------------------------------
+# Optional: spin up a fully-offline Postgres container instead of hitting Neon.
+# To use this:
+#   1. Uncomment the `postgres` block below.
+#   2. In backend/.env set:
+#        DATABASE_URL=postgresql://floodshield:floodshield@postgres:5432/floodshield
+#   3. `docker compose up --build`
+# ---------------------------------------------------------------------------
+#
+# services:
+#   postgres:
+#     image: postgres:16-alpine
+#     container_name: floodshield-postgres
+#     restart: unless-stopped
+#     environment:
+#       POSTGRES_USER: floodshield
+#       POSTGRES_PASSWORD: floodshield
+#       POSTGRES_DB: floodshield
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - floodshield_pgdata:/var/lib/postgresql/data
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U floodshield -d floodshield"]
+#       interval: 5s
+#       timeout: 3s
+#       retries: 10
+#
+# volumes:
+#   floodshield_pgdata:
