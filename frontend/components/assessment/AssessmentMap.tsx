@@ -223,8 +223,11 @@ export default function AssessmentMap({
     maskRef.current = rect;
 
     const ratio = s.flood_pixel_ratio ?? 0;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(makeSegmentationSVG(ratio, bounds), 'image/svg+xml');
+    const svgEl = doc.documentElement as unknown as SVGElement;
     const overlay = lRef.current.svgOverlay(
-      makeSegmentationSVG(ratio, bounds),
+      svgEl,
       bounds as LatLngBoundsExpression,
       { interactive: false, opacity: 1.0 }
     );

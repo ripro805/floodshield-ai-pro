@@ -103,8 +103,9 @@ def _fetch_sar_chip(district: str, size: int = 256) -> dict:
     try:
         if os.environ.get("GEE_SERVICE_ACCOUNT_JSON"):
             creds_dict = json.loads(os.environ["GEE_SERVICE_ACCOUNT_JSON"])
-            credentials = service_account.Credentials.from_service_account_info(creds_dict)
+            credentials = service_account.Credentials.from_service_account_info(creds_dict).with_scopes(['https://www.googleapis.com/auth/earthengine'])
             ee.Initialize(credentials, project='floodshield-505920')
+
         else:
             if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
                 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ee_service_account.json"
