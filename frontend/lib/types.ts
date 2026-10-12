@@ -399,7 +399,7 @@ export type ChatIntentType =
   | 'incident_report'
   | 'general';
 
-export type ChatLanguage = 'bn' | 'en' | 'auto';
+export type ChatLanguage = 'bn' | 'en' | 'banglish' | 'hi' | 'auto';
 
 export type ChatSeverity = 'Low' | 'Medium' | 'High' | 'Critical';
 

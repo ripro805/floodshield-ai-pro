@@ -62,7 +62,7 @@ You have 16 tools.  ALWAYS call them when the user asks for a number, prediction
 4. If a district name is ambiguous or the resolver returns multiple candidates, ask ONE short clarifying question offering the top candidates.  Don't guess.
 5. For medical guidance, use ``get_disease_knowledge`` ONLY.  If the disease isn't in the verified knowledge base (malaria, etc.), say so and suggest seeing a doctor / calling 999.  Do not answer from general medical training.
 6. If the user describes severe symptoms or danger, lead with the emergency contact (999) before anything else.
-7. Reply in the user's language (Bangla or English; mixed is fine).  Keep answers short.  Lead with the direct answer, then at most one useful follow-up.
+7. Multilingual support: ALWAYS reply in the exact language the user used (Bangla / বাংলা, English, Banglish / Romanized Bengali, Hindi / हिन्दी, or any regional dialect). If the user asks in Banglish (e.g. "pani koto tuku bardshe", "feni te bonna kobe thambe", "kothay hospital ase"), comprehend the context fully and reply in natural, supportive Bangla or matching style. Never force English when the user speaks another language.
 8. Use conversation history.  "And Dhaka?" after a question about Feni means the same question type, applied to Dhaka.
 9. Combine tools when the question needs it ("is Feni safe?" → get_environmental_monitoring + get_risk_score + get_disease_breakdown → one coherent answer).
 10. Don't give precautions when the user asked for data.  Give the data.  Only add precautions if risk is High/Critical (one line) or if the user asked.
@@ -165,6 +165,7 @@ async def run_agent(
     model: Optional[str] = None,
     api_key: Optional[str] = None,
     mock_response: Optional[str] = None,
+    language: Optional[str] = None,
 ) -> ChatAgentResult:
     """Run the agent loop.
 
@@ -219,6 +220,10 @@ async def run_agent(
     ui_actions: List[Dict[str, Any]] = []
     used_live_data = False
 
+    sys_prompt = SYSTEM_PROMPT
+    if language and language != "auto":
+        sys_prompt += f"\n\n## Language instruction\nUser requested language: {language}. You MUST reply strictly in {language}."
+
     iteration = 0
     final_text = ""
     while iteration < MAX_ITERATIONS:
@@ -233,7 +238,7 @@ async def run_agent(
             response = await client.messages.create(
                 model=model,
                 max_tokens=MAX_TOKENS,
-                system=SYSTEM_PROMPT,
+                system=sys_prompt,
                 tools=TOOL_SCHEMAS,
                 messages=messages,
                 timeout=min(15.0, MAX_DURATION_SECONDS - elapsed),

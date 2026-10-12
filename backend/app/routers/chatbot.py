@@ -57,27 +57,73 @@ Valid incident labels (must choose exactly one):
 """
 
 
+BANGLISH_PATTERNS = {
+    'pani', 'bonna', 'kothay', 'kemon', 'ase', 'ache', 'barche', 'bardshe', 'khobor',
+    'feni', 'dhaka', 'basha', 'jabe', 'ki', 'koto', 'rog', 'chulkani', 'hospital',
+    'bhalo', 'kharap', 'thik', 'shob', 'amader', 'tomader', 'amar', 'tomar'
+}
+
+
 def _detect_language(text: str) -> str:
-    """Simple heuristic: if text contains Bengali Unicode, mark as 'bn', else 'en'."""
+    """Detect language: Bengali (bn), Hindi (hi), Banglish, or English (en)."""
     for char in text:
         if '\u0980' <= char <= '\u09FF':  # Bengali Unicode range
             return 'bn'
+        if '\u0900' <= char <= '\u097F':  # Devanagari / Hindi Unicode range
+            return 'hi'
+    words = set(re.findall(r'[a-zA-Z]+', text.lower()))
+    if len(words & BANGLISH_PATTERNS) >= 2:
+        return 'banglish'
     return 'en'
 
 
 def _detect_intent(message: str) -> ChatIntentEnum:
-    """Heuristic intent detection based on keywords."""
+    """Heuristic intent detection supporting English, Bengali, and Banglish keywords."""
     msg_lower = message.lower()
     
-    if any(word in msg_lower for word in ['emergency', 'severe', 'dying', 'help now', 'critical', 'danger']):
+    # Emergency keywords (English + Bengali + Banglish)
+    emergency_kw = [
+        'emergency', 'severe', 'dying', 'help now', 'critical', 'danger',
+        'জরুরি', 'বিপদ', 'বাঁচাও', 'সাহায্য', 'গুরুতর', 'মরছি', 'ডুবছে',
+        'bachao', 'bipod', 'morchi', 'sahajjo', 'danger'
+    ]
+    if any(word in msg_lower for word in emergency_kw):
         return ChatIntentEnum.emergency
-    if any(word in msg_lower for word in ['symptom', 'disease', 'cholera', 'diarrhea', 'fever', 'illness']):
+
+    # Disease keywords
+    disease_kw = [
+        'symptom', 'disease', 'cholera', 'diarrhea', 'fever', 'illness', 'sick',
+        'রোগ', 'কলেরা', 'ডায়রিয়া', 'ডায়রিয়া', 'জ্বর', 'টাইফয়েড', 'টাইফয়েড', 'ডেঙ্গু', 'চুলকানি',
+        'rog', 'jwor', 'cholera', 'diarrhea', 'dengue', 'typhoid', 'chulkani'
+    ]
+    if any(word in msg_lower for word in disease_kw):
         return ChatIntentEnum.disease_info
-    if any(word in msg_lower for word in ['flood', 'water', 'safe', 'outside']):
+
+    # Flood keywords
+    flood_kw = [
+        'flood', 'water', 'safe', 'outside', 'river', 'inundation',
+        'বন্যা', 'পানি', 'নদী', 'প্লাবন', 'জল', 'নিরাপদ', 'উচ্চতা',
+        'bonna', 'pani', 'nodi', 'plabon', 'jol', 'nirapod', 'level'
+    ]
+    if any(word in msg_lower for word in flood_kw):
         return ChatIntentEnum.flood_safety
-    if any(word in msg_lower for word in ['hospital', 'bed', 'stock', 'available', 'resource']):
+
+    # Hospital keywords
+    hospital_kw = [
+        'hospital', 'bed', 'stock', 'available', 'resource', 'doctor', 'clinic', 'ors',
+        'হাসপাতাল', 'বেড', 'ডাক্তার', 'ওষুধ', 'স্যালাইন', 'ক্লিনিক',
+        'hospital', 'bed', 'doctor', 'osudh', 'saline', 'clinic'
+    ]
+    if any(word in msg_lower for word in hospital_kw):
         return ChatIntentEnum.hospital_info
-    if any(word in msg_lower for word in ['report', 'happened', 'noticed', 'saw', 'observed']):
+
+    # Incident keywords
+    report_kw = [
+        'report', 'happened', 'noticed', 'saw', 'observed',
+        'রিপোর্ট', 'দেখেছি', 'ঘটেছে', 'ঘটনা', 'অভিযোগ',
+        'report', 'dekhechi', 'ghoteche', 'ghotona'
+    ]
+    if any(word in msg_lower for word in report_kw):
         return ChatIntentEnum.incident_report
     
     return ChatIntentEnum.general
@@ -98,6 +144,7 @@ async def _generate_chatbot_response(
     user: User,
     db: Session,
     conversation_id: str,
+    requested_language: str = "auto",
 ) -> tuple[str, list[SuggestedAction], bool]:
     """
     Generate a conversational response — tries Claude API first,
@@ -631,27 +678,52 @@ Respond in the user's language (detect from message)."""
                 )
 
         elif intent == ChatIntentEnum.emergency:
-            reply = (
-                "⚠️ **EMERGENCY ALERT**\n\n"
-                "Please call **999** immediately for emergency medical services.\n\n"
-                "If you cannot reach emergency services:\n"
-                "- Contact your nearest hospital or health center\n"
-                "- Reach your local NGO health worker\n"
-                "- For flood evacuation, move to higher ground immediately\n\n"
-                "📞 **999** | 🏥 Nearest hospital"
-            )
+            is_bn = _detect_language(message) in ('bn', 'banglish')
+            if is_bn:
+                reply = (
+                    "⚠️ **জরুরি সতর্কতা (EMERGENCY)**\n\n"
+                    "জরুরি চিকিৎসার জন্য অবিলম্বে **৯৯৯** নম্বরে কল করুন।\n\n"
+                    "জরুরি সেবায় পৌঁছাতে না পারলে:\n"
+                    "- আপনার নিকটস্থ হাসপাতাল বা স্বাস্থ্যকেন্দ্রে যান\n"
+                    "- স্থানীয় স্বাস্থ্যকর্মী বা রেড ক্রিসেন্ট/এনজিওর সাহায্য নিন\n"
+                    "- বন্যার পানির মধ্যে না গিয়ে দ্রুত উঁচু নিরাপদ আশ্রয়ে যান\n\n"
+                    "📞 **৯৯৯** | 🏥 নিকটস্থ হাসপাতাল"
+                )
+            else:
+                reply = (
+                    "⚠️ **EMERGENCY ALERT**\n\n"
+                    "Please call **999** immediately for emergency medical services.\n\n"
+                    "If you cannot reach emergency services:\n"
+                    "- Contact your nearest hospital or health center\n"
+                    "- Reach your local NGO health worker\n"
+                    "- For flood evacuation, move to higher ground immediately\n\n"
+                    "📞 **999** | 🏥 Nearest hospital"
+                )
 
         elif intent == ChatIntentEnum.flood_safety:
-            reply = (
-                "🌊 **Flood Safety Guidelines**\n\n"
-                "1. Avoid walking through floodwater — it may contain sewage and disease\n"
-                "2. Drink only bottled or boiled water during floods\n"
-                "3. Use ORS if you or family members experience diarrhea\n"
-                "4. Keep children and elderly indoors during heavy flooding\n"
-                "5. Report flooding incidents using the report button below\n\n"
-                f"{'📊 **Your district risk: ' + live_risk.final_risk_level + '**' if live_risk else ''}\n\n"
-                "📞 Emergency: **999**"
-            )
+            is_bn = _detect_language(message) in ('bn', 'banglish')
+            if is_bn:
+                reply = (
+                    "🌊 **বন্যা নিরাপত্তা নির্দেশিকা (Flood Safety)**\n\n"
+                    "১. বন্যার দূষিত পানির মধ্য দিয়ে চলাচল এড়িয়ে চলুন (লেপ্টোস্পাইরোসিস ও সংক্রমণের ঝুঁকি)\n"
+                    "২. কেবল ফোটানো বা ক্লোরিনযুক্ত বিশুদ্ধ পানি পান করুন\n"
+                    "৩. ডায়রিয়া দেখা দিলে অবিলম্বে খাবার স্যালাইন (ORS) গ্রহণ করুন\n"
+                    "৪. শিশু ও বয়োবৃদ্ধদের নিরাপদে শুকনো স্থানে রাখুন\n"
+                    "৫. ছেঁড়া বৈদ্যুতিক তার ও প্লাবিত ট্রান্সফরমার এড়িয়ে চলুন\n\n"
+                    f"{'📊 **আপনার জেলার বর্তমান ঝুঁকি: ' + live_risk.final_risk_level + '**' if live_risk else ''}\n\n"
+                    "📞 জরুরি যোগাযোগ: **৯৯৯**"
+                )
+            else:
+                reply = (
+                    "🌊 **Flood Safety Guidelines**\n\n"
+                    "1. Avoid walking through floodwater — it may contain sewage and disease\n"
+                    "2. Drink only bottled or boiled water during floods\n"
+                    "3. Use ORS if you or family members experience diarrhea\n"
+                    "4. Keep children and elderly indoors during heavy flooding\n"
+                    "5. Report flooding incidents using the report button below\n\n"
+                    f"{'📊 **Your district risk: ' + live_risk.final_risk_level + '**' if live_risk else ''}\n\n"
+                    "📞 Emergency: **999**"
+                )
 
         else:
             # Catch-all fallback when no specific disease keyword matched
@@ -677,17 +749,38 @@ Respond in the user's language (detect from message)."""
                     f"Ask me to go deeper on any section, or pick one of the quick topics on the home screen."
                 )
             else:
-                # RAG was empty too -- genuine cold start.  Show the legacy
-                # generic intro.
-                reply = (
-                    "I'm FloodShield AI, your flood and disease safety assistant for Bangladesh. 🌐\n\n"
-                    "I can help you with:\n"
-                    "- 🦠 Disease information (Cholera, Diarrhea, Typhoid, Dengue, Hepatitis A, Skin Disease, and more from WHO/DGHS)\n"
-                    "- 🌊 Flood safety guidelines\n"
-                    "- 📍 District risk assessment\n"
-                    "- 🏥 Hospital resource information\n\n"
-                    "Please ask me a specific question about flood safety or disease symptoms!"
-                )
+                # Cold start intro supporting user's selected/detected language
+                active_lang = requested_language if requested_language in ('bn', 'banglish', 'hi', 'en') and requested_language != 'auto' else _detect_language(message)
+                if active_lang in ('bn', 'banglish'):
+                    reply = (
+                        "আমি **ফ্লাডশিল্ড এআই** (FloodShield AI), বাংলাদেশের বন্যা ও পানিবাহিত রোগ সুরক্ষা সহকারী। 🌐\n\n"
+                        "আমি আপনাকে সাহায্য করতে পারি:\n"
+                        "- 🦠 **রোগের তথ্য:** কলেরা, ডায়রিয়া, টাইফয়েড, ডেঙ্গু, হেপাটাইটিস ও চর্মরোগের লক্ষণ ও প্রতিকার\n"
+                        "- 🌊 **বন্যা নিরাপত্তা:** বন্যা পরিস্থিতি ও নিরাপদ থাকার গাইডলাইন\n"
+                        "- 📍 **জেলা ঝুঁকি:** আপনার জেলার রিয়েল-টাইম বন্যা ও প্রাদুর্ভাব ঝুঁকি\n"
+                        "- 🏥 **হাসপাতাল রিসোর্স:** বেড, স্যালাইন, ওআরএস ও চিকিৎসক তথ্য\n\n"
+                        "বন্যা বা স্বাস্থ্য সংক্রান্ত যেকোনো প্রশ্ন জিজ্ঞাসা করুন (ভয়েস বা লিখে)!"
+                    )
+                elif active_lang == 'hi':
+                    reply = (
+                        "मैं **फ्लडशील्ड एआई** (FloodShield AI) हूँ, बाढ़ और जलजनित रोग सुरक्षा सहायक। 🌐\n\n"
+                        "मैं आपकी सहायता कर सकता हूँ:\n"
+                        "- 🦠 **रोग जानकारी:** हैजा, दस्त, टाइफाइड, डेंगू, हेपेटाइटिस के लक्षण और रोकथाम\n"
+                        "- 🌊 **बाढ़ सुरक्षा:** बाढ़ चेतावनी और बचाव दिशानिर्देश\n"
+                        "- 📍 **जिला जोखिम:** आपके जिले की वास्तविक स्थिति\n"
+                        "- 🏥 **अस्पताल संसाधन:** बेड, डॉक्टर और दवाइयों की जानकारी\n\n"
+                        "बाढ़ या स्वास्थ्य सुरक्षा के बारे में कोई भी प्रश्न पूछें या बोलें!"
+                    )
+                else:
+                    reply = (
+                        "I'm **FloodShield AI**, your flood and disease safety assistant for Bangladesh. 🌐\n\n"
+                        "I can help you with:\n"
+                        "- 🦠 **Disease information:** Cholera, Diarrhea, Typhoid, Dengue, Hepatitis A, Skin Disease (WHO/DGHS)\n"
+                        "- 🌊 **Flood safety:** Real-time inundation guidelines and safety\n"
+                        "- 📍 **District risk:** Current severity and outbreak model predictions\n"
+                        "- 🏥 **Hospital resources:** Beds, ORS, IV saline, and nearby facilities\n\n"
+                        "Please ask or speak a question about flood safety or disease symptoms in any language!"
+                    )
 
     # 5. Suggested actions
     suggested_actions = []
@@ -785,7 +878,7 @@ async def chat_message(
 
     if api_key:
         result = await run_agent(
-            current_user, _db_factory, req.message, history
+            current_user, _db_factory, req.message, history, language=detected_language
         )
         reply = result.reply
         ui_actions = result.ui_actions
@@ -798,7 +891,7 @@ async def chat_message(
             detected_intent = fallback_intent
     else:
         fallback_reply, fallback_actions, used_live_data = await _generate_chatbot_response(
-            req.message, fallback_intent, current_user, db, conversation_id
+            req.message, fallback_intent, current_user, db, conversation_id, requested_language=detected_language
         )
         reply = fallback_reply
         detected_intent = fallback_intent

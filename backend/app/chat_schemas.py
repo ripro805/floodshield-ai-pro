@@ -11,6 +11,8 @@ class LanguageEnum(str, Enum):
     bn = "bn"
     en = "en"
     auto = "auto"
+    banglish = "banglish"
+    hi = "hi"
 
 
 class ChatIntentEnum(str, Enum):

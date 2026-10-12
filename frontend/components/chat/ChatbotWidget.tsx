@@ -13,8 +13,14 @@ import {
   Languages,
   Sparkles,
   ChevronRight,
+  ChevronDown,
   Bot,
   User as UserIcon,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  Globe,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -22,7 +28,15 @@ import dynamic from 'next/dynamic';
 import { useChatMessage, useReportIncident } from '@/hooks';
 import { useAuth } from '@/lib/auth';
 import DistrictName from '@/components/common/DistrictName';
-import type { ChatSuggestedAction, ChatUiAction } from '@/lib/types';
+import type { ChatSuggestedAction, ChatUiAction, ChatLanguage } from '@/lib/types';
+
+const LANGUAGES: { code: ChatLanguage; label: string; nativeLabel: string; flag: string }[] = [
+  { code: 'auto', label: 'Auto', nativeLabel: 'স্বয়ংক্রিয়', flag: '🌐' },
+  { code: 'bn', label: 'বাংলা', nativeLabel: 'Bengali', flag: '🇧🇩' },
+  { code: 'en', label: 'English', nativeLabel: 'English', flag: '🇬🇧' },
+  { code: 'banglish', label: 'বাংলিশ', nativeLabel: 'Banglish', flag: '🔤' },
+  { code: 'hi', label: 'हिन्दी', nativeLabel: 'Hindi', flag: '🇮🇳' },
+];
 
 interface LocalMessage {
   role: 'user' | 'assistant';
@@ -144,7 +158,10 @@ export default function ChatbotWidget() {
   const router = useRouter();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
-  const [language, setLanguage] = useState<'bn' | 'en'>('en');
+  const [language, setLanguage] = useState<ChatLanguage>('auto');
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   const [showIncidentForm, setShowIncidentForm] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [chatRiskLevel, setChatRiskLevel] = useState<{
@@ -155,7 +172,7 @@ export default function ChatbotWidget() {
     {
       role: 'assistant',
       content:
-        "Hi! I'm the FloodShield AI Assistant. I can help with flood safety, disease prevention, hospital resources, and more. What would you like to know?",
+        "Hi! I'm the FloodShield AI Assistant. I can help with flood safety, disease prevention, hospital resources, and more. You can type or use voice commands in any language (বাংলা, English, বাংলিশ, हिन्दी)!",
       ts: Date.now(),
     },
   ]);
@@ -164,6 +181,8 @@ export default function ChatbotWidget() {
   const [selectedDistrict, setSelectedDistrict] = useState(user?.district || null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const langMenuRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
   const chatMutation = useChatMessage();
   const incidentMutation = useReportIncident();
 
@@ -175,6 +194,151 @@ export default function ChatbotWidget() {
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 250);
   }, [open]);
+
+  // Click outside to close language dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
+        setLangMenuOpen(false);
+      }
+    };
+    if (langMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [langMenuOpen]);
+
+  // Cleanup speech synthesis & recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined') {
+        if (recognitionRef.current) {
+          try { recognitionRef.current.stop(); } catch (_) {}
+        }
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+    };
+  }, []);
+
+  // Voice Command: Speech Recognition (STT)
+  const toggleListening = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRec) {
+      alert('Voice recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch (_) {}
+      }
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRec();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      // Select recognition dialect according to active or auto language
+      if (language === 'bn') {
+        recognition.lang = 'bn-BD';
+      } else if (language === 'hi') {
+        recognition.lang = 'hi-IN';
+      } else if (language === 'en') {
+        recognition.lang = 'en-US';
+      } else if (language === 'banglish') {
+        recognition.lang = 'bn-BD';
+      } else {
+        // Auto: check browser language or default to bn-BD
+        recognition.lang = typeof navigator !== 'undefined' && navigator.language?.startsWith('en') ? 'en-US' : 'bn-BD';
+      }
+
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onresult = (event: any) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        if (transcript) {
+          setInput(transcript);
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err) {
+      console.error('Failed to start speech recognition:', err);
+      setIsListening(false);
+    }
+  }, [isListening, language]);
+
+  // Voice Playback: Text-to-Speech (TTS)
+  const speakText = useCallback((text: string, msgIndex: number) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      alert('Text-to-speech audio playback is not supported on this browser.');
+      return;
+    }
+
+    if (speakingIndex === msgIndex) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    // Clean markdown, links, codes, and extra symbols for natural speech
+    const clean = text
+      .replace(/[*_#`~\[\]]/g, '')
+      .replace(/\((https?:\/\/[^\)]+)\)/g, '')
+      .replace(/[•\-\d+\.]+\s+/g, ' ')
+      .replace(/\n+/g, '. ')
+      .trim();
+
+    if (!clean) return;
+
+    const utterance = new SpeechSynthesisUtterance(clean);
+
+    // Dynamic pronunciation detection
+    if (/[\u0980-\u09FF]/.test(clean)) {
+      utterance.lang = 'bn-BD';
+    } else if (/[\u0900-\u097F]/.test(clean)) {
+      utterance.lang = 'hi-IN';
+    } else {
+      utterance.lang = 'en-US';
+    }
+
+    // Try finding matching voice
+    try {
+      const voices = window.speechSynthesis.getVoices();
+      const prefix = utterance.lang.slice(0, 2).toLowerCase();
+      const matched = voices.find((v) => v.lang.toLowerCase().startsWith(prefix));
+      if (matched) utterance.voice = matched;
+    } catch (_) {}
+
+    utterance.onend = () => setSpeakingIndex(null);
+    utterance.onerror = () => setSpeakingIndex(null);
+
+    setSpeakingIndex(msgIndex);
+    window.speechSynthesis.speak(utterance);
+  }, [speakingIndex]);
 
   const sendMessage = useCallback(
     async (textOverride?: string) => {
@@ -476,17 +640,57 @@ export default function ChatbotWidget() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')}
-                    className="flex items-center gap-1 text-[11px] px-2.5 py-1.5 rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/20 transition"
-                    aria-label="Toggle language"
-                  >
-                    <Languages size={12} />
-                    <span className="font-semibold">
-                      {language === 'en' ? 'EN' : 'বাং'}
-                    </span>
-                  </button>
+                <div className="flex items-center gap-1.5">
+                  <div className="relative" ref={langMenuRef}>
+                    <button
+                      onClick={() => setLangMenuOpen((v) => !v)}
+                      className="flex items-center gap-1.5 text-[11px] px-2.5 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-white/80 hover:text-white hover:border-white/25 transition shadow-sm"
+                      aria-label="Select language"
+                      title="Choose conversation language"
+                    >
+                      <Globe size={12} className="text-sky-400" />
+                      <span className="font-semibold">
+                        {LANGUAGES.find((l) => l.code === language)?.label || 'Auto'}
+                      </span>
+                      <ChevronDown
+                        size={11}
+                        className={`text-white/50 transition-transform duration-200 ${
+                          langMenuOpen ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+
+                    {langMenuOpen && (
+                      <div className="absolute right-0 mt-1.5 w-48 rounded-2xl bg-[#0b1527] border border-white/15 backdrop-blur-2xl shadow-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                        <div className="px-2.5 py-1 text-[10px] uppercase tracking-wider text-white/40 font-semibold border-b border-white/5 mb-1">
+                          Language / ভাষা
+                        </div>
+                        {LANGUAGES.map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => {
+                              setLanguage(lang.code);
+                              setLangMenuOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs transition ${
+                              language === lang.code
+                                ? 'bg-sky-500/20 text-sky-300 font-semibold border border-sky-400/30'
+                                : 'text-white/70 hover:text-white hover:bg-white/5'
+                            }`}
+                          >
+                            <span className="flex items-center gap-2">
+                              <span>{lang.flag}</span>
+                              <span>{lang.label}</span>
+                            </span>
+                            <span className="text-[10px] text-white/40 font-mono">
+                              {lang.nativeLabel}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                   <button
                     onClick={() => setOpen(false)}
                     className="text-white/40 hover:text-white hover:bg-white/5 transition p-1.5 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
@@ -656,9 +860,35 @@ export default function ChatbotWidget() {
                             </div>
                           )}
 
-                          <span className="text-[10px] text-white/30 mt-1 px-1">
-                            {formatTime(m.ts)}
-                          </span>
+                          <div className="flex items-center justify-between w-full mt-1.5 px-1">
+                            <span className="text-[10px] text-white/30">
+                              {formatTime(m.ts)}
+                            </span>
+                            {!isUser && (
+                              <button
+                                type="button"
+                                onClick={() => speakText(m.content, i)}
+                                title={speakingIndex === i ? 'Stop listening' : 'Listen to response (ভয়েস শুনুন)'}
+                                className={`inline-flex items-center gap-1 text-[10.5px] px-2 py-0.5 rounded-full transition ${
+                                  speakingIndex === i
+                                    ? 'bg-sky-500/25 text-sky-300 border border-sky-400/40 animate-pulse'
+                                    : 'text-white/40 hover:text-white/90 hover:bg-white/10'
+                                }`}
+                              >
+                                {speakingIndex === i ? (
+                                  <>
+                                    <VolumeX size={11} className="text-rose-400" />
+                                    <span className="font-semibold text-rose-300">Stop</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Volume2 size={11} className="text-sky-400" />
+                                    <span>Listen</span>
+                                  </>
+                                )}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </motion.div>
                     );
@@ -706,9 +936,44 @@ export default function ChatbotWidget() {
                   <div ref={bottomRef} />
                 </div>
 
+                {/* Voice listening status banner */}
+                <AnimatePresence>
+                  {isListening && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="px-4 py-2 bg-rose-500/15 border-t border-rose-500/30 flex items-center justify-between text-xs text-rose-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
+                        </span>
+                        <span className="font-medium">
+                          {language === 'bn' ? 'শুনছি... কথা বলুন' : language === 'hi' ? 'सुन रहा हूँ... बोलिए' : 'Listening... Speak in any language'}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          if (recognitionRef.current) {
+                            try { recognitionRef.current.stop(); } catch (_) {}
+                          }
+                          setIsListening(false);
+                        }}
+                        className="text-[11px] text-white/70 hover:text-white underline font-semibold"
+                      >
+                        Done
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Input bar */}
                 <div className="px-4 pb-4 pt-2 border-t border-white/[0.07] bg-gradient-to-t from-black/20 to-transparent">
-                  <div className="flex items-center gap-2 rounded-2xl bg-slate-900/70 border border-white/10 focus-within:border-sky-400/60 focus-within:bg-slate-900/90 transition px-3 py-2 shadow-inner">
+                  <div className={`flex items-center gap-2 rounded-2xl bg-slate-900/70 border transition px-3 py-2 shadow-inner ${
+                    isListening ? 'border-rose-400/80 shadow-[0_0_15px_rgba(244,63,94,0.35)]' : 'border-white/10 focus-within:border-sky-400/60 focus-within:bg-slate-900/90'
+                  }`}>
                     <input
                       ref={inputRef}
                       type="text"
@@ -716,15 +981,36 @@ export default function ChatbotWidget() {
                       onChange={(e) => setInput(e.target.value)}
                       onKeyDown={handleKey}
                       placeholder={
-                        chatMutation.isPending
+                        isListening
+                          ? (language === 'bn' ? '🎙️ কথা বলুন... (Listening...)' : '🎙️ Speak now... (Listening...)')
+                          : chatMutation.isPending
                           ? 'Thinking...'
-                          : 'Ask about flood safety, diseases, hospitals...'
+                          : language === 'bn'
+                          ? 'বন্যা বা রোগ সম্পর্কে প্রশ্ন করুন...'
+                          : 'Ask or speak in any language (বাংলা, English, বাংলিশ)...'
                       }
                       disabled={chatMutation.isPending}
                       autoComplete="off"
                       spellCheck={false}
                       className="flex-1 bg-slate-950/70 text-white placeholder:text-slate-400 text-sm focus:outline-none caret-sky-400"
                     />
+
+                    {/* Voice Mic Button */}
+                    <button
+                      type="button"
+                      onClick={toggleListening}
+                      disabled={chatMutation.isPending}
+                      title={isListening ? 'Stop listening' : 'Voice command (ভয়েস ইনপুট)'}
+                      className={`shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
+                        isListening
+                          ? 'bg-rose-500 text-white shadow-[0_0_15px_rgba(244,63,94,0.7)] animate-pulse'
+                          : 'bg-white/[0.06] hover:bg-white/[0.12] text-white/70 hover:text-sky-300 border border-white/10'
+                      }`}
+                      aria-label={isListening ? 'Stop voice recognition' : 'Start voice command'}
+                    >
+                      {isListening ? <MicOff size={16} /> : <Mic size={16} />}
+                    </button>
+
                     <button
                       onClick={() => sendMessage()}
                       disabled={!canSend}
