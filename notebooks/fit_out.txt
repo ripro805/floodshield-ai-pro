@@ -1,0 +1,22 @@
+Epoch 1/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m48s[0m 632ms/step - accuracy: 0.8739 - iou_metric: 0.0154 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 0.0010
+Epoch 2/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 198ms/step - accuracy: 0.9065 - iou_metric: 3.1219e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 0.0010
+Epoch 3/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 194ms/step - accuracy: 0.9065 - iou_metric: 2.9334e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 0.0010
+Epoch 4/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 196ms/step - accuracy: 0.9065 - iou_metric: 3.9287e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 0.0010
+Epoch 5/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 193ms/step - accuracy: 0.9065 - iou_metric: 3.2640e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 0.0010
+Epoch 6/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 191ms/step - accuracy: 0.9065 - iou_metric: 4.6364e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 0.0010
+Epoch 7/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 188ms/step - accuracy: 0.9065 - iou_metric: 4.8950e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 5.0000e-04
+Epoch 8/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 188ms/step - accuracy: 0.9065 - iou_metric: 3.0032e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 5.0000e-04
+Epoch 9/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 186ms/step - accuracy: 0.9065 - iou_metric: 3.1788e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 5.0000e-04
+Epoch 10/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 189ms/step - accuracy: 0.9065 - iou_metric: 3.3183e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 5.0000e-04
+Epoch 11/40
+[1m36/36[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 188ms/step - accuracy: 0.9065 - iou_metric: 3.0035e-11 - loss: nan - val_accuracy: 0.9090 - val_iou_metric: 3.3319e-11 - val_loss: nan - learning_rate: 5.0000e-04
