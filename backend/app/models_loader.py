@@ -134,13 +134,9 @@ class ModelRegistry:
         """Lazily load the heavy U-Net model only when requested."""
         if self.unet_model is not None:
             return
-        try:
-            unet_path = self._get_path("flood_segmentation_unet.keras")
-            if os.path.exists(unet_path):
-                self.unet_model = _load_keras(unet_path, compile=False)
-        except Exception as e:
-            logger.error(f"Failed to load Model 4B: {e}")
-            raise e
+        from app.unet_service import get_unet_bundle
+        bundle = get_unet_bundle()
+        self.unet_model = bundle["model"]
 
     # ------------------------------------------------------------------
     def _load_disease_breakdown(self):

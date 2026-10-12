@@ -76,3 +76,10 @@ if not JWT_SECRET_KEY:
         "and put it in your .env file."
     )
 
+# Model 4B U-Net and Earth Engine configuration
+HF_MODEL_REPO = os.getenv("HF_MODEL_REPO", os.getenv("HF_MODEL_REPO_ID", "ripro805/floodshield-ai-models"))
+HF_MODEL_REVISION = os.getenv("HF_MODEL_REVISION", None)
+GEE_SERVICE_ACCOUNT_JSON = os.getenv("GEE_SERVICE_ACCOUNT_JSON", "")
+GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "")
+
+

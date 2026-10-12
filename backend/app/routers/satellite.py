@@ -12,16 +12,19 @@ import asyncio
 import hashlib
 import os
 import json
-from typing import List
+import logging
+from typing import List, Optional, Union, Dict, Any
+import numpy as np
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Body, Depends
 from sqlalchemy.orm import Session
-from fastapi import Depends
 
 from app.database import get_db
 from app.models_loader import models
 from app.reference_models import SatelliteExtent
 from app.schemas import FloodExtentResponse
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/satellite", tags=["Satellite Flood Detection (Model 4)"])
 
@@ -70,98 +73,27 @@ def get_flood_extent(district: str, db: Session = Depends(get_db)):
 
 
 def _fetch_sar_chip(district: str, size: int = 256) -> dict:
-    """Fetch a real 256x256x2 SAR chip for a district from Earth Engine.
-
-    Returns a dict with:
-      - `pixel_values`: the 256x256x2 chip (always returns this so the
-        U-Net can still run).
-      - `source`:       one of
-                          * "earth-engine"   -- a real Sentinel-1 chip
-                          * "fallback-zeros" -- EE auth or fetch failed;
-                                                returned an all-zeros
-                                                chip so the U-Net will
-                                                see a real "no water"
-                                                result (it is *not* a
-                                                stub: 0/0/0 is the
-                                                honest "no data" signal
-                                                the spec mandates).
-    """
-    import numpy as np
-    import ee
-    import geemap
-    from tensorflow.image import resize as tf_resize
-    import os
-    import json
-    from google.oauth2 import service_account
-
-    def _zeros() -> dict:
-        return {
-            "pixel_values": np.zeros((size, size, 2), dtype=float).tolist(),
-            "source": "fallback-zeros",
-        }
-
+    """Fetch a real Sentinel-1 SAR chip for a district from Earth Engine."""
+    from app.unet_service import fetch_sentinel1_chip, get_unet_bundle
     try:
-        if os.environ.get("GEE_SERVICE_ACCOUNT_JSON"):
-            creds_dict = json.loads(os.environ["GEE_SERVICE_ACCOUNT_JSON"])
-            credentials = service_account.Credentials.from_service_account_info(creds_dict).with_scopes(['https://www.googleapis.com/auth/earthengine'])
-            ee.Initialize(credentials, project='floodshield-505920')
-
-        else:
-            if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
-                os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ee_service_account.json"
-            ee.Initialize(project='floodshield-505920')
-    except Exception as e:
-        print(f"Earth Engine initialization failed: {e}")
-        return _zeros()
-
-    if district.strip().casefold() == "feni":
-        aoi = ee.Geometry.Rectangle([91.30, 22.85, 91.55, 23.10])
-    else:
-        aoi = ee.Geometry.Rectangle([89.0, 23.0, 90.0, 24.0])
-
-    FLOOD_START = '2024-08-21'
-    FLOOD_END = '2024-08-30'
-
-    collection = (ee.ImageCollection('COPERNICUS/S1_GRD')
-                  .filterBounds(aoi)
-                  .filterDate(FLOOD_START, FLOOD_END)
-                  .filter(ee.Filter.eq('instrumentMode', 'IW'))
-                  .select(['VV', 'VH']))
-
-    image = collection.median().clip(aoi)
-
-    arr = None
-    for scale in [100, 250, 500, 1000]:
-        try:
-            image_rep = image.reproject(crs='EPSG:32646', scale=scale)
-            arr = geemap.ee_to_numpy(image_rep, region=aoi)
-            if arr is not None and arr.size > 0:
-                print(f"Successfully fetched real SAR data at scale {scale} m/px")
-                break
-        except Exception as e:
-            print(f"Scale {scale} failed: {e}")
-            continue
-
-    if arr is None or arr.size == 0:
-        print("Failed to fetch real data from Earth Engine.")
-        return _zeros()
-
-    print(f"Raw array min: {np.min(arr)}, max: {np.max(arr)}")
-    arr_resized = tf_resize(arr, (size, size)).numpy()
-    arr_norm = np.clip(arr_resized, -50, 0)
-    arr_norm = (arr_norm + 50) / 50.0
-    return {"pixel_values": arr_norm.tolist(), "source": "earth-engine"}
+        fetch_res = fetch_sentinel1_chip(district)
+        bundle = get_unet_bundle()
+        prep = bundle["preprocess_for_unet"](fetch_res["raw_chip"], img_size=size)
+        return {
+            "pixel_values": prep.tolist(),
+            "source": "earth-engine",
+        }
+    except Exception as exc:
+        logger.error("Failed to fetch real SAR chip from Earth Engine for %s: %s", district, exc)
+        raise HTTPException(
+            status_code=503,
+            detail=f"Failed to fetch Sentinel-1 SAR imagery from Earth Engine for '{district}': {exc}",
+        )
 
 
 @router.get("/ingest")
 def ingest_district(district: str = Query(..., min_length=1)):
-    """Produce a preprocessed 256x256x2 SAR chip for the requested district.
-
-    The response also carries a `source` field that says whether the
-    chip came from real Sentinel-1 imagery ("earth-engine") or the
-    all-zeros fallback ("fallback-zeros") so the frontend can render
-    an honest empty state instead of a fake 0.0% coverage.
-    """
+    """Produce a preprocessed 256x256x2 SAR chip for the requested district from Earth Engine."""
     result = _fetch_sar_chip(district)
     return {
         "district": district.strip(),
@@ -172,51 +104,102 @@ def ingest_district(district: str = Query(..., min_length=1)):
 
 
 @router.post("/segment")
-async def segment_sar_image(pixel_values: List[List[List[float]]]):
-    """Runs the trained U-Net (Model 4B) on a preprocessed SAR chip."""
+async def segment_sar_image(
+    district: Optional[str] = Query(None, description="District name for real Sentinel-1 acquisition"),
+    start_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query(None, description="End date (YYYY-MM-DD)"),
+    pixel_values: Optional[Union[List[List[List[float]]], Dict[str, Any]]] = Body(None),
+):
+    """Runs the retrained U-Net (Model 4B) on real Sentinel-1 SAR data or a provided chip."""
+    from app.unet_service import get_unet_bundle, fetch_sentinel1_chip, predict_unet_async
+
+    # 1. Ensure U-Net bundle is ready (or 503)
     try:
-        await asyncio.to_thread(models.load_unet)
+        await asyncio.to_thread(get_unet_bundle)
     except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Failed to load U-Net model: {str(e)}")
+        raise HTTPException(status_code=503, detail=f"Failed to load U-Net model from Hugging Face: {str(e)}")
 
-    if models.unet_model is None:
-        raise HTTPException(status_code=503, detail="U-Net model not loaded on this server.")
+    # 2. Extract district name if passed in query or body dict
+    target_district = district
+    if not target_district and isinstance(pixel_values, dict):
+        target_district = pixel_values.get("district")
+        if not start_date:
+            start_date = pixel_values.get("start_date")
+        if not end_date:
+            end_date = pixel_values.get("end_date")
 
-    import numpy as np
-    arr = np.array(pixel_values, dtype="float32")
-    if arr.shape != (256, 256, 2):
+    # Case A: Real Sentinel-1 acquisition for district
+    if target_district:
+        date_window = (start_date, end_date) if (start_date and end_date) else None
+        try:
+            fetch_res = await asyncio.to_thread(fetch_sentinel1_chip, target_district, date_window)
+        except ValueError as ve:
+            raise HTTPException(status_code=404, detail=str(ve))
+        except Exception as e:
+            raise HTTPException(status_code=503, detail=f"Failed to acquire Sentinel-1 SAR scene: {str(e)}")
+
+        try:
+            pred_res = await predict_unet_async(
+                chip=fetch_res["raw_chip"],
+                valid_mask=fetch_res["valid_mask"],
+                timeout_sec=120.0,
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"U-Net inference failed: {str(e)}")
+
+        flood_ratio = round(pred_res["flood_pixel_ratio"], 4)
+        return {
+            "flood_pixel_ratio": flood_ratio,
+            "note": "Fraction of valid pixels classified as flood water by the retrained U-Net on real Sentinel-1 SAR imagery.",
+            "model_status": "ok",
+            "threshold": pred_res["threshold"],
+            "valid_pixel_ratio": round(fetch_res["valid_pixel_ratio"], 4),
+            "scene_window": fetch_res["scene_window"],
+            "data_source": fetch_res["data_source"],
+            "mask_overlay": {
+                "bounds": fetch_res["bounds"],
+                "threshold": pred_res["threshold"],
+                "flood_pixel_ratio": flood_ratio,
+            },
+        }
+
+    # Case B: Provided pixel_values array
+    raw_pixels = pixel_values
+    if isinstance(pixel_values, dict) and "pixel_values" in pixel_values:
+        raw_pixels = pixel_values["pixel_values"]
+
+    if raw_pixels is None:
         raise HTTPException(
             status_code=422,
-            detail=f"Expected shape (256, 256, 2), got {arr.shape}. "
-                   f"Preprocess the SAR chip exactly as in Model4B's normalize_sar().",
+            detail="Either 'district' parameter or 'pixel_values' array must be provided.",
         )
 
-    pred = (await asyncio.to_thread(models.unet_model.predict, arr[None, ...], verbose=0))[0, :, :, 0]
-    # Guard: if the model head is NaN-corrupted (a known failure mode for
-    # this .keras checkpoint on a subset of layers), fall back to a
-    # SAR-band heuristic.  We count pixels where the VV band (channel 0)
-    # is dark (< 0.20) AND the difference VV-VH is large, the textbook
-    # smooth-water signature in Sentinel-1 imagery.  This is *not* a
-    # stub; it is a physically-motivated surrogate that is honest about
-    # the model failure and still reflects the input chip.
-    if not np.isfinite(pred).all():
-        vv = arr[:, :, 0]
-        vh = arr[:, :, 1]
-        smooth_water = ((vv < 0.20) & ((vv - vh) > 0.10)).mean()
-        flood_pixel_ratio = float(smooth_water)
-        note = (
-            f"U-Net output contained NaN; falling back to a VV-band "
-            f"heuristic. Surrogate coverage: {flood_pixel_ratio:.4f}."
-        )
-        return {
-            "flood_pixel_ratio": round(flood_pixel_ratio, 4),
-            "note": note,
-            "model_status": "fallback",
-        }
-    flood_pixel_ratio = float((pred > 0.5).mean())
+    try:
+        arr = np.array(raw_pixels, dtype="float32")
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=f"Invalid pixel_values array: {e}")
 
+    if arr.ndim != 3 or arr.shape[-1] != 2:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Expected shape (H, W, 2) or (256, 256, 2), got {arr.shape}.",
+        )
+
+    try:
+        pred_res = await predict_unet_async(chip=arr, timeout_sec=120.0)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"U-Net inference failed: {str(e)}")
+
+    flood_ratio = round(pred_res["flood_pixel_ratio"], 4)
     return {
-        "flood_pixel_ratio": round(flood_pixel_ratio, 4),
-        "note": "Fraction of pixels classified as flood water by the U-Net.",
+        "flood_pixel_ratio": flood_ratio,
+        "note": "Fraction of pixels classified as flood water by the retrained U-Net.",
         "model_status": "ok",
+        "threshold": pred_res["threshold"],
+        "valid_pixel_ratio": round(float(np.mean(np.isfinite(arr))), 4),
+        "data_source": "Supplied SAR chip",
+        "mask_overlay": {
+            "threshold": pred_res["threshold"],
+            "flood_pixel_ratio": flood_ratio,
+        },
     }

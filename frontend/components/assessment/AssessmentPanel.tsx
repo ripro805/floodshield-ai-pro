@@ -34,8 +34,7 @@ import {
 } from 'lucide-react';
 import { useFullAssessmentV2 } from '@/hooks';
 import { useMutation } from '@tanstack/react-query';
-import { ingestAndSegmentDistrict } from '@/lib/api';
-import { getApiErrorMessage } from '@/lib/api';
+import { ingestAndSegmentDistrict, getApiErrorMessage, apiClient } from '@/lib/api';
 import type {
   FullAssessmentV2Response,
   AssessmentSection,
@@ -302,7 +301,14 @@ function SatelliteFloodSection({
     segDistrictRef.current = district;
     setSeg({ status: 'loading' });
     try {
-      const data = await ingestAndSegmentDistrict(district);
+      const { data } = await apiClient.post<SatelliteSegmentResponse>(
+        '/satellite/segment',
+        null,
+        {
+          params: { district },
+          timeout: 180_000,
+        }
+      );
       // Guard against late completion from a previous district
       if (segDistrictRef.current !== district) return;
       setSeg({ status: 'ok', data });
@@ -349,6 +355,11 @@ function SatelliteFloodSection({
               {seg.status === 'ok' && seg.data && (
                 <span className="text-white/65 font-mono">
                   Coverage: {(seg.data.flood_pixel_ratio * 100).toFixed(1)}%
+                  {seg.data.valid_pixel_ratio != null && (
+                    <span className="ml-2 text-white/45 text-[10px]" title="Valid SAR pixels">
+                      (valid: {(seg.data.valid_pixel_ratio * 100).toFixed(0)}%)
+                    </span>
+                  )}
                   {seg.data.model_status === 'fallback' && (
                     <span className="ml-2 text-amber-300" title={seg.data.note}>
                       (heuristic)
@@ -365,17 +376,25 @@ function SatelliteFloodSection({
               style={{ background: 'linear-gradient(135deg, #38BDF8, #2DD4BF)' }}
             >
               {seg.status === 'loading' ? <Loader2 size={12} className="animate-spin" /> : <SatelliteIcon size={12} />}
-              {seg.status === 'loading' ? 'Segmenting…' : seg.status === 'ok' ? 'Re-run Segmentation' : 'Run Segmentation'}
+              {seg.status === 'loading' ? 'Segmenting…' : seg.status === 'ok' ? 'Re-run Segmentation' : seg.status === 'error' ? 'Retry Segmentation' : 'Run Segmentation'}
             </button>
           </div>
           {seg.status === 'error' && (
-            <div className="flex items-start gap-2 p-3 rounded-lg text-red-300 text-xs"
+            <div className="flex items-start justify-between gap-2 p-3 rounded-lg text-red-300 text-xs"
                  style={{ background: 'rgba(244, 63, 94, 0.06)', border: '1px solid rgba(244, 63, 94, 0.20)' }}>
-              <AlertTriangle size={13} className="mt-0.5 shrink-0" />
-              <div>
-                <p className="font-semibold">Segmentation failed</p>
-                <p className="text-red-300/80 mt-0.5">{seg.error}</p>
+              <div className="flex items-start gap-2">
+                <AlertTriangle size={13} className="mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold">Segmentation failed</p>
+                  <p className="text-red-300/80 mt-0.5">{seg.error}</p>
+                </div>
               </div>
+              <button
+                onClick={runSeg}
+                className="px-2 py-1 rounded bg-red-500/20 hover:bg-red-500/30 text-red-200 text-xs font-medium transition shrink-0"
+              >
+                Retry
+              </button>
             </div>
           )}
         </>
