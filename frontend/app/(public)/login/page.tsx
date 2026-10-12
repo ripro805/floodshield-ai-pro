@@ -147,34 +147,46 @@ export default function LoginPage() {
         </motion.div>
       </div>
 
-      {/* Right — decorative panel */}
-      <div
-        className="hidden lg:flex flex-1 flex-col items-center justify-center px-10 relative overflow-hidden"
-        style={{ background: 'rgba(56,189,248,0.04)', borderLeft: '1px solid rgba(56,189,248,0.12)' }}
-      >
-        <div className="absolute inset-0 opacity-30"
-          style={{ background: 'radial-gradient(circle at 60% 40%, rgba(56,189,248,0.25) 0%, transparent 70%)' }}
+      {/* Right — full visual panel */}
+      <div className="hidden lg:flex flex-1 relative overflow-hidden flex-col justify-end p-12 select-none border-l border-sky-400/20">
+        {/* Full background image covering the entire panel */}
+        <img
+          src="/images/sentinel_satellite.jpg"
+          alt="Sentinel-1 SAR Satellite scanning Bangladesh"
+          className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        <div className="relative z-10 text-center max-w-sm flex flex-col items-center">
-          <div className="relative mb-6 w-72 h-72 rounded-2xl overflow-hidden border border-sky-400/25 shadow-2xl shadow-sky-500/15 group">
-            <img
-              src="/images/sentinel_satellite.jpg"
-              alt="Sentinel-1 SAR Satellite monitoring Bangladesh floodplains"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#060B14]/80 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-sky-400/35 text-[11px] text-sky-200">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-mono font-medium">Sentinel-1 SAR · FloodShield AI</span>
-            </div>
+
+        {/* Cinematic gradient overlays for contrast and readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060B14] via-[#060B14]/35 to-black/25 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#060B14]/60 via-transparent to-transparent pointer-events-none" />
+
+        {/* Content overlaid on top of the full image at the bottom */}
+        <div className="relative z-10 max-w-lg space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#060B14]/80 backdrop-blur-md border border-sky-400/30 text-xs text-sky-200 shadow-xl">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-mono font-medium">Sentinel-1 SAR · FloodShield AI</span>
           </div>
-          <h2 className="text-2xl font-black text-white mb-2" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-            Real satellite data. Real predictions.
+
+          <h2
+            className="text-3xl font-black text-white leading-tight"
+            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+          >
+            Real satellite data. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-teal-300">
+              Real predictions.
+            </span>
           </h2>
-          <p className="text-white/50 text-xs leading-relaxed max-w-xs">
+
+          <p className="text-white/70 text-sm leading-relaxed max-w-md">
             Sentinel-1 SAR imagery, 6 trained ML models, and live weather integration —
             all at your fingertips for Bangladesh&apos;s 64 districts.
           </p>
+
+          <div className="pt-2 flex items-center gap-4 text-xs text-white/40 font-mono">
+            <span>Padma &amp; Jamuna Basin</span>
+            <span>•</span>
+            <span>Automated Inundation Maps</span>
+          </div>
         </div>
       </div>
     </div>
