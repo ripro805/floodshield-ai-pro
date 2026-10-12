@@ -17,6 +17,7 @@ import { Droplets, Wind, Thermometer, Search, AlertCircle, Loader2, MessageSquar
 
 const DistrictRiskMap = dynamic(() => import('@/components/map/DistrictRiskMap'), { ssr: false });
 const RiskGaugeTube = dynamic(() => import('@/components/three/RiskGaugeTube'), { ssr: false });
+const BangladeshGlobe = dynamic(() => import('@/components/three/BangladeshGlobe'), { ssr: false });
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -32,6 +33,7 @@ export default function DashboardPage() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [smsThreshold, setSmsThreshold] = useState<'Medium' | 'High' | 'Critical'>('High');
   const [locationQuery, setLocationQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'map' | 'globe'>('map');
 
   // Keep the URL in sync with the picked district so users can bookmark /
   // share a link straight to a specific district view of the dashboard.
@@ -117,37 +119,78 @@ export default function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <motion.div initial="hidden" animate="visible" className="space-y-6">
-        {/* Header */}
-        <motion.div custom={0} variants={cardVariants}>
-          <h1 className="text-3xl font-black text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-            District Risk Map
-          </h1>
-          <p className="text-white/50 mt-1">Click any district for a detailed AI assessment</p>
+        {/* Header with 2D / 3D switcher */}
+        <motion.div custom={0} variants={cardVariants} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-black text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              {viewMode === 'map' ? 'District Risk Map' : 'Global Monitoring Earth'}
+            </h1>
+            <p className="text-white/50 mt-1">
+              {viewMode === 'map'
+                ? 'Click any district for a detailed AI assessment'
+                : 'Real-time transboundary weather, satellite & telemetry streams to Bangladesh'}
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md self-start sm:self-auto">
+            <button
+              onClick={() => setViewMode('map')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                viewMode === 'map'
+                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <span>🗺️</span> 2D District Map
+            </button>
+            <button
+              onClick={() => setViewMode('globe')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                viewMode === 'globe'
+                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <span>🌐</span> 3D Earth Globe
+            </button>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Map — spans 2 cols */}
+          {/* Map / Globe — spans 2 cols */}
           <motion.div custom={1} variants={cardVariants} className="xl:col-span-2">
-            <GlassCard className="overflow-hidden" style={{ height: 520 }}>
-              <DistrictRiskMap
-                onReady={handleMapReady}
-                height="520px"
-                selectedDistrict={selectedDistrict}
-                onDistrictClick={(d) => {
-                  setSelectedDistrict(d);
-                  setRiverLevelOverridden(false);
-                  router.push(`/dashboard/${encodeURIComponent(d)}`);
-                }}
-                districtRisks={
-                  // Mark every district that has a satellite export; they appear
-                  // with a teal 'Low' tint so users know imagery is available.
-                  satelliteDistrictsQuery.data?.available_districts.map((d) => ({
-                    district: d,
-                    riskLevel: 'Low' as const,
-                  })) ?? []
-                }
-				hotspotDistricts={hotspotsQuery.data?.districts ?? []}
-              />
+            <GlassCard className="overflow-hidden relative" style={{ height: 520 }}>
+              {viewMode === 'map' ? (
+                <DistrictRiskMap
+                  onReady={handleMapReady}
+                  height="520px"
+                  selectedDistrict={selectedDistrict}
+                  onDistrictClick={(d) => {
+                    setSelectedDistrict(d);
+                    setRiverLevelOverridden(false);
+                    router.push(`/dashboard/${encodeURIComponent(d)}`);
+                  }}
+                  districtRisks={
+                    // Mark every district that has a satellite export; they appear
+                    // with a teal 'Low' tint so users know imagery is available.
+                    satelliteDistrictsQuery.data?.available_districts.map((d) => ({
+                      district: d,
+                      riskLevel: 'Low' as const,
+                    })) ?? []
+                  }
+                  hotspotDistricts={hotspotsQuery.data?.districts ?? []}
+                />
+              ) : (
+                <div className="relative w-full h-[520px] bg-[#020611] flex flex-col">
+                  <div className="absolute top-3 left-3 z-10 flex items-center gap-2 px-3 py-1.5 rounded-xl border border-sky-400/30 bg-[#051124]/85 backdrop-blur-md text-xs text-sky-200">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="font-medium">International Satellite Streams → Bangladesh Hub</span>
+                  </div>
+                  <div className="absolute bottom-3 right-3 z-10 text-[10px] text-white/40 bg-black/40 px-2 py-1 rounded backdrop-blur-sm pointer-events-none">
+                    Drag to rotate · Scroll to zoom
+                  </div>
+                  <BangladeshGlobe />
+                </div>
+              )}
             </GlassCard>
           </motion.div>
 
