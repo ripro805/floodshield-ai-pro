@@ -88,7 +88,7 @@ export default function DistrictNearestHospitals({ district, userLocation }: Pro
       </div>
 
       {geoError && (
-        <p className="text-amber-300 text-[11px] mb-2">Couldn't get your location: {geoError}</p>
+        <p className="text-amber-300 text-[11px] mb-2">Couldn&apos;t get your location: {geoError}</p>
       )}
 
       {isLoading && (

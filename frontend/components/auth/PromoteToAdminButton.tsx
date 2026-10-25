@@ -104,8 +104,8 @@ export default function PromoteToAdminButton() {
 
             <p className="text-white/60 text-sm mb-4 leading-relaxed">
               This server has <strong className="text-white">no admin yet</strong> ({status.admin_count} currently).
-              If you're the deployer, paste the <code className="text-amber-300">BOOTSTRAP_TOKEN</code> from
-              the server's <code className="text-amber-300">.env</code> to promote your account to <code className="text-red-300">admin</code>.
+              If you&apos;re the deployer, paste the <code className="text-amber-300">BOOTSTRAP_TOKEN</code> from
+              the server&apos;s <code className="text-amber-300">.env</code> to promote your account to <code className="text-red-300">admin</code>.
               After the first admin is created, this option disappears forever.
             </p>
 

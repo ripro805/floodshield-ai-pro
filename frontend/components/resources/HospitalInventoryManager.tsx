@@ -217,7 +217,7 @@ export default function HospitalInventoryManager() {
               Hospital stock & inventory
             </h2>
             <p className="text-white/40 text-sm">
-              Pick a district, edit any facility's stock, and the district rollup is recomputed automatically. Every edit is logged.
+              Pick a district, edit any facility&apos;s stock, and the district rollup is recomputed automatically. Every edit is logged.
             </p>
           </div>
         </div>

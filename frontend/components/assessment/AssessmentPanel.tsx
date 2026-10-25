@@ -630,7 +630,7 @@ export default function AssessmentPanel({ district }: AssessmentPanelProps) {
         <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/5 text-red-300 text-sm flex items-start gap-2">
           <AlertTriangle size={14} className="mt-0.5 shrink-0" />
           <div>
-            <p className="font-semibold">Couldn't reach the assessment service.</p>
+            <p className="font-semibold">Couldn&apos;t reach the assessment service.</p>
             <p className="text-red-300/80 mt-0.5">{getApiErrorMessage(error)}</p>
             <button
               onClick={() => refetch()}

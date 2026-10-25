@@ -90,7 +90,7 @@ export default function DemoteToCitizenButton() {
             <p className="text-white/50 text-xs mb-4 leading-relaxed">
               The server refuses this action if you are the only admin in the database --
               promote someone else to admin first, or sign up a second admin via{' '}
-              <code className="text-amber-300">/auth/promote-me</code> with the deployer's{' '}
+              <code className="text-amber-300">/auth/promote-me</code> with the deployer&apos;s{' '}
               <code className="text-amber-300">BOOTSTRAP_TOKEN</code>.
             </p>
 

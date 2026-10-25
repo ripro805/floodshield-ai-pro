@@ -1062,7 +1062,7 @@ export default function ChatbotWidget() {
                   </div>
                   <h4 className="text-white font-bold text-lg">Report an Incident</h4>
                   <p className="text-white/50 text-xs mt-1">
-                    Tell me what you're seeing — flood, water contamination, disease, sanitation.
+                    Tell me what you&apos;re seeing — flood, water contamination, disease, sanitation.
                   </p>
                 </div>
 
