@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { Shield, Satellite, Activity, Map, ArrowRight, Zap } from 'lucide-react';
@@ -56,8 +57,48 @@ const STATS = [
 export default function LandingPage() {
   return (
     <main className="min-h-screen" style={{ fontFamily: 'Inter, sans-serif' }}>
+      {/* ── Top Header / Navbar on Landing Page ── */}
+      <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 lg:px-16 py-3.5 border-b border-white/05 bg-[#060B14]/85 backdrop-blur-xl">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div
+            className="relative w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center p-0.5 border border-cyan-400/20 group-hover:border-cyan-400/60 transition-all duration-300"
+            style={{ background: 'rgba(255, 255, 255, 0.04)', boxShadow: '0 0 16px rgba(56, 189, 248, 0.2)' }}
+          >
+            <Image
+              src="/logo.png"
+              alt="FloodShield AI Logo"
+              width={34}
+              height={34}
+              className="object-contain transition-transform duration-300 group-hover:scale-110"
+              priority
+            />
+          </div>
+          <span className="font-black text-lg tracking-tight text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            FloodShield<span className="text-cyan-400"> AI</span> Pro
+          </span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/login"
+            className="px-4 py-1.5 text-sm font-semibold text-white/70 hover:text-white transition"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/dashboard"
+            className="px-4 py-1.5 text-sm font-semibold text-white rounded-xl transition"
+            style={{
+              background: 'linear-gradient(135deg, #38BDF8, #2DD4BF)',
+              boxShadow: '0 0 16px rgba(56,189,248,0.3)',
+            }}
+          >
+            Live Platform
+          </Link>
+        </div>
+      </header>
+
       {/* ── Hero ── */}
-      <section className="relative flex flex-col lg:flex-row items-center min-h-screen pt-20 px-6 lg:px-16 gap-8 overflow-hidden">
+      <section className="relative flex flex-col lg:flex-row items-center min-h-screen pt-24 px-6 lg:px-16 gap-8 overflow-hidden">
         {/* Text */}
         <div className="flex-1 max-w-2xl z-10">
           <div

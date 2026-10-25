@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Providers } from '@/components/layout/Providers';
+import SplashLoader from '@/components/layout/SplashLoader';
 import './globals.css';
 import 'leaflet/dist/leaflet.css';
 
@@ -7,6 +8,10 @@ export const metadata: Metadata = {
   title: 'FloodShield AI — Flood & Disease Early Warning Platform',
   description:
     'AI-powered flood and disease outbreak early warning platform for Bangladesh. Predicts floods and post-flood disease outbreaks 7–14 days in advance using 6 trained ML models and real Sentinel-1 satellite data.',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
   keywords: [
     'flood prediction',
     'disease outbreak',
@@ -18,11 +23,12 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'FloodShield AI Team' }],
   openGraph: {
-    title: 'FloodShield AI',
+    title: 'FloodShield AI Pro',
     description:
       'Life-saving AI for flood and disease early warning in Bangladesh',
     type: 'website',
     locale: 'en_US',
+    images: ['/logo.png'],
   },
   robots: 'index, follow',
 };
@@ -44,8 +50,10 @@ export default function RootLayout({
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#060B14" />
         <meta name="description" content={metadata.description as string} />
+        <link rel="icon" href="/logo.png" />
       </head>
       <body>
+        <SplashLoader />
         <Providers>{children}</Providers>
       </body>
     </html>

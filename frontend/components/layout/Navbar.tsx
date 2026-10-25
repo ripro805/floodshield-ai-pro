@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Bell, LogOut, Shield } from 'lucide-react';
+import Image from 'next/image';
+import { Bell, LogOut } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { RISK_COLORS } from '@/lib/types';
 import { useLanguage } from '@/lib/i18n';
@@ -33,10 +34,20 @@ export default function Navbar() {
       }}
       aria-label="FloodShield AI navigation"
     >
-      {/* Logo */}
+      {/* Official Brand Logo */}
       <Link href="/" className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 rounded-lg px-1">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center">
-          <Shield size={16} className="text-white" />
+        <div
+          className="relative w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center p-0.5 border border-white/10 group-hover:border-cyan-400/50 transition-all duration-300"
+          style={{ background: 'rgba(255, 255, 255, 0.04)', boxShadow: '0 0 16px rgba(56, 189, 248, 0.2)' }}
+        >
+          <Image
+            src="/logo.png"
+            alt="FloodShield AI Logo"
+            width={32}
+            height={32}
+            className="object-contain transition-transform duration-300 group-hover:scale-110"
+            priority
+          />
         </div>
         <div className="leading-none">
           <span className="font-bold text-white tracking-tight text-sm" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>

@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Shield, Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getApiErrorMessage, postResetPassword } from '@/lib/api';
 
@@ -52,10 +53,27 @@ export default function ResetPasswordPage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-20">
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center"><Shield size={20} className="text-white" /></div>
-          <span className="font-black text-xl text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>FloodShield<span className="text-blue-400"> AI</span></span>
-        </div>
+        <Link href="/" className="inline-flex items-center gap-3 mb-8 group">
+          <div
+            className="relative w-12 h-12 rounded-2xl overflow-hidden flex items-center justify-center p-1 border border-cyan-400/20 group-hover:border-cyan-400/50 transition-all duration-300"
+            style={{ background: 'rgba(255, 255, 255, 0.04)', boxShadow: '0 0 20px rgba(56, 189, 248, 0.25)' }}
+          >
+            <Image
+              src="/logo.png"
+              alt="FloodShield AI Logo"
+              width={40}
+              height={40}
+              className="object-contain transition-transform duration-300 group-hover:scale-110"
+              priority
+            />
+          </div>
+          <div>
+            <span className="font-black text-xl text-white tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              FloodShield<span className="text-blue-400"> AI</span> Pro
+            </span>
+            <p className="text-white/40 text-xs">National Early Warning System</p>
+          </div>
+        </Link>
         <Link href="/login" className="inline-flex items-center gap-2 text-white/50 hover:text-white text-sm mb-6 transition"><ArrowLeft size={15} /> Back to sign in</Link>
         <h1 className="text-3xl font-black text-white mb-2" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>Set a new password</h1>
         <p className="text-white/50 mb-8">Choose a strong password with at least 8 characters.</p>
