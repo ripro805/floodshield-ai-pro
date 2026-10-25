@@ -1,0 +1,450 @@
+{
+  "lakshmipur": {
+    "district": "Lakshmipur",
+    "river_level_m": 1.65,
+    "water_quality_index": 86.5,
+    "population_density": 623.0,
+    "district_conditions_date": "2025-12-13"
+  },
+  "jhenaidah": {
+    "district": "Jhenaidah",
+    "river_level_m": 1.5,
+    "water_quality_index": 93.9,
+    "population_density": 4112.0,
+    "district_conditions_date": "2025-12-13"
+  },
+  "madaripur": {
+    "district": "Madaripur",
+    "river_level_m": 2.03,
+    "water_quality_index": 72.3,
+    "population_density": 4355.0,
+    "district_conditions_date": "2025-12-14"
+  },
+  "bagerhat": {
+    "district": "Bagerhat",
+    "river_level_m": 1.5,
+    "water_quality_index": 92.0,
+    "population_density": 1085.0,
+    "district_conditions_date": "2025-12-17"
+  },
+  "lalmonirhat": {
+    "district": "Lalmonirhat",
+    "river_level_m": 2.16,
+    "water_quality_index": 73.2,
+    "population_density": 3179.0,
+    "district_conditions_date": "2025-12-18"
+  },
+  "joypurhat": {
+    "district": "Joypurhat",
+    "river_level_m": 2.41,
+    "water_quality_index": 70.5,
+    "population_density": 3401.0,
+    "district_conditions_date": "2025-12-19"
+  },
+  "khagrachhari": {
+    "district": "Khagrachhari",
+    "river_level_m": 2.02,
+    "water_quality_index": 96.8,
+    "population_density": 4245.0,
+    "district_conditions_date": "2025-12-20"
+  },
+  "natore": {
+    "district": "Natore",
+    "river_level_m": 2.12,
+    "water_quality_index": 90.1,
+    "population_density": 3176.0,
+    "district_conditions_date": "2025-12-21"
+  },
+  "sirajganj": {
+    "district": "Sirajganj",
+    "river_level_m": 1.5,
+    "water_quality_index": 71.8,
+    "population_density": 2462.0,
+    "district_conditions_date": "2025-12-21"
+  },
+  "sherpur": {
+    "district": "Sherpur",
+    "river_level_m": 2.84,
+    "water_quality_index": 74.9,
+    "population_density": 3717.0,
+    "district_conditions_date": "2025-12-23"
+  },
+  "moulvibazar": {
+    "district": "Moulvibazar",
+    "river_level_m": 2.94,
+    "water_quality_index": 70.0,
+    "population_density": 2096.0,
+    "district_conditions_date": "2025-12-23"
+  },
+  "shariatpur": {
+    "district": "Shariatpur",
+    "river_level_m": 1.97,
+    "water_quality_index": 99.1,
+    "population_density": 3538.0,
+    "district_conditions_date": "2025-12-24"
+  },
+  "sylhet": {
+    "district": "Sylhet",
+    "river_level_m": 2.18,
+    "water_quality_index": 86.5,
+    "population_density": 1363.0,
+    "district_conditions_date": "2025-12-24"
+  },
+  "bandarban": {
+    "district": "Bandarban",
+    "river_level_m": 2.16,
+    "water_quality_index": 76.8,
+    "population_density": 4434.0,
+    "district_conditions_date": "2025-12-25"
+  },
+  "rajbari": {
+    "district": "Rajbari",
+    "river_level_m": 1.8,
+    "water_quality_index": 87.2,
+    "population_density": 2632.0,
+    "district_conditions_date": "2025-12-25"
+  },
+  "kishoreganj": {
+    "district": "Kishoreganj",
+    "river_level_m": 3.01,
+    "water_quality_index": 94.6,
+    "population_density": 4797.0,
+    "district_conditions_date": "2025-12-26"
+  },
+  "naogaon": {
+    "district": "Naogaon",
+    "river_level_m": 1.95,
+    "water_quality_index": 78.5,
+    "population_density": 393.0,
+    "district_conditions_date": "2025-12-26"
+  },
+  "khulna": {
+    "district": "Khulna",
+    "river_level_m": 1.58,
+    "water_quality_index": 70.7,
+    "population_density": 3140.0,
+    "district_conditions_date": "2025-12-27"
+  },
+  "jhalokati": {
+    "district": "Jhalokati",
+    "river_level_m": 1.65,
+    "water_quality_index": 95.4,
+    "population_density": 3350.0,
+    "district_conditions_date": "2025-12-27"
+  },
+  "rangamati": {
+    "district": "Rangamati",
+    "river_level_m": 2.69,
+    "water_quality_index": 58.9,
+    "population_density": 1798.0,
+    "district_conditions_date": "2025-12-28"
+  },
+  "bogura": {
+    "district": "Bogra",
+    "river_level_m": 1.7,
+    "water_quality_index": 91.5,
+    "population_density": 3099.0,
+    "district_conditions_date": "2025-12-28"
+  },
+  "jashore": {
+    "district": "Jashore",
+    "river_level_m": 2.85,
+    "water_quality_index": 89.3,
+    "population_density": 1072.0,
+    "district_conditions_date": "2025-12-28"
+  },
+  "netrokona": {
+    "district": "Netrokona",
+    "river_level_m": 1.5,
+    "water_quality_index": 93.0,
+    "population_density": 574.0,
+    "district_conditions_date": "2025-12-28"
+  },
+  "narsingdi": {
+    "district": "Narsingdi",
+    "river_level_m": 1.98,
+    "water_quality_index": 86.4,
+    "population_density": 1847.0,
+    "district_conditions_date": "2025-12-28"
+  },
+  "chapainawabganj": {
+    "district": "Chapainawabganj",
+    "river_level_m": 2.52,
+    "water_quality_index": 75.6,
+    "population_density": 3500.0,
+    "district_conditions_date": "2025-12-28"
+  },
+  "chandpur": {
+    "district": "Chandpur",
+    "river_level_m": 2.05,
+    "water_quality_index": 95.0,
+    "population_density": 4359.0,
+    "district_conditions_date": "2025-12-28"
+  },
+  "panchagarh": {
+    "district": "Panchagarh",
+    "river_level_m": 2.07,
+    "water_quality_index": 86.4,
+    "population_density": 4322.0,
+    "district_conditions_date": "2025-12-28"
+  },
+  "sunamganj": {
+    "district": "Sunamganj",
+    "river_level_m": 1.84,
+    "water_quality_index": 80.6,
+    "population_density": 1885.0,
+    "district_conditions_date": "2025-12-29"
+  },
+  "faridpur": {
+    "district": "Faridpur",
+    "river_level_m": 2.04,
+    "water_quality_index": 87.2,
+    "population_density": 1058.0,
+    "district_conditions_date": "2025-12-29"
+  },
+  "gazipur": {
+    "district": "Gazipur",
+    "river_level_m": 1.54,
+    "water_quality_index": 94.9,
+    "population_density": 4483.0,
+    "district_conditions_date": "2025-12-29"
+  },
+  "noakhali": {
+    "district": "Noakhali",
+    "river_level_m": 2.17,
+    "water_quality_index": 85.8,
+    "population_density": 4375.0,
+    "district_conditions_date": "2025-12-29"
+  },
+  "brahmanbaria": {
+    "district": "Brahmanbaria",
+    "river_level_m": 1.59,
+    "water_quality_index": 79.1,
+    "population_density": 4005.0,
+    "district_conditions_date": "2025-12-29"
+  },
+  "narayanganj": {
+    "district": "Narayanganj",
+    "river_level_m": 1.5,
+    "water_quality_index": 96.7,
+    "population_density": 1264.0,
+    "district_conditions_date": "2025-12-29"
+  },
+  "magura": {
+    "district": "Magura",
+    "river_level_m": 2.78,
+    "water_quality_index": 98.7,
+    "population_density": 3356.0,
+    "district_conditions_date": "2025-12-29"
+  },
+  "satkhira": {
+    "district": "Satkhira",
+    "river_level_m": 1.98,
+    "water_quality_index": 83.2,
+    "population_density": 2799.0,
+    "district_conditions_date": "2025-12-29"
+  },
+  "munshiganj": {
+    "district": "Munshiganj",
+    "river_level_m": 1.82,
+    "water_quality_index": 88.1,
+    "population_density": 1574.0,
+    "district_conditions_date": "2025-12-29"
+  },
+  "meherpur": {
+    "district": "Meherpur",
+    "river_level_m": 1.83,
+    "water_quality_index": 84.6,
+    "population_density": 2844.0,
+    "district_conditions_date": "2025-12-30"
+  },
+  "barisal": {
+    "district": "Barisal",
+    "river_level_m": 2.4,
+    "water_quality_index": 67.3,
+    "population_density": 3526.0,
+    "district_conditions_date": "2025-12-30"
+  },
+  "rangpur": {
+    "district": "Rangpur",
+    "river_level_m": 1.99,
+    "water_quality_index": 80.1,
+    "population_density": 4608.0,
+    "district_conditions_date": "2025-12-30"
+  },
+  "bhola": {
+    "district": "Bhola",
+    "river_level_m": 2.36,
+    "water_quality_index": 71.0,
+    "population_density": 730.0,
+    "district_conditions_date": "2025-12-30"
+  },
+  "dhaka": {
+    "district": "Dhaka",
+    "river_level_m": 2.08,
+    "water_quality_index": 67.8,
+    "population_density": 1995.0,
+    "district_conditions_date": "2025-12-30"
+  },
+  "jamalpur": {
+    "district": "Jamalpur",
+    "river_level_m": 1.88,
+    "water_quality_index": 94.6,
+    "population_density": 3007.0,
+    "district_conditions_date": "2025-12-30"
+  },
+  "manikganj": {
+    "district": "Manikganj",
+    "river_level_m": 1.8,
+    "water_quality_index": 99.8,
+    "population_density": 3206.0,
+    "district_conditions_date": "2025-12-30"
+  },
+  "gaibandha": {
+    "district": "Gaibandha",
+    "river_level_m": 1.94,
+    "water_quality_index": 70.7,
+    "population_density": 1266.0,
+    "district_conditions_date": "2025-12-30"
+  },
+  "patuakhali": {
+    "district": "Patuakhali",
+    "river_level_m": 1.97,
+    "water_quality_index": 73.3,
+    "population_density": 4969.0,
+    "district_conditions_date": "2025-12-30"
+  },
+  "kurigram": {
+    "district": "Kurigram",
+    "river_level_m": 1.99,
+    "water_quality_index": 100.0,
+    "population_density": 1496.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "gopalganj": {
+    "district": "Gopalganj",
+    "river_level_m": 1.76,
+    "water_quality_index": 61.7,
+    "population_density": 4999.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "barguna": {
+    "district": "Barguna",
+    "river_level_m": 2.32,
+    "water_quality_index": 75.0,
+    "population_density": 2569.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "narail": {
+    "district": "Narail",
+    "river_level_m": 1.96,
+    "water_quality_index": 68.9,
+    "population_density": 1465.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "pabna": {
+    "district": "Pabna",
+    "river_level_m": 1.51,
+    "water_quality_index": 84.6,
+    "population_density": 1166.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "feni": {
+    "district": "Feni",
+    "river_level_m": 1.87,
+    "water_quality_index": 74.8,
+    "population_density": 2440.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "dinajpur": {
+    "district": "Dinajpur",
+    "river_level_m": 2.03,
+    "water_quality_index": 85.2,
+    "population_density": 3567.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "pirojpur": {
+    "district": "Pirojpur",
+    "river_level_m": 1.79,
+    "water_quality_index": 75.1,
+    "population_density": 4786.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "thakurgaon": {
+    "district": "Thakurgaon",
+    "river_level_m": 1.91,
+    "water_quality_index": 96.3,
+    "population_density": 4390.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "rajshahi": {
+    "district": "Rajshahi",
+    "river_level_m": 2.19,
+    "water_quality_index": 65.7,
+    "population_density": 2520.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "cumilla": {
+    "district": "Comilla",
+    "river_level_m": 2.03,
+    "water_quality_index": 100.0,
+    "population_density": 3999.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "cox's bazar": {
+    "district": "Cox's Bazar",
+    "river_level_m": 2.03,
+    "water_quality_index": 76.8,
+    "population_density": 3424.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "mymensingh": {
+    "district": "Mymensingh",
+    "river_level_m": 1.78,
+    "water_quality_index": 67.8,
+    "population_density": 4438.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "chuadanga": {
+    "district": "Chuadanga",
+    "river_level_m": 2.18,
+    "water_quality_index": 81.8,
+    "population_density": 1111.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "nilphamari": {
+    "district": "Nilphamari",
+    "river_level_m": 2.47,
+    "water_quality_index": 81.9,
+    "population_density": 874.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "kushtia": {
+    "district": "Kushtia",
+    "river_level_m": 2.77,
+    "water_quality_index": 89.6,
+    "population_density": 987.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "chattogram": {
+    "district": "Chattogram",
+    "river_level_m": 1.81,
+    "water_quality_index": 65.9,
+    "population_density": 1362.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "habiganj": {
+    "district": "Habiganj",
+    "river_level_m": 1.98,
+    "water_quality_index": 74.1,
+    "population_density": 4330.0,
+    "district_conditions_date": "2025-12-31"
+  },
+  "tangail": {
+    "district": "Tangail",
+    "river_level_m": 2.38,
+    "water_quality_index": 76.3,
+    "population_density": 4404.0,
+    "district_conditions_date": "2025-12-31"
+  }
+}
