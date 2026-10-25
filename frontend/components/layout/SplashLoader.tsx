@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LOADING_STEPS = [
@@ -12,17 +13,26 @@ const LOADING_STEPS = [
 ];
 
 export default function SplashLoader() {
-  const [visible, setVisible] = useState(true);
+  const pathname = usePathname();
+  const [visible, setVisible] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Only trigger entrance animation on project root / entry
+    if (pathname !== '/') {
+      setVisible(false);
+      return;
+    }
+
     // Check if splash has already played in this browser session
     const hasSeenSplash = sessionStorage.getItem('fs_splash_seen');
     if (hasSeenSplash) {
       setVisible(false);
       return;
     }
+
+    setVisible(true);
 
     // Step progression
     const stepInterval = setInterval(() => {

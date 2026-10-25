@@ -29,17 +29,32 @@
 }
 
 /* ─── Global Styles ─── */
-* {
-  @apply transition-colors duration-200;
+button, a, input, select, textarea {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
 }
 
 html {
   scroll-behavior: smooth;
+  background-color: #060B14;
+  color: #ffffff;
+  min-height: 100%;
 }
 
 body {
-  @apply bg-gradient-to-br from-[#060B14] via-[#0a0f1b] to-[#0B1730] text-white min-h-screen font-sans antialiased;
-  background-attachment: fixed;
+  background-color: #060B14;
+  background-image: radial-gradient(ellipse at 50% 0%, #0d1b33 0%, #060B14 75%);
+  color: #ffffff;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#dashboard-content {
+  background-color: #060B14;
+  min-height: 100vh;
 }
 
 /* ─── Scrollbar Styling ─── */

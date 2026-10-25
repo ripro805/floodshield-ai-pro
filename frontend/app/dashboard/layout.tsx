@@ -13,11 +13,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Navbar />
       <Sidebar />
       <div
-        className="min-h-screen pt-14 transition-all duration-300"
+        className="min-h-screen pt-14 transition-all duration-300 bg-[#060B14] text-white"
         style={{ paddingLeft: 220 }}
         id="dashboard-content"
       >
-        <main className="p-6">{children}</main>
+        <main className="p-6 bg-[#060B14] min-h-[calc(100vh-3.5rem)]">{children}</main>
       </div>
         <ChatbotWidget />
       </AuthGuard>
