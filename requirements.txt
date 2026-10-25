@@ -86,3 +86,4 @@ xgboost==2.0.3
 huggingface_hub>=0.23.0,<2.0
 earthengine-api
 geemap
+tensorflow-cpu==2.18.0
