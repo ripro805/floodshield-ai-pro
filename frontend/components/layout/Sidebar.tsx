@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Bell, FileText, Building2, Settings, ChevronLeft, ChevronRight,
+  HeartHandshake, ClipboardList, ShieldAlert, AlertCircle, Cpu,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
@@ -14,22 +15,66 @@ interface NavItem {
   href: string;
   label: string;
   icon: React.ElementType;
+  key?: string;
   allowedRoles?: UserRole[];
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: '/dashboard', label: 'District Map', icon: LayoutDashboard },
-  { href: '/dashboard/alerts', label: 'Alerts', icon: Bell },
-  { href: '/dashboard/reports', label: 'Reports', icon: FileText },
+  { href: '/dashboard', label: 'District Map', key: 'districtMap', icon: LayoutDashboard },
+  { href: '/dashboard/alerts', label: 'Alerts', key: 'alerts', icon: Bell },
+  { href: '/dashboard/reports', label: 'Reports', key: 'reports', icon: FileText },
+  {
+    href: '/dashboard/citizen/reports',
+    label: 'Citizen Reports',
+    key: 'citizenReports',
+    icon: AlertCircle,
+  },
+  {
+    href: '/dashboard/hospital',
+    label: 'Hospital Operations',
+    key: 'hospitalOps',
+    icon: Building2,
+    allowedRoles: ['hospital', 'admin'],
+  },
+  {
+    href: '/dashboard/ngo',
+    label: 'NGO Relief',
+    key: 'ngoRelief',
+    icon: HeartHandshake,
+    allowedRoles: ['ngo', 'admin'],
+  },
+  {
+    href: '/dashboard/field',
+    label: 'Field Operations',
+    key: 'fieldOps',
+    icon: ClipboardList,
+    allowedRoles: ['health_worker', 'admin'],
+  },
+  {
+    href: '/dashboard/government',
+    label: 'Emergency Command',
+    key: 'emergencyCommand',
+    icon: ShieldAlert,
+    allowedRoles: ['government', 'admin'],
+  },
   {
     href: '/dashboard/resources',
     label: 'Hospital Resources',
+    key: 'hospitalResources',
     icon: Building2,
     allowedRoles: ['health_worker', 'hospital', 'ngo', 'government', 'admin'],
   },
   {
+    href: '/dashboard/admin/jobs',
+    label: 'Automation Engine',
+    key: 'automationEngine',
+    icon: Cpu,
+    allowedRoles: ['admin'],
+  },
+  {
     href: '/dashboard/admin',
     label: 'Admin Panel',
+    key: 'adminPanel',
     icon: Settings,
     allowedRoles: ['admin'],
   },
@@ -61,6 +106,7 @@ export default function Sidebar() {
       <nav className="flex-1 overflow-y-auto py-4 px-2">
         {visibleItems.map((item) => {
           const active = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+          const labelText = t(item.key || item.label.toLowerCase());
           return (
             <Link
               key={item.href}
@@ -79,7 +125,7 @@ export default function Sidebar() {
                 boxShadow: '0 0 12px rgba(56,189,248,0.15)',
               } : {}}
               aria-current={active ? 'page' : undefined}
-              title={collapsed ? t(item.label === 'District Map' ? 'districtMap' : item.label === 'Hospital Resources' ? 'hospitalResources' : item.label === 'Admin Panel' ? 'adminPanel' : item.label.toLowerCase()) : undefined}
+              title={collapsed ? labelText : undefined}
             >
               {/* Active indicator */}
               {active && (
@@ -93,7 +139,7 @@ export default function Sidebar() {
                 className={active ? 'text-blue-400' : 'text-white/40 group-hover:text-white/70 transition'}
               />
               {!collapsed && (
-                <span className="truncate">{t(item.label === 'District Map' ? 'districtMap' : item.label === 'Hospital Resources' ? 'hospitalResources' : item.label === 'Admin Panel' ? 'adminPanel' : item.label.toLowerCase())}</span>
+                <span className="truncate">{labelText}</span>
               )}
             </Link>
           );

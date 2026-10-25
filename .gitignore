@@ -99,7 +99,8 @@ audit_report.md
 .git_history.txt
 refresh_tokens.py
 test_users_credentials.csv
-test_*.py
+/test_*.py
+!backend/tests/
 test_accounts.py
 patch_chatbot.py
 patch_req.py

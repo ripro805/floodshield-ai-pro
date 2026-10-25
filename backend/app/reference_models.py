@@ -143,6 +143,12 @@ class Hospital(Base):
     phone = Column(String(40), nullable=True)
     beds = Column(Integer, nullable=False, default=0)
     beds_occupied = Column(Integer, nullable=True)
+    icu_beds_total = Column(Integer, nullable=False, default=0)
+    icu_beds_occupied = Column(Integer, nullable=False, default=0)
+    isolation_beds_total = Column(Integer, nullable=False, default=0)
+    isolation_beds_occupied = Column(Integer, nullable=False, default=0)
+    operating_status = Column(String(40), nullable=False, default="normal")  # normal | high_surge | critical_divert | service_interrupted
+    emergency_contact = Column(String(60), nullable=True)
     doctors = Column(Integer, nullable=False, default=0)
     nurses = Column(Integer, nullable=False, default=0)
     ors_stock = Column(Integer, nullable=False, default=0)
@@ -224,6 +230,14 @@ class CommunityReport(Base):
     text = Column(Text, nullable=False)
     label = Column(String(60), nullable=False, index=True)
     severity = Column(String(20), nullable=False, index=True)
+    district = Column(String(120), nullable=True, index=True)
+    upazila = Column(String(120), nullable=True)
+    reporter_email = Column(String(120), nullable=True, index=True)
+    reporter_phone = Column(String(50), nullable=True)
+    status = Column(String(30), nullable=False, default="unverified")  # unverified | verified | rejected | withdrawn
+    image_url = Column(String(500), nullable=True)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 

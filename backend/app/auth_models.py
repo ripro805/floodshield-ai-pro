@@ -32,4 +32,6 @@ class User(Base):
     full_name = Column(String, nullable=False)
     role = Column(SQLEnum(UserRole), nullable=False, default=UserRole.citizen)
     district = Column(String, nullable=True)  # relevant for hospital/health_worker/NGO accounts
+    organization = Column(String(150), nullable=True)
+    phone = Column(String(40), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

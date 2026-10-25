@@ -551,6 +551,11 @@ export interface HospitalRecord {
   // sent without a type error.
   beds?: number;
   beds_total?: number;
+  total_beds?: number;
+  beds_occupied?: number;
+  icu_beds_total?: number;
+  icu_beds_occupied?: number;
+  operating_status?: string;
   doctors?: number;
   nurses?: number;
   ors_stock?: number;
