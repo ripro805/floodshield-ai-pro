@@ -27,6 +27,12 @@ from app.routers import hospitals_admin_inbox  # noqa: E402  -- /admin/hospitals
 from app.routers import hospitals_admin_bulk  # noqa: E402  -- /admin/hospitals/issues/status (admin bulk status mutation)
 from app.routers import hospitals_issue_rollup  # noqa: E402  -- /hospitals/districts/{district}/issue-rollup (read-only per-district rollup)
 from app.routers import hospitals_issue_history  # noqa: E402  -- /hospitals/{id}/issue-history (per-hospital chronological timeline)
+from app.routers import hospitals_inventory  # /hospitals/{id}/inventory & forecast-prep
+from app.routers import ngo_operations      # /ngo/campaigns, /ngo/inventory, /ngo/distribution-tasks, /ngo/ai-allocation
+from app.routers import field_operations    # /field/tasks, /field/visit-logs, /citizen/reports
+from app.routers import government_coordination  # /government/command-overview, /government/resource-requests, /alerts/official
+from app.routers import automation_admin    # /admin/jobs, /admin/audit-logs
+from app.routers import reports_export      # /reports/*/csv
 
 import app.history_models  # noqa: F401 -- registers WeeklyHistory with Base.metadata
 import app.sms_models  # noqa: F401 -- registers SmsSubscription with Base.metadata
@@ -35,8 +41,12 @@ import app.weather_models  # noqa: F401 -- registers WeatherObservation with Bas
 import app.reference_models  # noqa: F401 -- registers Location, DistrictEnv, Hospital,
                             # DistrictHospitalAggregate, KnowledgeArticle,
                             # CommunityReport, SatelliteExtent with Base.metadata
+import app.operation_models  # noqa: F401 -- registers operational tables: HospitalInventoryItem,
+                            # ReliefCampaign, NgoInventoryItem, FieldTask, FieldVisitLog,
+                            # ResourceRequest, ResourceAllocation, OfficialAlert, AuditEvent, AutomationJob
 import asyncio
 from app.services.weather_scheduler import weather_refresh_loop
+from app.services.automation_engine import automation_engine_loop
 
 
 @asynccontextmanager
@@ -102,10 +112,16 @@ async def lifespan(app: FastAPI):
         import logging
         logging.getLogger(__name__).warning("startup seed skipped: %s", exc)
     refresh_task = asyncio.create_task(weather_refresh_loop())
+    automation_task = asyncio.create_task(automation_engine_loop())
     yield
     refresh_task.cancel()
+    automation_task.cancel()
     try:
         await refresh_task
+    except asyncio.CancelledError:
+        pass
+    try:
+        await automation_task
     except asyncio.CancelledError:
         pass
 
@@ -119,7 +135,7 @@ app = FastAPI(
         "JWT authentication and role-based access (citizen, health_worker, "
         "hospital, ngo, government, admin)."
     ),
-    version="1.1.0",
+    version="1.2.0",
     lifespan=lifespan,
 )
 
@@ -156,8 +172,15 @@ app.include_router(hospitals_admin_bulk.router)  # /admin/hospitals/issues/statu
 app.include_router(hospitals_issue_rollup.router)  # /hospitals/districts/{district}/issue-rollup
 app.include_router(hospitals_issue_history.router)  # /hospitals/{id}/issue-history
 app.include_router(disease_breakdown.router)
-app.include_router(disease_breakdown.router)
 app.include_router(assessment.router)  # /assessment/{district} (full per-section assessment)
+
+# New Operational Layer Routers:
+app.include_router(hospitals_inventory.router)
+app.include_router(ngo_operations.router)
+app.include_router(field_operations.router)
+app.include_router(government_coordination.router)
+app.include_router(automation_admin.router)
+app.include_router(reports_export.router)
 
 
 @app.get("/", tags=["Health"])

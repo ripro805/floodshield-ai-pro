@@ -79,10 +79,40 @@ def run_db_migrations(engine: Engine) -> list[str]:
         ("coordinates_source", "VARCHAR(20)"),
         ("address_source", "VARCHAR(20)"),
         ("last_updated", "TIMESTAMP"),
+        ("icu_beds_total", "INTEGER NOT NULL DEFAULT 0"),
+        ("icu_beds_occupied", "INTEGER NOT NULL DEFAULT 0"),
+        ("isolation_beds_total", "INTEGER NOT NULL DEFAULT 0"),
+        ("isolation_beds_occupied", "INTEGER NOT NULL DEFAULT 0"),
+        ("operating_status", "VARCHAR(40) NOT NULL DEFAULT 'normal'"),
+        ("emergency_contact", "VARCHAR(60)"),
     ]
     for col, ddl in hospital_cols:
         if _add_column_if_missing(engine, "hospitals", col, ddl):
             executed.append(f"hospitals.{col}")
+
+    # --- users: organization & phone for multi-agency tenancy ---
+    user_cols: list[tuple[str, str]] = [
+        ("organization", "VARCHAR(150)"),
+        ("phone", "VARCHAR(40)"),
+    ]
+    for col, ddl in user_cols:
+        if _add_column_if_missing(engine, "users", col, ddl):
+            executed.append(f"users.{col}")
+
+    # --- community_reports: operational tracking fields for citizen reporting ---
+    report_cols: list[tuple[str, str]] = [
+        ("district", "VARCHAR(120)"),
+        ("upazila", "VARCHAR(120)"),
+        ("reporter_email", "VARCHAR(120)"),
+        ("reporter_phone", "VARCHAR(50)"),
+        ("status", "VARCHAR(30) NOT NULL DEFAULT 'unverified'"),
+        ("image_url", "VARCHAR(500)"),
+        ("latitude", "DOUBLE PRECISION"),
+        ("longitude", "DOUBLE PRECISION"),
+    ]
+    for col, ddl in report_cols:
+        if _add_column_if_missing(engine, "community_reports", col, ddl):
+            executed.append(f"community_reports.{col}")
 
     # --- (latitude, longitude) composite index for /hospitals/nearby ---
     with engine.begin() as conn:

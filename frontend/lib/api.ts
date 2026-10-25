@@ -921,3 +921,505 @@ export async function getHospitalIssueHistory(
   );
   return data;
 }
+
+// ══════════════════════════════════════════════════════════════════════════
+// OPERATIONAL MANAGEMENT LAYER (Phase 1 - 7)
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── 1. Hospital Operations ──────────────────────────────────────────────
+export interface HospitalInventoryItem {
+  id: string;
+  hospital_id: string;
+  item_name: string;
+  category: string;
+  unit: string;
+  current_stock: number;
+  min_threshold: number;
+  batch_number?: string | null;
+  expiry_date?: string | null;
+  storage_location?: string | null;
+  is_critical_shortage: boolean;
+  updated_at?: string | null;
+}
+
+export interface HospitalStockTransaction {
+  id: string;
+  item_id: string;
+  transaction_type: string;
+  quantity: number;
+  previous_stock: number;
+  new_stock: number;
+  batch_number?: string | null;
+  notes?: string | null;
+  performed_by_email: string;
+  created_at: string;
+}
+
+export async function getHospitalInventory(
+  hospitalId: string,
+  category?: string,
+  search?: string
+): Promise<HospitalInventoryItem[]> {
+  const { data } = await apiClient.get<HospitalInventoryItem[]>(
+    `/hospitals/${hospitalId}/inventory`,
+    { params: { category, search } }
+  );
+  return data;
+}
+
+export async function createHospitalInventoryItem(
+  hospitalId: string,
+  payload: Partial<HospitalInventoryItem>
+): Promise<{ message: string; item_id: string }> {
+  const { data } = await apiClient.post<{ message: string; item_id: string }>(
+    `/hospitals/${hospitalId}/inventory`,
+    payload
+  );
+  return data;
+}
+
+export async function postHospitalStockTransaction(
+  hospitalId: string,
+  itemId: string,
+  payload: { transaction_type: string; quantity: number; notes?: string; batch_number?: string }
+): Promise<{ message: string; new_stock: number }> {
+  const { data } = await apiClient.post<{ message: string; new_stock: number }>(
+    `/hospitals/${hospitalId}/inventory/${itemId}/transaction`,
+    payload
+  );
+  return data;
+}
+
+export async function getHospitalInventoryTransactions(
+  hospitalId: string,
+  limit: number = 50
+): Promise<HospitalStockTransaction[]> {
+  const { data } = await apiClient.get<HospitalStockTransaction[]>(
+    `/hospitals/${hospitalId}/inventory/transactions`,
+    { params: { limit } }
+  );
+  return data;
+}
+
+export async function patchHospitalProfile(
+  hospitalId: string,
+  payload: {
+    total_beds?: number;
+    beds_occupied?: number;
+    icu_beds_total?: number;
+    icu_beds_occupied?: number;
+    operating_status?: string;
+    emergency_contact?: string;
+  }
+): Promise<{ message: string; available_general_beds: number; available_icu_beds: number }> {
+  const { data } = await apiClient.patch<{ message: string; available_general_beds: number; available_icu_beds: number }>(
+    `/hospitals/${hospitalId}/profile`,
+    payload
+  );
+  return data;
+}
+
+export async function getHospitalForecastPrep(hospitalId: string): Promise<any> {
+  const { data } = await apiClient.get<any>(`/hospitals/${hospitalId}/forecast-prep`);
+  return data;
+}
+
+// ─── 2. NGO Operations ───────────────────────────────────────────────────
+export interface ReliefCampaign {
+  id: string;
+  organization_name: string;
+  title: string;
+  description?: string | null;
+  target_districts: string;
+  target_upazilas?: string | null;
+  target_population: number;
+  start_date: string;
+  end_date?: string | null;
+  team_lead_name?: string | null;
+  team_lead_contact?: string | null;
+  status: 'draft' | 'active' | 'paused' | 'completed' | 'archived';
+  created_by_email: string;
+  created_at?: string;
+}
+
+export interface NgoInventoryItem {
+  id: string;
+  organization_name: string;
+  item_name: string;
+  category: string;
+  unit: string;
+  current_stock: number;
+  min_threshold: number;
+  warehouse_location?: string | null;
+  batch_number?: string | null;
+  expiry_date?: string | null;
+  updated_at?: string | null;
+}
+
+export interface ReliefDistributionTask {
+  id: string;
+  campaign_id?: string | null;
+  organization_name: string;
+  title: string;
+  district: string;
+  upazila?: string | null;
+  union_or_village?: string | null;
+  planned_supplies?: any[];
+  actual_distributed?: any[];
+  beneficiary_households: number;
+  people_reached: number;
+  status: 'planned' | 'dispatched' | 'in_transit' | 'completed' | 'incomplete';
+  assigned_team?: string | null;
+  notes?: string | null;
+  created_at?: string;
+  completed_at?: string | null;
+}
+
+export async function listNgoCampaigns(statusFilter?: string): Promise<ReliefCampaign[]> {
+  const { data } = await apiClient.get<ReliefCampaign[]>('/ngo/campaigns', {
+    params: { status: statusFilter }
+  });
+  return data;
+}
+
+export async function createNgoCampaign(payload: Partial<ReliefCampaign>): Promise<{ message: string; campaign_id: string }> {
+  const { data } = await apiClient.post<{ message: string; campaign_id: string }>('/ngo/campaigns', payload);
+  return data;
+}
+
+export async function patchNgoCampaignStatus(campaignId: string, status: string): Promise<{ message: string }> {
+  const { data } = await apiClient.patch<{ message: string }>(`/ngo/campaigns/${campaignId}/status`, { status });
+  return data;
+}
+
+export async function listNgoInventory(category?: string): Promise<NgoInventoryItem[]> {
+  const { data } = await apiClient.get<NgoInventoryItem[]>('/ngo/inventory', { params: { category } });
+  return data;
+}
+
+export async function createNgoInventoryItem(payload: Partial<NgoInventoryItem>): Promise<{ message: string; item_id: string }> {
+  const { data } = await apiClient.post<{ message: string; item_id: string }>('/ngo/inventory', payload);
+  return data;
+}
+
+export async function postNgoStockTransaction(
+  itemId: string,
+  payload: { transaction_type: string; quantity: number; recipient_location?: string; notes?: string }
+): Promise<{ message: string; new_stock: number }> {
+  const { data } = await apiClient.post<{ message: string; new_stock: number }>(
+    `/ngo/inventory/${itemId}/transaction`,
+    payload
+  );
+  return data;
+}
+
+export async function listNgoDistributionTasks(district?: string, statusFilter?: string): Promise<ReliefDistributionTask[]> {
+  const { data } = await apiClient.get<ReliefDistributionTask[]>('/ngo/distribution-tasks', {
+    params: { district, status: statusFilter }
+  });
+  return data;
+}
+
+export async function createNgoDistributionTask(payload: Partial<ReliefDistributionTask>): Promise<{ message: string; task_id: string }> {
+  const { data } = await apiClient.post<{ message: string; task_id: string }>('/ngo/distribution-tasks', payload);
+  return data;
+}
+
+export async function patchNgoDistributionTask(taskId: string, payload: Partial<ReliefDistributionTask>): Promise<{ message: string }> {
+  const { data } = await apiClient.patch<{ message: string }>(`/ngo/distribution-tasks/${taskId}`, payload);
+  return data;
+}
+
+export async function getNgoAiAllocation(district: string): Promise<any> {
+  const { data } = await apiClient.get<any>(`/ngo/ai-allocation/${district}`);
+  return data;
+}
+
+// ─── 3. Field & Citizen Operations ───────────────────────────────────────
+export interface FieldTask {
+  id: string;
+  title: string;
+  description?: string | null;
+  task_type: string;
+  district: string;
+  upazila?: string | null;
+  priority: string;
+  status: string;
+  assigned_to_email: string;
+  assigned_by_email?: string | null;
+  deadline?: string | null;
+  completion_notes?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FieldVisitLog {
+  id: string;
+  health_worker_email: string;
+  district: string;
+  upazila?: string | null;
+  location_name: string;
+  households_visited: number;
+  suspected_cases_count: number;
+  suspected_diseases?: string | null;
+  ors_packets_distributed: number;
+  water_purification_tablets_distributed: number;
+  referrals_count: number;
+  urgent_shortage_reported?: string | null;
+  notes?: string | null;
+  created_at?: string;
+}
+
+export interface CitizenReportItem {
+  id: string;
+  text: string;
+  label: string;
+  severity: string;
+  district?: string | null;
+  upazila?: string | null;
+  reporter_email?: string | null;
+  status: string;
+  image_url?: string | null;
+  created_at?: string;
+}
+
+export async function listFieldTasks(district?: string, statusFilter?: string): Promise<FieldTask[]> {
+  const { data } = await apiClient.get<FieldTask[]>('/field/tasks', {
+    params: { district, status: statusFilter }
+  });
+  return data;
+}
+
+export async function createFieldTask(payload: Partial<FieldTask>): Promise<{ message: string; task_id: string }> {
+  const { data } = await apiClient.post<{ message: string; task_id: string }>('/field/tasks', payload);
+  return data;
+}
+
+export async function updateFieldTaskStatus(taskId: string, status: string, completion_notes?: string): Promise<{ message: string }> {
+  const { data } = await apiClient.patch<{ message: string }>(`/field/tasks/${taskId}`, {
+    status,
+    completion_notes,
+  });
+  return data;
+}
+
+export async function listFieldVisitLogs(district?: string): Promise<FieldVisitLog[]> {
+  const { data } = await apiClient.get<FieldVisitLog[]>('/field/visit-logs', { params: { district } });
+  return data;
+}
+
+export async function createFieldVisitLog(payload: Partial<FieldVisitLog>): Promise<{ message: string; log_id: string }> {
+  const { data } = await apiClient.post<{ message: string; log_id: string }>('/field/visit-logs', payload);
+  return data;
+}
+
+export async function submitCitizenReport(payload: Partial<CitizenReportItem>): Promise<{ message: string; report_id: string; status: string }> {
+  const { data } = await apiClient.post<{ message: string; report_id: string; status: string }>(
+    '/citizen/reports',
+    payload
+  );
+  return data;
+}
+
+export async function listCitizenMyReports(email?: string): Promise<CitizenReportItem[]> {
+  const { data } = await apiClient.get<CitizenReportItem[]>('/citizen/my-reports', { params: { email } });
+  return data;
+}
+
+export async function withdrawCitizenReport(reportId: string): Promise<{ message: string }> {
+  const { data } = await apiClient.patch<{ message: string }>(`/citizen/reports/${reportId}/withdraw`);
+  return data;
+}
+
+export async function getPublicAlerts(district?: string): Promise<any[]> {
+  const { data } = await apiClient.get<any[]>('/citizen/public-alerts', { params: { district } });
+  return data;
+}
+
+export async function getPublicHospitals(district?: string): Promise<any[]> {
+  const { data } = await apiClient.get<any[]>('/citizen/public-hospitals', { params: { district } });
+  return data;
+}
+
+// ─── 4. Government Emergency Coordination ────────────────────────────────
+export interface CommandOverviewData {
+  status: string;
+  timestamp: string;
+  hospital_capacity: {
+    total_facilities: number;
+    total_general_beds: number;
+    available_general_beds: number;
+    total_icu_beds: number;
+    available_icu_beds: number;
+    critical_stock_shortages: number;
+  };
+  ngo_operations: {
+    active_campaigns: number;
+    active_relief_tasks: number;
+  };
+  coordination: {
+    pending_resource_requests: number;
+    active_official_alerts: number;
+    unverified_citizen_reports: number;
+    field_investigations_logged: number;
+  };
+}
+
+export interface ResourceRequestItem {
+  id: string;
+  requester_email: string;
+  requester_role: string;
+  organization_name: string;
+  district: string;
+  upazila?: string | null;
+  request_type: string;
+  requested_items: any[];
+  urgency: string;
+  justification: string;
+  status: string;
+  allocated_items?: any[] | null;
+  reviewer_email?: string | null;
+  review_notes?: string | null;
+  created_at?: string;
+  reviewed_at?: string | null;
+}
+
+export interface OfficialAlertItem {
+  id: string;
+  title_bn: string;
+  title_en: string;
+  message_bn: string;
+  message_en: string;
+  severity: string;
+  target_districts: string;
+  status: string;
+  channel: string;
+  sent_sms_count: number;
+  published_at?: string | null;
+  created_at?: string;
+}
+
+export async function getGovernmentCommandOverview(): Promise<CommandOverviewData> {
+  const { data } = await apiClient.get<CommandOverviewData>('/government/command-overview');
+  return data;
+}
+
+export async function listResourceRequests(district?: string, statusFilter?: string, urgency?: string): Promise<ResourceRequestItem[]> {
+  const { data } = await apiClient.get<ResourceRequestItem[]>('/government/resource-requests', {
+    params: { district, status: statusFilter, urgency }
+  });
+  return data;
+}
+
+export async function submitResourceRequest(payload: Partial<ResourceRequestItem>): Promise<{ message: string; request_id: string }> {
+  const { data } = await apiClient.post<{ message: string; request_id: string }>(
+    '/government/resource-requests',
+    payload
+  );
+  return data;
+}
+
+export async function reviewResourceRequest(
+  requestId: string,
+  payload: { status: string; review_notes?: string; allocated_items?: any[] }
+): Promise<{ message: string }> {
+  const { data } = await apiClient.patch<{ message: string }>(
+    `/government/resource-requests/${requestId}/review`,
+    payload
+  );
+  return data;
+}
+
+export async function createResourceAllocation(payload: {
+  request_id: string;
+  source_depot_or_facility: string;
+  destination_facility: string;
+  allocated_items: any[];
+  tracking_number?: string;
+}): Promise<{ message: string; allocation_id: string }> {
+  const { data } = await apiClient.post<{ message: string; allocation_id: string }>(
+    '/government/resource-allocations',
+    payload
+  );
+  return data;
+}
+
+export async function listOfficialAlerts(statusFilter?: string): Promise<OfficialAlertItem[]> {
+  const { data } = await apiClient.get<OfficialAlertItem[]>('/alerts/official', {
+    params: { status: statusFilter }
+  });
+  return data;
+}
+
+export async function draftOfficialAlert(payload: Partial<OfficialAlertItem>): Promise<{ message: string; alert_id: string }> {
+  const { data } = await apiClient.post<{ message: string; alert_id: string }>('/alerts/official', payload);
+  return data;
+}
+
+export async function publishOfficialAlert(alertId: string): Promise<{ message: string }> {
+  const { data } = await apiClient.post<{ message: string }>(`/alerts/official/${alertId}/publish`);
+  return data;
+}
+
+export async function cancelOfficialAlert(alertId: string): Promise<{ message: string }> {
+  const { data } = await apiClient.patch<{ message: string }>(`/alerts/official/${alertId}/cancel`);
+  return data;
+}
+
+export async function getGovernmentIssuesRollup(district?: string): Promise<any> {
+  const { data } = await apiClient.get<any>('/government/issues-rollup', { params: { district } });
+  return data;
+}
+
+// ─── 5. Automation & Admin Monitoring ────────────────────────────────────
+export interface AutomationJobItem {
+  id: string;
+  job_name: string;
+  description?: string | null;
+  interval_seconds: number;
+  status: string;
+  last_run_at?: string | null;
+  next_run_at?: string | null;
+  last_duration_seconds?: number | null;
+  last_error?: string | null;
+  total_runs: number;
+  success_runs: number;
+  failure_runs: number;
+  is_active: boolean;
+  updated_at?: string | null;
+}
+
+export interface AuditEventItem {
+  id: string;
+  user_email: string;
+  user_role: string;
+  action: string;
+  resource_type: string;
+  resource_id?: string | null;
+  details?: string | null;
+  created_at: string;
+}
+
+export async function listAdminJobs(): Promise<AutomationJobItem[]> {
+  const { data } = await apiClient.get<AutomationJobItem[]>('/admin/jobs');
+  return data;
+}
+
+export async function triggerAdminJobRun(jobName: string): Promise<{ message: string; details: any }> {
+  const { data } = await apiClient.post<{ message: string; details: any }>(`/admin/jobs/${jobName}/run-now`);
+  return data;
+}
+
+export async function listAdminAuditLogs(resourceType?: string, limit: number = 50): Promise<AuditEventItem[]> {
+  const { data } = await apiClient.get<AuditEventItem[]>('/admin/audit-logs', {
+    params: { resource_type: resourceType, limit }
+  });
+  return data;
+}
+
+// ─── 6. Reports & Data Exports ───────────────────────────────────────────
+export function getReportDownloadUrl(
+  reportType: 'daily-risk' | 'hospital-shortages' | 'ngo-distribution' | 'resource-requests'
+): string {
+  return `${BASE_URL}/reports/${reportType}/csv`;
+}

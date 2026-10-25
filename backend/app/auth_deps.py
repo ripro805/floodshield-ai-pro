@@ -69,3 +69,16 @@ def require_roles(*allowed_roles: UserRole):
 # endpoints where every role (including citizen) should get early-warning info.
 def require_any_authenticated_user(current_user: User = Depends(get_current_user)) -> User:
     return current_user
+
+
+def get_optional_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db),
+) -> User | None:
+    """Returns the authenticated User if valid Bearer token provided, otherwise None."""
+    if token is None:
+        return None
+    payload = decode_access_token(token)
+    if payload is None or "sub" not in payload:
+        return None
+    return db.query(User).filter(User.email == payload["sub"]).first()
