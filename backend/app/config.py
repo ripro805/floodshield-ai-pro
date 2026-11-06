@@ -47,8 +47,12 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60")
 BOOTSTRAP_TOKEN = os.getenv("BOOTSTRAP_TOKEN", "").strip()
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY", "")
 WEATHER_REFRESH_INTERVAL_SECONDS = int(os.getenv("WEATHER_REFRESH_INTERVAL_SECONDS", "21600"))
+
+from app.district_names import EN_TO_BN
+_ALL_64_DISTRICTS_STR = ",".join(EN_TO_BN.keys())
+
 WEATHER_REFRESH_DISTRICTS = tuple(
-    item.strip() for item in os.getenv("WEATHER_REFRESH_DISTRICTS", "Feni,Dhaka,Chattogram,Sylhet").split(",")
+    item.strip() for item in os.getenv("WEATHER_REFRESH_DISTRICTS", _ALL_64_DISTRICTS_STR).split(",")
     if item.strip()
 )
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "")
