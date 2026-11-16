@@ -145,7 +145,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
 - Role 3: Hospital Operations Portal (ICU & Bed monitoring, Dynamic Pharmacy Inventory, Atomic Stock Ledger, 14-Day LSTM Surge Restocking)
 - Role 4: NGO Humanitarian Operations Portal (Relief Campaign Manager, Field Warehouse Inventory, Beneficiary Audits, AI-Assisted Quota Allocator)
 - Role 5: Government Emergency Command Room (National Situation Overview, Inter-Agency Requisition Approvals, Verified SMS Broadcasts, Unified Issue Rollup)
-- Role 6: Super Administrator Portal (Enterprise RBAC Directory, Bulk Hospital Geo-Importer, Background Daemon Health Monitors, Tamper-Evident Audit Trail)
+- Role 6: Super Administrator Portal (Enterprise RBAC Directory, Bulk Hospital Geo-Importer, n8n Workflow Automation Engine, Tamper-Evident Audit Trail)
 
 ---
 
@@ -157,7 +157,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
 - Model 5 (Composite Hazard Scoring & DBSCAN): Mathematical multi-hazard weighting and spatial clustering to identify national disease hotspots.
 - Model 6 (Policy Recommendation Engine): Translates model forecasts into role-tailored checklists (bed clearance, ORS pre-positioning, medical kit dispatch).
 - RAG Medical Chatbot: Grounded clinical conversational agent citing WHO and DGHS clinical guidelines, supporting multilingual voice and text queries in English and Bengali.
-- Native Automation Engine: Built-in asynchronous background service running 5 internal daemons for continuous weather ingestion, automated predictions, and alerts.
+- n8n Workflow Automation Engine: Enterprise event-driven workflow engine orchestrating 5-minute weather cron triggers, ML prediction webhooks, and multi-channel SMS emergency alerts.
 
 ---
 
@@ -950,7 +950,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                     <rect x="270" y="172" width="160" height="42" rx="8" fill="#1E293B" stroke="#475569" />
                     <text x="280" y="198" fill="#E2E8F0">6 Role Dependencies</text>
                     <rect x="270" y="224" width="160" height="42" rx="8" fill="#1E293B" stroke="#475569" />
-                    <text x="280" y="250" fill="#E2E8F0">5 Native Daemon Loops</text>
+                    <text x="280" y="250" fill="#E2E8F0">n8n Workflow Engine</text>
                     <rect x="270" y="274" width="160" height="32" rx="6" fill="#042F2E" stroke="#0D9488" />
                     <text x="280" y="295" fill="#5EEAD4" fontSize="10">Pydantic v2 Serialization</text>
 
@@ -1024,12 +1024,12 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                   </div>
 
                   <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2 hover:border-amber-500/30 transition">
-                    <span className="font-bold text-amber-300 font-mono text-sm block">4. Data, Satellite & Background Tier</span>
+                    <span className="font-bold text-amber-300 font-mono text-sm block">4. Data, Satellite & Workflow Tier</span>
                     <p className="text-white/70 leading-relaxed">
-                      Neon Serverless PostgreSQL with PostGIS spatial geometry and pgvector semantic indexing. Integrates Google Earth Engine Sentinel-1 SAR C-Band radar imagery, live OpenWeatherMap streams, and 5 native asynchronous background daemons.
+                      Neon Serverless PostgreSQL with PostGIS spatial geometry and pgvector semantic indexing. Integrates Google Earth Engine Sentinel-1 SAR C-Band radar imagery, live OpenWeatherMap streams, and n8n event-driven workflow automation pipelines.
                     </p>
                     <div className="text-[11px] font-mono text-white/40 pt-1 border-t border-white/06">
-                      Stack: Neon PostgreSQL, PostGIS, pgvector, Google Earth Engine, Redis
+                      Stack: Neon PostgreSQL, PostGIS, pgvector, Google Earth Engine, n8n, Redis
                     </div>
                   </div>
                 </div>
@@ -1240,18 +1240,18 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                     </div>
                   </div>
 
-                  {/* Native Automation Engine */}
+                  {/* n8n Workflow Automation Engine */}
                   <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-3 hover:border-indigo-500/30 transition">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-indigo-300 font-mono text-sm">Native Background Automation Engine</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">5 Daemons</span>
+                      <span className="font-bold text-indigo-300 font-mono text-sm">n8n Workflow Automation Engine</span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">n8n Workflows</span>
                     </div>
                     <p className="text-white/70 leading-relaxed">
-                      Built-in asynchronous background service running 5 internal daemons inside FastAPI without requiring external orchestrators: continuous weather polling, automated ML risk recomputation, and SMS alerts.
+                      Enterprise event-driven workflow engine orchestrating real-time disaster operations: automated 5-minute cron triggers for 64-district weather telemetry ingestion, webhook-based ML prediction pipelines, and automated multi-channel emergency SMS alerts.
                     </p>
                     <div className="space-y-1 pt-2 border-t border-white/06 text-[11px] font-mono text-white/50">
-                      <div>● Daemons: Weather Ingestion, Predictions, SMS Alerting, Cleanup, DB Watcher</div>
-                      <div>● Refresh Cadence: 5-minute automated polling cycle across all 64 districts</div>
+                      <div>● Orchestration: n8n Cron Nodes, Webhook Triggers, REST Connectors</div>
+                      <div>● Pipelines: OpenWeather Telemetry, Model Inference, Anomaly Alerts, Twilio/SMS Dispatch</div>
                     </div>
                   </div>
                 </div>
@@ -1435,7 +1435,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                         { cap: 'AI-Assisted Quota Allocator', c: '✗', fw: '✗', h: '✗', n: '✓', g: '✓', a: '✓' },
                         { cap: 'Approve Inter-Agency Requisitions', c: '✗', fw: '✗', h: '✗', n: '✗', g: '✓', a: '✓' },
                         { cap: 'Broadcast Official Emergency SMS', c: '✗', fw: '✗', h: '✗', n: '✗', g: '✓', a: '✓' },
-                        { cap: 'User RBAC Directory & Daemon Health', c: '✗', fw: '✗', h: '✗', n: '✗', g: '✗', a: '✓' },
+                        { cap: 'User RBAC Directory & n8n Workflows', c: '✗', fw: '✗', h: '✗', n: '✗', g: '✗', a: '✓' },
                       ].map((row, idx) => (
                         <tr key={idx} className="hover:bg-white/02 transition">
                           <td className="p-3 font-semibold text-white">{row.cap}</td>

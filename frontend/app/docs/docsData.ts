@@ -134,7 +134,7 @@ export const STAKEHOLDER_ROLES_PITCH: StakeholderRolePitch[] = [
     capabilities: [
       { title: 'Enterprise RBAC Directory', desc: 'Inspect and manage all registered users, enforce role transitions (such as promoting verified health workers), and configure permissions.' },
       { title: 'Bulk Hospital Geo-Importer', desc: 'Batch upload CSV manifests of nationwide medical facilities with automated geocoding validation, duplicate-filtering, and DB sync.' },
-      { title: 'Automation Engine Monitor', desc: 'Real-time health monitoring of all 5 internal background automation daemons with live logs and on-demand manual triggers.' },
+      { title: 'n8n Workflow Automation Monitor', desc: 'Real-time orchestration of n8n event-driven workflows, webhook triggers, cron schedules, and emergency dispatch logs.' },
       { title: 'Tamper-Evident Security Audit Trail', desc: 'Immutable system-wide audit logging tracking every administrative action, resource approval, and status transition.' },
     ],
   },
@@ -211,10 +211,10 @@ export const FEATURE_MATRIX: FeatureItem[] = [
     description: 'Multilingual grounded conversational AI citing WHO & DGHS clinical guidelines in Bangla, Banglish, and English.',
   },
   {
-    name: 'Native Automation Engine (5 Daemons)',
+    name: 'n8n Workflow Automation Engine',
     category: 'Automation',
     status: 'Live',
-    description: 'Self-contained FastAPI background loops executing weather ingestion, ML risk recomputation, and SMS dispatch.',
+    description: 'Enterprise event-driven n8n workflow engine orchestrating 5-min weather cron polls, ML prediction webhooks, and automated multi-channel SMS alerts.',
   },
   {
     name: '6 Role-Based Command Portals',
@@ -337,10 +337,10 @@ export const CHANGELOG_ITEMS = [
   {
     version: 'v1.2.0',
     date: 'November 2026',
-    title: 'Multi-Model Full Assessment V2 & Native Automation Engine',
+    title: 'Multi-Model Full Assessment V2 & n8n Workflow Automation Engine',
     details: [
       'Chained Model 1 (Flood RF), Model 2 (Outbreak), Model 2B (6-Pathogen XGBoost), and Model 3 (LSTM) into unified /assessment/{district} pipeline.',
-      'Embedded native background automation loop executing continuous OpenWeatherMap ingestion and auto-prediction daemons.',
+      'Integrated n8n workflow orchestration executing continuous OpenWeatherMap ingestion, webhook-based ML re-prediction, and emergency alert dispatches.',
       'Released hospital inventory batch ledger and interactive 64-district GeoJSON GIS maps.',
     ],
   },
