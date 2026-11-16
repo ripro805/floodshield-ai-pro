@@ -60,7 +60,15 @@ export default function Navbar() {
       </Link>
 
       {/* Right side */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        <Link
+          href="/docs"
+          className="text-xs px-2.5 py-1 rounded-md border border-cyan-500/30 text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/50 hover:text-white transition flex items-center gap-1.5 font-medium"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          Docs & Pitch
+        </Link>
+
         <button onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')} className="text-xs px-2 py-1 rounded border border-white/10 text-white/60 hover:text-white" aria-label="Toggle interface language">
           {language === 'en' ? 'বাংলা' : 'EN'}
         </button>

@@ -79,6 +79,13 @@ export default function LandingPage() {
         </Link>
         <div className="flex items-center gap-3">
           <Link
+            href="/docs"
+            className="px-3.5 py-1.5 text-xs font-semibold text-cyan-300 border border-cyan-500/40 rounded-xl bg-cyan-950/40 hover:bg-cyan-900/50 hover:text-white transition flex items-center gap-1.5"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            Pitch & Docs
+          </Link>
+          <Link
             href="/login"
             className="px-4 py-1.5 text-sm font-semibold text-white/70 hover:text-white transition"
           >
@@ -142,6 +149,13 @@ export default function LandingPage() {
               }}
             >
               View Dashboard <ArrowRight size={16} />
+            </Link>
+            <Link
+              href="/docs"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-cyan-300 border border-cyan-500/30 hover:border-cyan-400 hover:text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+              style={{ background: 'rgba(6, 182, 212, 0.1)' }}
+            >
+              YC Pitch & Docs <ArrowRight size={16} />
             </Link>
             <Link
               href="/signup"
