@@ -308,6 +308,22 @@ export const API_ENDPOINTS: ApiEndpointDoc[] = [
     sampleResponse: '{"district": "Feni", "flood_pixels": 48210, "inundated_area_sqkm": 182.4, "geojson": {...}}',
   },
   {
+    method: 'POST',
+    path: '/backend-api/predict/disease-breakdown',
+    description: 'Model 2B 6-Pathogen Quantitative Regressors (Cholera, Diarrhea, Typhoid, Hepatitis, Dengue, Malaria).',
+    auth: 'Bearer JWT',
+    paramsOrBody: '{"district": "Feni", "flood_duration_days": 4, "wqi": 48.5}',
+    sampleResponse: '{"cholera_cases": 45, "diarrhea_cases": 128, "typhoid_cases": 18, "hepatitis_cases": 9, "dengue_cases": 32, "malaria_cases": 14}',
+  },
+  {
+    method: 'POST',
+    path: '/backend-api/chatbot/query',
+    description: 'RAG Clinical Chatbot querying WHO and DGHS medical guidelines in English, Bangla, or Banglish.',
+    auth: 'Public',
+    paramsOrBody: '{"query": "How to treat cholera dehydration in children?", "language": "en"}',
+    sampleResponse: '{"reply": "Immediately administer Oral Rehydration Solution (ORS)...", "sources": ["DGHS Cholera Treatment Protocol 2024", "WHO Waterborne Guidelines"]}',
+  },
+  {
     method: 'GET',
     path: '/backend-api/government/command-overview',
     description: 'High-level inter-agency situational metrics for national disaster ministers.',
