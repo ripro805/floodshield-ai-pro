@@ -33,6 +33,34 @@ export interface DocsConfig {
   lastUpdated: string;
 }
 
+export interface PitchDeckContent {
+  problemHeading: string;
+  problemSubheading: string;
+  problemBody: string;
+  solutionHeading: string;
+  solutionSubheading: string;
+  solutionBody: string;
+  tam: string;
+  sam: string;
+  som: string;
+  visionQuote: string;
+  visionBody: string;
+}
+
+export const DEFAULT_PITCH_CONTENT: PitchDeckContent = {
+  problemHeading: 'A Predictable Crisis Handled Unpredictably',
+  problemSubheading: 'In Bangladesh’s low-lying delta, floods arrive every monsoon season. Disease outbreaks follow the same floods almost as reliably.',
+  problemBody: 'Floodwater contaminates drinking water sources, damaged sanitation spreads pathogens, families crowd into shelters, and standing water breeds mosquitoes. The result is Cholera, Acute Watery Diarrhoea, Typhoid, Hepatitis A/E, skin infections, and Dengue. The response is stubbornly reactive.',
+  solutionHeading: 'From Satellite to Survival: Autonomous Multi-Hazard Early-Warning',
+  solutionSubheading: 'FloodShield AI Pro is an enterprise-grade disaster management and public health intelligence platform designed for all 64 districts of Bangladesh.',
+  solutionBody: 'It unites cloud-penetrating Sentinel-1 SAR satellite radar imagery, an ensemble of 6 custom Machine Learning & LSTM deep learning models, and strict Role-Based Access Control across 6 specialized stakeholder portals.',
+  tam: '$12.8B',
+  sam: '$1.4B',
+  som: '$42M',
+  visionQuote: 'Zero Preventable Deaths from Flood-Induced Disease Outbreaks by 2030',
+  visionBody: 'Equipping frontline clinics, municipal water engineers, and rural community health workers with advance intelligence to turn unpredictable natural catastrophes into systematically managed, pre-mitigated events across every river basin in Bangladesh.',
+};
+
 export const DEFAULT_DOCS_CONFIG: DocsConfig = {
   visibility: 'ON',
   scheduleEnabled: false,
