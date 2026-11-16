@@ -52,15 +52,19 @@ async def _build_feature_row(payload: DiseasePredictionRequest) -> pd.DataFrame:
     if temp is None: temp = 25.0
     if humidity is None: humidity = 70.0
 
+    pop_density = payload.population_density if payload.population_density is not None else 1200.0
+    sanitation = payload.sanitation_score if payload.sanitation_score is not None else 0.5
+    water_quality = payload.water_quality_index if payload.water_quality_index is not None else 60.0
+
     input_dict = {
         "rainfall_mm": rainfall,
         "temperature_c": temp,
         "humidity_percent": humidity,
         "river_level_m": payload.river_level_m,
         "flood_depth_cm": payload.flood_depth_cm,
-        "population_density": payload.population_density,
-        "sanitation_score": payload.sanitation_score,
-        "water_quality_index": payload.water_quality_index,
+        "population_density": pop_density,
+        "sanitation_score": sanitation,
+        "water_quality_index": water_quality,
         "previous_week_cases": payload.previous_week_cases,
         "previous_two_week_cases": payload.previous_two_week_cases,
     }

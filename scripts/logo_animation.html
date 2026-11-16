@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FloodShield AI Pro - Official Brand Animation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #0B192C 0%, #060B14 65%, #03070E 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      color: #ffffff;
+      position: relative;
+    }
+
+    /* Ambient glow orbs */
+    .glow-orb-1 {
+      position: absolute;
+      width: 550px;
+      height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,0.3) 0%, rgba(45,212,191,0.15) 50%, transparent 80%);
+      filter: blur(90px);
+      pointer-events: none;
+      animation: pulseGlow 4s ease-in-out infinite alternate;
+    }
+    .glow-orb-2 {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14,165,233,0.2) 0%, transparent 70%);
+      filter: blur(120px);
+      pointer-events: none;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(0.9); opacity: 0.5; }
+      100% { transform: scale(1.15); opacity: 0.9; }
+    }
+
+    /* Radar Pulse Rings */
+    .radar-ring {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
+      pointer-events: none;
+      animation: ripple 2.8s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+    }
+    .radar-ring:nth-child(2) {
+      animation-delay: 0.9s;
+      border-color: rgba(45, 212, 191, 0.35);
+    }
+    .radar-ring:nth-child(3) {
+      animation-delay: 1.8s;
+      border-color: rgba(14, 165, 233, 0.25);
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(2.4);
+        opacity: 0;
+      }
+    }
+
+    /* Logo Emblem Container */
+    .logo-container {
+      position: relative;
+      z-index: 10;
+      width: 200px;
+      height: 200px;
+      border-radius: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 
+        0 0 60px rgba(56, 189, 248, 0.4),
+        inset 0 0 30px rgba(45, 212, 191, 0.2),
+        0 20px 40px rgba(0, 0, 0, 0.6);
+      animation: floatLogo 5s ease-in-out infinite, logoEntrance 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes logoEntrance {
+      0% {
+        transform: scale(0.4) rotate(-8deg);
+        opacity: 0;
+      }
+      60% {
+        transform: scale(1.1) rotate(2deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .logo-img {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 24px rgba(56, 189, 248, 0.7));
+    }
+
+    /* Brand Typography */
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-top: 32px;
+      z-index: 10;
+      animation: fadeInText 1s ease 0.4s forwards;
+      opacity: 0;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .brand-gradient {
+      background: linear-gradient(135deg, #38BDF8 0%, #2DD4BF 60%, #67E8F9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.5));
+    }
+
+    .pro-badge {
+      display: inline-block;
+      font-size: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: #38BDF8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-left: 10px;
+      vertical-align: middle;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+    }
+
+    .brand-subtitle {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 10px;
+      z-index: 10;
+      animation: fadeInText 1s ease 0.7s forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeInText {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Dynamic Loading Bar & Step */
+    .progress-box {
+      margin-top: 36px;
+      width: 440px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0284C7, #38BDF8, #2DD4BF);
+      border-radius: 999px;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+      transition: width 0.1s linear;
+    }
+
+    .step-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #7DD3FC;
+      letter-spacing: 0.05em;
+      min-height: 20px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2DD4BF;
+      box-shadow: 0 0 10px #2DD4BF;
+      animation: blink 1s infinite alternate;
+    }
+
+    @keyframes blink {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    /* Grid overlay for tech look */
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="glow-orb-1"></div>
+  <div class="glow-orb-2"></div>
+
+  <!-- Radar pulse effect -->
+  <div class="radar-ring"></div>
+  <div class="radar-ring"></div>
+  <div class="radar-ring"></div>
+
+  <!-- Central Logo Emblem -->
+  <div class="logo-container">
+    <img src="../frontend/public/logo.png" alt="FloodShield AI Pro" class="logo-img">
+  </div>
+
+  <!-- Brand Typography -->
+  <h1 class="brand-title">
+    FloodShield <span class="brand-gradient">AI</span> <span class="pro-badge">PRO v2.0</span>
+  </h1>
+  <p class="brand-subtitle">
+    Advanced Multi-Tier Climate Resilience Platform
+  </p>
+
+  <!-- Progress bar & steps -->
+  <div class="progress-box">
+    <div class="progress-track">
+      <div class="progress-fill" id="pbar"></div>
+    </div>
+    <div class="step-text">
+      <div class="pulse-dot"></div>
+      <span id="step-label">Initializing Predictive Intelligence...</span>
+    </div>
+  </div>
+
+  <script>
+    const steps = [
+      { at: 0, text: "Initializing Predictive Intelligence..." },
+      { at: 1.2, text: "Syncing Hydrological & Sentinel-1 Satellite Feeds..." },
+      { at: 2.5, text: "Calibrating 64-District Neural Warning Shield..." },
+      { at: 3.8, text: "Early Warning Shield Active • Bangladesh 2026" },
+      { at: 4.8, text: "System Online • All AI Defenses Operational" }
+    ];
+
+    const pbar = document.getElementById('pbar');
+    const label = document.getElementById('step-label');
+    const startTime = performance.now();
+    const duration = 5000; // 5 seconds
+
+    function update() {
+      const elapsed = performance.now() - startTime;
+      const progress = Math.min(100, (elapsed / duration) * 100);
+      pbar.style.width = progress + '%';
+
+      const sec = elapsed / 1000;
+      for (let i = steps.length - 1; i >= 0; i--) {
+        if (sec >= steps[i].at) {
+          label.textContent = steps[i].text;
+          break;
+        }
+      }
+
+      if (elapsed < duration) {
+        requestAnimationFrame(update);
+      }
+    }
+    requestAnimationFrame(update);
+  </script>
+</body>
+</html>

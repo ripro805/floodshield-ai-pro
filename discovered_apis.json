@@ -1,0 +1,907 @@
+[
+  {
+    "method": "GET",
+    "path": "/",
+    "summary": "Health Check",
+    "tags": [
+      "Health"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/audit-logs",
+    "summary": "List Audit Logs",
+    "tags": [
+      "Admin & Automation Monitoring"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/chat-history",
+    "summary": "List Chat History",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/chat-history/{conversation_id}",
+    "summary": "Get Chat Conversation",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/data-status",
+    "summary": "Data Status",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/admin/hospitals/import",
+    "summary": "Import (or replace) the hospital directory from a CSV",
+    "tags": [
+      "Admin Hospital Import"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/hospitals/import/template",
+    "summary": "Download a small example CSV that matches the import schema",
+    "tags": [
+      "Admin Hospital Import"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/hospitals/issues",
+    "summary": "List every hospital issue report (admin inbox)",
+    "tags": [
+      "Admin Hospital Issue Inbox"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/admin/hospitals/issues/status",
+    "summary": "Bulk set status on many issues (admin)",
+    "tags": [
+      "Admin Hospital Issue Inbox"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/hospitals/issues/summary",
+    "summary": "Inbox counts by status, district, and category",
+    "tags": [
+      "Admin Hospital Issue Inbox"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/admin/hospitals/issues/{issue_id}/status",
+    "summary": "Acknowledge, resolve, or dismiss a single issue (admin)",
+    "tags": [
+      "Admin Hospital Issue Inbox"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/jobs",
+    "summary": "List Automation Jobs",
+    "tags": [
+      "Admin & Automation Monitoring"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/admin/jobs/{job_name}/run-now",
+    "summary": "Trigger Job Run",
+    "tags": [
+      "Admin & Automation Monitoring"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/knowledge",
+    "summary": "List Knowledge",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/admin/knowledge",
+    "summary": "Create Knowledge",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/admin/knowledge/{article_id}",
+    "summary": "Update Knowledge",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/admin/knowledge/{article_id}",
+    "summary": "Delete Knowledge",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/predictions/all",
+    "summary": "List All Predictions",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/admin/rag/ingest",
+    "summary": "Rag Ingest",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/admin/rag/rebuild",
+    "summary": "Rag Rebuild",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/admin/rag/retrieve",
+    "summary": "Rag Retrieve",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/rag/status",
+    "summary": "Rag Status",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/admin/users",
+    "summary": "List All Users",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/admin/users",
+    "summary": "Create User As Admin",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/admin/users/{user_id}",
+    "summary": "Delete User",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/admin/users/{user_id}/role",
+    "summary": "Update User Role",
+    "tags": [
+      "Admin User Management"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/alerts/official",
+    "summary": "List Official Alerts",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/alerts/official",
+    "summary": "Draft Official Alert",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/alerts/official/{alert_id}/cancel",
+    "summary": "Cancel Official Alert",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/alerts/official/{alert_id}/publish",
+    "summary": "Publish Official Alert",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/alerts/sms/send",
+    "summary": "Send Alert",
+    "tags": [
+      "SMS Alerts"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/alerts/sms/subscribe",
+    "summary": "Subscribe",
+    "tags": [
+      "SMS Alerts"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/alerts/sms/subscription",
+    "summary": "Get Subscription",
+    "tags": [
+      "SMS Alerts"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/alerts/sms/unsubscribe",
+    "summary": "Unsubscribe",
+    "tags": [
+      "SMS Alerts"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/locations/bangla",
+    "summary": "Bangla Districts",
+    "tags": [
+      "Location Search"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/locations/search",
+    "summary": "Search Locations",
+    "tags": [
+      "Location Search"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/weather",
+    "summary": "Get Weather",
+    "tags": [
+      "Weather API"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/weather/history",
+    "summary": "Get Weather History",
+    "tags": [
+      "Weather API"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/assessment/{district}",
+    "summary": "Full Assessment For District",
+    "tags": [
+      "Full Assessment (per-section)"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/auth/bootstrap-status",
+    "summary": "Bootstrap Status",
+    "tags": [
+      "Authentication"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/auth/demote-me",
+    "summary": "Demote Me To Citizen",
+    "tags": [
+      "Authentication"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/auth/forgot-password",
+    "summary": "Forgot Password",
+    "tags": [
+      "Authentication"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/auth/login",
+    "summary": "Login",
+    "tags": [
+      "Authentication"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/auth/me",
+    "summary": "Read Current User",
+    "tags": [
+      "Authentication"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/auth/promote-me",
+    "summary": "Promote Me To Admin",
+    "tags": [
+      "Authentication"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/auth/reset-password",
+    "summary": "Reset Password",
+    "tags": [
+      "Authentication"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/auth/signup",
+    "summary": "Signup",
+    "tags": [
+      "Authentication"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/chatbot/history/{conversation_id}",
+    "summary": "Get Conversation History",
+    "tags": [
+      "Chatbot (LLM)"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/chatbot/message",
+    "summary": "Chat Message",
+    "tags": [
+      "Chatbot (LLM)"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/chatbot/report-incident",
+    "summary": "Report Incident",
+    "tags": [
+      "Chatbot (LLM)"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/citizen/my-reports",
+    "summary": "List Citizen Own Reports",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/citizen/public-alerts",
+    "summary": "Get Public Alerts",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/citizen/public-hospitals",
+    "summary": "Get Public Hospital Capacity",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/citizen/reports",
+    "summary": "Submit Citizen Report",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/citizen/reports/{report_id}/withdraw",
+    "summary": "Withdraw Citizen Report",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/field/tasks",
+    "summary": "List Field Tasks",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/field/tasks",
+    "summary": "Create Field Task",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/field/tasks/{task_id}",
+    "summary": "Update Field Task Status",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/field/visit-logs",
+    "summary": "List Field Visit Logs",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/field/visit-logs",
+    "summary": "Record Field Visit Log",
+    "tags": [
+      "Field & Citizen Operations"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/government/command-overview",
+    "summary": "Get Command Overview",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/government/issues-rollup",
+    "summary": "Get Issues Rollup",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/government/resource-allocations",
+    "summary": "Create Resource Allocation",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/government/resource-requests",
+    "summary": "List Resource Requests",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/government/resource-requests",
+    "summary": "Submit Resource Request",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/government/resource-requests/{request_id}/review",
+    "summary": "Review Resource Request",
+    "tags": [
+      "Government Emergency Coordination"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/history/predictions",
+    "summary": "Get Prediction History",
+    "tags": [
+      "District Weekly History"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/history/weekly/{district}",
+    "summary": "Get Weekly History",
+    "tags": [
+      "District Weekly History"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/history/weekly/{district}",
+    "summary": "Upsert weekly history rows for a district (operational roles only)",
+    "tags": [
+      "District Weekly History"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals",
+    "summary": "List Hospitals",
+    "tags": [
+      "Hospitals"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/districts-summary",
+    "summary": "Districts Summary",
+    "tags": [
+      "Hospital Directory"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/districts/{district}/issue-rollup",
+    "summary": "Read-only per-district hospital issue rollup",
+    "tags": [
+      "Hospital Issue Rollup"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/nearby",
+    "summary": "Nearby Hospitals",
+    "tags": [
+      "Hospital Directory"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/{hospital_id}",
+    "summary": "Get Hospital",
+    "tags": [
+      "Hospitals"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/hospitals/{hospital_id}",
+    "summary": "Update hospital inventory and refresh district rollup",
+    "tags": [
+      "Hospitals"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/{hospital_id}/forecast-prep",
+    "summary": "Get Forecast Preparation",
+    "tags": [
+      "Hospital Operations & Inventory"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/{hospital_id}/history",
+    "summary": "Audit log of inventory edits to a hospital",
+    "tags": [
+      "Hospitals"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/{hospital_id}/inventory",
+    "summary": "List Hospital Inventory",
+    "tags": [
+      "Hospital Operations & Inventory"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/hospitals/{hospital_id}/inventory",
+    "summary": "Create Inventory Item",
+    "tags": [
+      "Hospital Operations & Inventory"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/{hospital_id}/inventory/transactions",
+    "summary": "Get Inventory Transactions",
+    "tags": [
+      "Hospital Operations & Inventory"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/hospitals/{hospital_id}/inventory/{item_id}/transaction",
+    "summary": "Record Stock Transaction",
+    "tags": [
+      "Hospital Operations & Inventory"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/{hospital_id}/issue-history",
+    "summary": "Per-hospital chronological issue timeline (read-only)",
+    "tags": [
+      "Hospital Issue History"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/hospitals/{hospital_id}/issues",
+    "summary": "Report an issue with a specific hospital (open to all auth'd users)",
+    "tags": [
+      "Hospital Issue Reports"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/hospitals/{hospital_id}/issues",
+    "summary": "List the open / recent issues reported for a hospital",
+    "tags": [
+      "Hospital Issue Reports"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/hospitals/{hospital_id}/profile",
+    "summary": "Update Hospital Profile",
+    "tags": [
+      "Hospital Operations & Inventory"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/monitoring/summary",
+    "summary": "Monitoring Summary",
+    "tags": [
+      "Model Monitoring"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/ngo/ai-allocation/{district}",
+    "summary": "Get Ai Relief Allocation",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/ngo/campaigns",
+    "summary": "List Campaigns",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/ngo/campaigns",
+    "summary": "Create Campaign",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/ngo/campaigns/{campaign_id}/status",
+    "summary": "Update Campaign Status",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/ngo/distribution-tasks",
+    "summary": "List Distribution Tasks",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/ngo/distribution-tasks",
+    "summary": "Create Distribution Task",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/ngo/distribution-tasks/{task_id}",
+    "summary": "Update Distribution Task",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/ngo/inventory",
+    "summary": "List Ngo Inventory",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/ngo/inventory",
+    "summary": "Create Ngo Inventory Item",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/ngo/inventory/{item_id}/transaction",
+    "summary": "Record Ngo Transaction",
+    "tags": [
+      "NGO Relief & Field Operations"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/predict/disease",
+    "summary": "Predict Disease",
+    "tags": [
+      "Disease Outbreak Prediction (Model 2)"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/predict/disease-breakdown",
+    "summary": "Predict Disease Breakdown",
+    "tags": [
+      "Disease Breakdown (Model 2B)"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/predict/flood",
+    "summary": "Predict Flood",
+    "tags": [
+      "Flood Prediction (Model 1)"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/predict/forecast",
+    "summary": "Forecast",
+    "tags": [
+      "Time Series Forecasting (Model 3)"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/predict/full-assessment",
+    "summary": "Full Assessment",
+    "tags": [
+      "Recommendation AI (Model 6)"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/predict/hotspots",
+    "summary": "Detect Hotspots",
+    "tags": [
+      "Disease Hotspot Detection"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/predict/risk",
+    "summary": "Predict Risk",
+    "tags": [
+      "Composite Risk Score (Model 5)"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/predict/risk/all-districts",
+    "summary": "Get All Districts Risk",
+    "tags": [
+      "Composite Risk Score (Model 5)"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/recommend",
+    "summary": "Recommend",
+    "tags": [
+      "Recommendation AI (Model 6)"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/reports/daily-risk/csv",
+    "summary": "Export Daily Risk Csv",
+    "tags": [
+      "Reports & Data Exports"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/reports/hospital-shortages/csv",
+    "summary": "Export Hospital Shortages Csv",
+    "tags": [
+      "Reports & Data Exports"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/reports/ngo-distribution/csv",
+    "summary": "Export Ngo Distribution Csv",
+    "tags": [
+      "Reports & Data Exports"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/reports/resource-requests/csv",
+    "summary": "Export Resource Requests Csv",
+    "tags": [
+      "Reports & Data Exports"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/satellite/flood-extent",
+    "summary": "List Available Districts",
+    "tags": [
+      "Satellite Flood Detection (Model 4)",
+      "Satellite Flood Detection (Model 4)"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/satellite/flood-extent/{district}",
+    "summary": "Get Flood Extent",
+    "tags": [
+      "Satellite Flood Detection (Model 4)"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/satellite/ingest",
+    "summary": "Ingest District",
+    "tags": [
+      "Satellite Flood Detection (Model 4)"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/satellite/segment",
+    "summary": "Segment Sar Image",
+    "tags": [
+      "Satellite Flood Detection (Model 4)"
+    ]
+  }
+]

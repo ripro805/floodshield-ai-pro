@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { Shield, Satellite, Activity, Map, ArrowRight, Zap } from 'lucide-react';
+import { Shield, Satellite, Activity, Map, ArrowRight, Zap, FileText } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'FloodShield AI — Flood & Disease Early Warning for Bangladesh',
@@ -267,6 +267,57 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Persistent Floating Corner Docs Widget for Judges & Evaluators ── */}
+      <aside aria-label="Documentation and pitch deck quick access" className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 max-w-[280px] sm:max-w-xs transition-transform duration-300">
+        <Link
+          href="/docs"
+          className="group block p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] shadow-2xl backdrop-blur-2xl"
+          style={{
+            background: 'rgba(6, 15, 30, 0.94)',
+            borderColor: 'rgba(56, 189, 248, 0.45)',
+            boxShadow: '0 12px 32px rgba(0, 0, 0, 0.65), 0 0 24px rgba(56, 189, 248, 0.28)',
+          }}
+        >
+          <div className="flex items-start gap-3">
+            <div
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 border border-cyan-400/30 group-hover:border-cyan-400 transition-colors"
+              style={{ background: 'rgba(56, 189, 248, 0.12)' }}
+            >
+              <FileText size={18} className="text-cyan-300 group-hover:scale-110 transition-transform" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-cyan-300">
+                  Judges & Investors
+                </span>
+              </div>
+              <h4 className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-200 transition-colors leading-tight">
+                YC Pitch Deck & Live Docs
+              </h4>
+              <p className="text-[10px] sm:text-[11px] text-white/50 line-clamp-1 mt-0.5">
+                Full technical docs, 6 ML models & team
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center justify-between">
+            <span className="text-[10px] sm:text-[11px] font-medium text-white/60 group-hover:text-white transition-colors">
+              Read whitepaper
+            </span>
+            <span
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold text-white transition-all group-hover:translate-x-0.5"
+              style={{
+                background: 'linear-gradient(135deg, #0EA5E9, #14B8A6)',
+                boxShadow: '0 0 12px rgba(14, 165, 233, 0.4)',
+              }}
+            >
+              Open Docs <ArrowRight size={12} />
+            </span>
+          </div>
+        </Link>
+      </aside>
     </main>
   );
 }

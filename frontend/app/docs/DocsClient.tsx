@@ -130,7 +130,7 @@ export default function DocsClient() {
     totalBeds: 4890,
     activeAlerts: 3,
     unverifiedReports: 18,
-    lastSynced: new Date().toLocaleTimeString(),
+    lastSynced: '',
   });
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -138,7 +138,8 @@ export default function DocsClient() {
     setIsSyncing(true);
     const t0 = performance.now();
     try {
-      const healthRes = await fetch('http://127.0.0.1:8000/health').catch(() => null);
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+      const healthRes = await fetch(`${apiBase}/`).catch(() => null);
       if (healthRes && healthRes.ok) {
         const data = await healthRes.json();
         const latency = Math.round(performance.now() - t0);
@@ -176,13 +177,17 @@ export default function DocsClient() {
   };
 
   useEffect(() => {
+    // Set client-side initial sync timestamp to prevent SSR hydration mismatch
+    setLiveMetrics(prev => ({ ...prev, lastSynced: new Date().toLocaleTimeString() }));
+
     // Check backend health
     const t0 = performance.now();
-    fetch('https://floodshield-ai-pro.vercel.app/backend-api/health')
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    fetch(`${apiBase}/`)
       .then(res => res.json())
       .then(data => {
         const latency = Math.round(performance.now() - t0);
-        setLiveHealth({ status: data.status || 'healthy', uptime: '99.98%', latencyMs: latency || 42 });
+        setLiveHealth({ status: data.status === 'ok' ? 'healthy' : 'operational', uptime: '99.98%', latencyMs: latency || 42 });
       })
       .catch(() => {
         setLiveHealth({ status: 'operational', uptime: '99.95%', latencyMs: 65 });
@@ -639,7 +644,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                   title="Sync live application telemetry"
                 >
                   <RefreshCw size={12} className={isSyncing ? "animate-spin text-cyan-400" : ""} />
-                  <span>{isSyncing ? "Syncing..." : `Live Sync (${liveMetrics.lastSynced})`}</span>
+                  <span>{isSyncing ? "Syncing..." : liveMetrics.lastSynced ? `Live Sync (${liveMetrics.lastSynced})` : 'Live Sync'}</span>
                 </button>
               </div>
             </div>
