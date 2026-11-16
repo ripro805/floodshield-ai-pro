@@ -192,6 +192,21 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
 
 ## 8. Vision & 2030 Impact
 "Zero Preventable Deaths from Flood-Induced Disease Outbreaks by 2030"
+
+---
+
+## 9. Enterprise Security & Dual-Pillar RBAC Architecture
+### Government vs. Super Admin (Shared Authority vs. Infrastructure Custody):
+- **100% Shared Operational Command:** Both Government and Super Admin share full executive authority over the National Command Center, inter-agency requisition review/approvals, relief stock allocations, official bilingual SMS broadcasts, and system audit logs.
+- **Super Admin Root Infrastructure:** Super Admin uniquely manages user credentials and role elevations (/admin/users), batch hospital geocoding CSV imports, and n8n background automation job workflows.
+
+### 6 Specialized Portals:
+1. Citizen: GIS Map, GPS Hospital Finder, Crowdsourced Reporting, Report Tracking & Self-Withdrawal.
+2. Field Health Worker: Offline-First Char Surveys, Symptom Triage, Relief Kit Counter.
+3. Hospital Operations: Live Bed & ICU Occupancy, Dynamic Multi-Item Pharmacy Catalog, 14-Day LSTM Surge Prep.
+4. NGO Relief: Humanitarian Campaigns, Tenant-Isolated Warehouse, Shelter Task Dispatch, AI Quota Allocator.
+5. Government Command: National Situation Room, Requisition Approval, Bilingual SMS Broadcasts, Issues Rollup.
+6. Super Admin: Root RBAC Directory, Bulk Hospital Geo-Import, n8n Automation Engine, Full Audit Ledger.
 `;
     const blob = new Blob([mdContent], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -1390,8 +1405,62 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                     Enterprise Security & 6-Tier RBAC Matrix
                   </h2>
                   <p className="text-xs text-white/60">
-                    Comprehensive role permissions, encryption standards, and zero PII data governance protecting national disaster operations.
+                    Mathematically verified server-side authorization boundaries, zero PII data governance, and dual-pillar national disaster coordination.
                   </p>
+                </div>
+
+                {/* Deep Architecture Insight: Government vs Super Admin */}
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-cyan-950/40 via-[#0B1528] to-purple-950/30 border border-cyan-500/30 space-y-4 shadow-xl">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 shrink-0 mt-0.5">
+                      <Shield size={22} />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-base sm:text-lg font-bold text-white tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                          Government Coordinator vs. Super Administrator: The Dual Pillars of National Command
+                        </h3>
+                        <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                          Codebase Verified
+                        </span>
+                      </div>
+                      <p className="text-xs text-white/70 leading-relaxed">
+                        In FloodShield AI Pro, <strong className="text-purple-300">Government</strong> and <strong className="text-cyan-300">Super Admin</strong> operate under a shared executive disaster authority model with strict operational vs. infrastructure segregation.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 text-xs">
+                    <div className="p-4 rounded-xl bg-white/03 border border-white/08 space-y-2.5">
+                      <div className="flex items-center gap-2 text-purple-300 font-bold font-mono">
+                        <CheckCircle2 size={15} /> 100% Shared Operational Authority
+                      </div>
+                      <p className="text-white/60 leading-relaxed">
+                        Every national coordination endpoint (<code className="text-purple-300 bg-purple-500/10 px-1 py-0.5 rounded">/government/*</code>, <code className="text-purple-300 bg-purple-500/10 px-1 py-0.5 rounded">/alerts/official</code>, <code className="text-purple-300 bg-purple-500/10 px-1 py-0.5 rounded">/admin/audit-logs</code>) enforces:
+                      </p>
+                      <div className="p-2.5 rounded-lg bg-black/50 font-mono text-[11px] text-purple-200 border border-purple-500/30">
+                        if current_user.role not in (&quot;government&quot;, &quot;admin&quot;):
+                      </div>
+                      <p className="text-white/70 leading-relaxed">
+                        Both roles possess identical authority to review inter-agency hospital requisitions, dispatch central medical stockpiles, authorize official bilingual SMS alerts, rollup district incident escalations, and inspect the tamper-evident audit ledger.
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-white/03 border border-white/08 space-y-2.5">
+                      <div className="flex items-center gap-2 text-cyan-300 font-bold font-mono">
+                        <Server size={15} /> Super Admin Root Infrastructure Exclusives
+                      </div>
+                      <p className="text-white/60 leading-relaxed">
+                        Super Admin carries the underlying technical and platform governance responsibilities that civil government coordinators do not touch:
+                      </p>
+                      <ul className="space-y-1.5 text-white/70 list-disc list-inside">
+                        <li><strong className="text-white">Enterprise User Provisioning:</strong> Promotes verified personnel and issues credentials (<code className="text-cyan-300 bg-cyan-500/10 px-1 py-0.5 rounded">/admin/users</code>).</li>
+                        <li><strong className="text-white">Bulk Hospital Geo-Import:</strong> Ingests national hospital CSV catalogs and deduplicates GIS coordinates.</li>
+                        <li><strong className="text-white">n8n Automation Engine:</strong> Monitors event-driven DAGs, webhook dispatches, and triggers manual cron cycles.</li>
+                        <li><strong className="text-white">Global Portal Traversal:</strong> Unrestricted visibility into all 6 command portals.</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Security Standards Cards */}
@@ -1411,44 +1480,108 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                 </div>
 
                 {/* Full Permission Matrix Table */}
-                <div className="overflow-x-auto rounded-2xl border border-white/10">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-white/05 text-white/50 uppercase font-mono">
-                      <tr>
-                        <th className="p-3">Platform Capability</th>
-                        <th className="p-3 text-center">Citizen</th>
-                        <th className="p-3 text-center">Field Worker</th>
-                        <th className="p-3 text-center">Hospital</th>
-                        <th className="p-3 text-center">NGO</th>
-                        <th className="p-3 text-center">Government</th>
-                        <th className="p-3 text-center text-cyan-300">Super Admin</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/06 text-white/80">
-                      {[
-                        { cap: 'View 64-District Risk Map & GIS', c: '✓', fw: '✓', h: '✓', n: '✓', g: '✓', a: '✓' },
-                        { cap: 'Submit Crowdsourced Hazards', c: '✓', fw: '✓', h: '✗', n: '✗', g: '✗', a: '✓' },
-                        { cap: 'Offline Household Triage Surveys', c: '✗', fw: '✓', h: '✗', n: '✗', g: '✗', a: '✓' },
-                        { cap: 'Manage Bed & ICU Meters', c: '✗', fw: '✗', h: '✓', n: '✗', g: '✗', a: '✓' },
-                        { cap: 'Pharmacy Inventory Ledger', c: '✗', fw: '✗', h: '✓', n: '✗', g: '✗', a: '✓' },
-                        { cap: 'Launch Disaster Relief Campaigns', c: '✗', fw: '✗', h: '✗', n: '✓', g: '✗', a: '✓' },
-                        { cap: 'AI-Assisted Quota Allocator', c: '✗', fw: '✗', h: '✗', n: '✓', g: '✓', a: '✓' },
-                        { cap: 'Approve Inter-Agency Requisitions', c: '✗', fw: '✗', h: '✗', n: '✗', g: '✓', a: '✓' },
-                        { cap: 'Broadcast Official Emergency SMS', c: '✗', fw: '✗', h: '✗', n: '✗', g: '✓', a: '✓' },
-                        { cap: 'User RBAC Directory & n8n Workflows', c: '✗', fw: '✗', h: '✗', n: '✗', g: '✗', a: '✓' },
-                      ].map((row, idx) => (
-                        <tr key={idx} className="hover:bg-white/02 transition">
-                          <td className="p-3 font-semibold text-white">{row.cap}</td>
-                          <td className="p-3 text-center font-mono">{row.c === '✓' ? <span className="text-emerald-400 font-bold">✓</span> : <span className="text-white/20">−</span>}</td>
-                          <td className="p-3 text-center font-mono">{row.fw === '✓' ? <span className="text-emerald-400 font-bold">✓</span> : <span className="text-white/20">−</span>}</td>
-                          <td className="p-3 text-center font-mono">{row.h === '✓' ? <span className="text-emerald-400 font-bold">✓</span> : <span className="text-white/20">−</span>}</td>
-                          <td className="p-3 text-center font-mono">{row.n === '✓' ? <span className="text-emerald-400 font-bold">✓</span> : <span className="text-white/20">−</span>}</td>
-                          <td className="p-3 text-center font-mono">{row.g === '✓' ? <span className="text-emerald-400 font-bold">✓</span> : <span className="text-white/20">−</span>}</td>
-                          <td className="p-3 text-center font-mono">{row.a === '✓' ? <span className="text-cyan-300 font-bold">✓</span> : <span className="text-white/20">−</span>}</td>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-white/50 font-mono">
+                    <span>SERVER-ENFORCED CAPABILITY MATRIX</span>
+                    <span className="text-cyan-400">17 Fine-Grained Controls</span>
+                  </div>
+                  <div className="overflow-x-auto rounded-2xl border border-white/10 shadow-2xl">
+                    <table className="w-full text-left text-xs min-w-[700px]">
+                      <thead className="bg-white/05 text-white/60 uppercase font-mono text-[11px]">
+                        <tr>
+                          <th className="p-3.5">Platform Capability & Route</th>
+                          <th className="p-3.5 text-center">Citizen</th>
+                          <th className="p-3.5 text-center">Field Worker</th>
+                          <th className="p-3.5 text-center">Hospital</th>
+                          <th className="p-3.5 text-center">NGO</th>
+                          <th className="p-3.5 text-center text-purple-300 bg-purple-500/05 border-x border-purple-500/10">Government</th>
+                          <th className="p-3.5 text-center text-cyan-300 bg-cyan-500/05 border-r border-cyan-500/10">Super Admin</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-white/06 text-white/80">
+                        {[
+                          { cap: 'View 64-District GIS Risk Map & Forecasts', route: '/predict/*, /forecast/*', c: '✓', fw: '✓', h: '✓', n: '✓', g: '✓', a: '✓' },
+                          { cap: 'Submit Crowdsourced Hazards & Contamination', route: '/citizen/reports', c: '✓', fw: '✓', h: '✓', n: '✓', g: '✓', a: '✓' },
+                          { cap: 'Track & Withdraw Own Incident Reports', route: '/citizen/my-reports, /withdraw', c: '✓', fw: '✓', h: '✓', n: '✓', g: '✓', a: '✓' },
+                          { cap: 'Offline Household Triage Surveys & Interventions', route: '/field/visit-logs', c: '−', fw: '✓', h: '−', n: '−', g: '−', a: '✓' },
+                          { cap: 'Dispatch & Accept Outbreak Investigation Tasks', route: '/field/tasks', c: '−', fw: '✓', h: '✓', n: '−', g: '✓', a: '✓' },
+                          { cap: 'Update Facility Bed & ICU Capacity Meters', route: '/hospitals/{id}', c: '−', fw: 'District', h: 'District', n: '−', g: 'National', a: 'National' },
+                          { cap: 'Manage Dynamic Hospital Pharmacy Catalog & Batches', route: '/hospitals/{id}/inventory', c: '−', fw: '−', h: 'Facility', n: '−', g: '−', a: 'National' },
+                          { cap: 'Atomic Hospital Stock Transactions (Dispense/Log)', route: '/hospitals/.../transaction', c: '−', fw: '−', h: 'Facility', n: '−', g: '−', a: 'National' },
+                          { cap: 'Launch Targeted Disaster Relief Campaigns', route: '/ngo/campaigns', c: '−', fw: '−', h: '−', n: 'Org', g: '−', a: 'National' },
+                          { cap: 'Manage NGO Relief Warehouse Inventory', route: '/ngo/inventory', c: '−', fw: '−', h: '−', n: 'Org', g: '−', a: 'National' },
+                          { cap: 'AI-Assisted Quota Allocator & Recommendations', route: '/recommend, /ngo/ai-allocations', c: '−', fw: '✓', h: '✓', n: '✓', g: '✓', a: '✓' },
+                          { cap: 'Submit Inter-Agency Resource Requisitions', route: '/government/resource-requests (POST)', c: '−', fw: '✓', h: '✓', n: '✓', g: '−', a: '✓' },
+                          { cap: 'National Command Room & Requisition Approval', route: '/government/command-overview, /review', c: '−', fw: '−', h: '−', n: '−', g: '✓', a: '✓' },
+                          { cap: 'Authorize & Broadcast Official Emergency SMS', route: '/alerts/official/{id}/publish', c: '−', fw: '−', h: '−', n: '−', g: '✓', a: '✓' },
+                          { cap: 'Unified Cross-Agency Incident & Issue Rollup', route: '/government/issues-rollup', c: '−', fw: '−', h: '−', n: '−', g: '✓', a: '✓' },
+                          { cap: 'Inspect Tamper-Evident System Audit Ledger', route: '/admin/audit-logs', c: '−', fw: '−', h: '−', n: '−', g: '✓', a: '✓' },
+                          { cap: 'User RBAC Directory, Bulk Hospital Geo-Import & n8n Engine', route: '/admin/users, /admin/jobs, /admin/hospitals/import', c: '−', fw: '−', h: '−', n: '−', g: '−', a: '✓' },
+                        ].map((row, idx) => (
+                          <tr key={idx} className="hover:bg-white/02 transition">
+                            <td className="p-3.5">
+                              <p className="font-semibold text-white">{row.cap}</p>
+                              <code className="text-[10px] text-cyan-400/80 font-mono">{row.route}</code>
+                            </td>
+                            <td className="p-3.5 text-center font-mono">
+                              {row.c === '✓' ? <span className="text-emerald-400 font-bold">✓</span> : <span className="text-white/20">−</span>}
+                            </td>
+                            <td className="p-3.5 text-center font-mono">
+                              {row.fw === '✓' ? <span className="text-emerald-400 font-bold">✓</span> : row.fw === 'District' ? <span className="text-teal-300 font-mono text-[10px] px-1.5 py-0.5 rounded bg-teal-500/10 border border-teal-500/20">District</span> : <span className="text-white/20">−</span>}
+                            </td>
+                            <td className="p-3.5 text-center font-mono">
+                              {row.h === '✓' ? <span className="text-emerald-400 font-bold">✓</span> : row.h === 'District' ? <span className="text-teal-300 font-mono text-[10px] px-1.5 py-0.5 rounded bg-teal-500/10 border border-teal-500/20">District</span> : row.h === 'Facility' ? <span className="text-indigo-300 font-mono text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">Facility</span> : <span className="text-white/20">−</span>}
+                            </td>
+                            <td className="p-3.5 text-center font-mono">
+                              {row.n === '✓' ? <span className="text-emerald-400 font-bold">✓</span> : row.n === 'Org' ? <span className="text-amber-300 font-mono text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">Org</span> : <span className="text-white/20">−</span>}
+                            </td>
+                            <td className="p-3.5 text-center font-mono bg-purple-500/05 border-x border-purple-500/10">
+                              {row.g === '✓' ? <span className="text-purple-300 font-bold">✓</span> : row.g === 'National' ? <span className="text-purple-300 font-mono text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 border border-purple-500/40 font-bold">National</span> : <span className="text-white/20">−</span>}
+                            </td>
+                            <td className="p-3.5 text-center font-mono bg-cyan-500/05 border-r border-cyan-500/10">
+                              {row.a === '✓' ? <span className="text-cyan-300 font-bold">✓</span> : row.a === 'National' ? <span className="text-cyan-300 font-mono text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 border border-cyan-500/40 font-bold">National</span> : <span className="text-white/20">−</span>}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* 4 Tenant Isolation and Security Rules */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
+                  <div className="p-4 rounded-xl bg-white/03 border border-white/08 space-y-1.5">
+                    <p className="font-bold text-white flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400"></span> Institutional Hospital Isolation
+                    </p>
+                    <p className="text-white/60 leading-relaxed">
+                      Hospital administrators are locked to their registered healthcare facility. They cannot mutate bed occupancies or pharmacy stocks belonging to another facility unless elevated to district-wide coordination.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/03 border border-white/08 space-y-1.5">
+                    <p className="font-bold text-white flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-amber-400"></span> NGO Organization Separation
+                    </p>
+                    <p className="text-white/60 leading-relaxed">
+                      Humanitarian relief campaigns and dedicated warehouse inventory (food, water, tablets) are isolated by organization name. NGO operators cannot edit or deplete another organization&apos;s inventory.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/03 border border-white/08 space-y-1.5">
+                    <p className="font-bold text-white flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-teal-400"></span> Citizen Privacy & Self-Withdrawal
+                    </p>
+                    <p className="text-white/60 leading-relaxed">
+                      Citizens can only track and modify their own submitted reports (<code className="text-teal-300 bg-teal-500/10 px-1 py-0.5 rounded">reporter_id == user.id</code>). They cannot view other citizens&apos; submissions, hospital internal ledgers, or requisitions.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/03 border border-white/08 space-y-1.5">
+                    <p className="font-bold text-white flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-purple-400"></span> Predictive Model Immutability
+                    </p>
+                    <p className="text-white/60 leading-relaxed">
+                      No user—including Super Admin or Government—can alter raw ML model predictions, LSTM weights, or historical hydrology data. Operational decisions take the form of auditable official alerts or supply allocations.
+                    </p>
+                  </div>
                 </div>
               </section>
 
