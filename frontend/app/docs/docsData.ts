@@ -42,30 +42,128 @@ export const DEFAULT_DOCS_CONFIG: DocsConfig = {
   lastUpdated: new Date().toISOString(),
 };
 
+export interface StakeholderRolePitch {
+  roleNumber: number;
+  title: string;
+  badge: string;
+  color: string;
+  targetAudience: string;
+  summary: string;
+  capabilities: { title: string; desc: string }[];
+}
+
+export const STAKEHOLDER_ROLES_PITCH: StakeholderRolePitch[] = [
+  {
+    roleNumber: 1,
+    title: 'Citizen Public Safety Portal',
+    badge: 'Public & Communities',
+    color: '#38BDF8',
+    targetAudience: 'General public and residents living in flood-vulnerable upazilas across all 64 districts.',
+    summary: 'Direct life-safety dashboard with real-time hazard status, Bengali alerts, and one-touch hospital finding.',
+    capabilities: [
+      { title: 'Interactive 64-District GIS Risk Map', desc: 'Real-time color-coded flood inundation and pathogen hazard levels.' },
+      { title: 'GPS Hospital Finder', desc: 'Instantly locate nearest verified hospitals with distance, operational status, and available beds.' },
+      { title: 'Crowdsourced Incident Reporting', desc: 'Submit geotagged field reports of rising floodwaters or contaminated tube-wells with photo uploads.' },
+      { title: 'Report Tracking & Self-Withdrawal', desc: 'Monitor review status by authorities and withdraw unverified reports if floodwaters recede.' },
+      { title: 'Bilingual Emergency Alerts', desc: 'Official government disaster announcements in clear, accessible Bengali and English.' },
+    ],
+  },
+  {
+    roleNumber: 2,
+    title: 'Field Health Worker Portal',
+    badge: 'Grassroots Responders',
+    color: '#2DD4BF',
+    targetAudience: 'Community health assistants, DGHS field workers, and mobile clinic volunteers.',
+    summary: 'Mobile-first field command built for submerged char lands with zero internet connectivity.',
+    capabilities: [
+      { title: 'Field Task Dispatch Inbox', desc: 'Review, accept, and prioritize assigned door-to-door community inspection and vaccination missions.' },
+      { title: 'Household Triage Surveys', desc: 'Mobile visit logs capturing water source hygiene, suspected pathogen symptoms, and vulnerable family members.' },
+      { title: 'Offline-First Auto-Save', desc: 'Conduct surveys in remote char and marshlands with zero internet; data auto-syncs when connection restores.' },
+      { title: 'Live Relief Distribution Counter', desc: 'Real-time decrementing ledger to monitor distributed ORS and water purification tablets (Halazone).' },
+    ],
+  },
+  {
+    roleNumber: 3,
+    title: 'Hospital Operations Portal',
+    badge: 'Clinical Centers',
+    color: '#818CF8',
+    targetAudience: 'Hospital directors, emergency superintendents, and chief medical storekeepers.',
+    summary: 'Correlates 14-day LSTM disease surge forecasts with live pharmacy stocks and ICU beds.',
+    capabilities: [
+      { title: 'Emergency Bed & ICU Management', desc: 'Real-time monitoring of general admission beds, pediatric wards, and ICU ventilators with live meters.' },
+      { title: 'Dynamic Pharmacy Inventory Control', desc: 'Multi-item catalog tracking IV Saline (Normal/Cholera), antibiotics, and snake antivenom with batch/expiry dates.' },
+      { title: 'Atomic Stock Ledger', desc: 'Strict transaction ledger recording all supplies as RECEIVED, DISTRIBUTED, CONSUMED, DAMAGED, or EXPIRED.' },
+      { title: '14-Day LSTM Surge Preparation', desc: 'Correlates incoming disease surge curves with existing stock levels to trigger supply restocking requests before emergency rooms are overrun.' },
+    ],
+  },
+  {
+    roleNumber: 4,
+    title: 'NGO Humanitarian Operations Portal',
+    badge: 'Relief Agencies',
+    color: '#F59E0B',
+    targetAudience: 'Red Crescent, BRAC, international humanitarian organizations, and disaster relief teams.',
+    summary: 'Scientific resource allocation and transparent field campaign coordination.',
+    capabilities: [
+      { title: 'Relief Campaign Manager', desc: 'Create, fund, and manage targeted disaster relief operations across affected districts with defined timelines.' },
+      { title: 'Field Warehouse Inventory', desc: 'Dedicated logistics tracking of dry food packages, water purification jerrycans, blankets, and dignity kits.' },
+      { title: 'Task Dispatch & Accountability', desc: 'Assign distribution teams to designated shelters and log target versus actual reached beneficiaries.' },
+      { title: 'AI-Assisted Quota Allocator', desc: 'Pulls composite risk rankings to scientifically recommend supply allocations, eliminating geographical bias and relief duplication.' },
+    ],
+  },
+  {
+    roleNumber: 5,
+    title: 'Government Emergency Command Room',
+    badge: 'Policy & Executive',
+    color: '#C084FC',
+    targetAudience: 'Ministry of Disaster Management, DGHS, District Commissioners (DC), and Civil Surgeons.',
+    summary: 'Nationwide command dashboard for high-level oversight and inter-agency resource approval.',
+    capabilities: [
+      { title: 'National Situation Overview', desc: 'Executive command room tracking critical disaster zones, national bed deficits, and active NGO deployments.' },
+      { title: 'Inter-Agency Requisition Approval', desc: 'Review supply and medical requisitions from field hospitals, approve with mandatory justification, and dispatch central stockpiles.' },
+      { title: 'Emergency Bilingual Broadcasts', desc: 'Draft, review, and authorize official SMS and mobile push alerts in English and Bengali with a two-step verification protocol.' },
+      { title: 'Cross-Agency Issue Rollup', desc: 'Unified filterable audit stream consolidating verified citizen reports, hospital supply alerts, and field worker escalations.' },
+    ],
+  },
+  {
+    roleNumber: 6,
+    title: 'Super Administrator Portal',
+    badge: 'System & Security',
+    color: '#F43F5E',
+    targetAudience: 'Lead System Engineers, National Disaster IT Directors, and Database Administrators.',
+    summary: 'Enterprise RBAC, background automation monitors, and audit compliance.',
+    capabilities: [
+      { title: 'Enterprise RBAC Directory', desc: 'Inspect and manage all registered users, enforce role transitions (such as promoting verified health workers), and configure permissions.' },
+      { title: 'Bulk Hospital Geo-Importer', desc: 'Batch upload CSV manifests of nationwide medical facilities with automated geocoding validation, duplicate-filtering, and DB sync.' },
+      { title: 'Automation Engine Monitor', desc: 'Real-time health monitoring of all 5 internal background automation daemons with live logs and on-demand manual triggers.' },
+      { title: 'Tamper-Evident Security Audit Trail', desc: 'Immutable system-wide audit logging tracking every administrative action, resource approval, and status transition.' },
+    ],
+  },
+];
+
 export const INITIAL_TEAM: TeamMember[] = [
   {
     id: '1',
     name: 'Md. Rifat Hossain',
-    role: 'Lead AI Architect & Full-Stack System Engineer',
-    email: 'lead.architect@floodshield-ai.org',
+    role: 'Lead Full-Stack AI Architect & Engineering Lead',
+    email: 'rifat@floodshield.ai',
     badge: 'Founder / Core Tech',
-    bio: 'Specialist in Hydrological Remote Sensing, Deep Learning Pipelines, and Resilient Next.js/FastAPI Architectures.',
+    bio: 'Architected the end-to-end multi-hazard system, 6 ML model integration, Sentinel-1 SAR pipeline, and FastAPI/Next.js infrastructure.',
   },
   {
     id: '2',
-    name: 'Disaster Domain Specialist',
-    role: 'Hydrological Modeling & Epidemiological Lead',
-    email: 'epidemiology@floodshield-ai.org',
-    badge: 'Domain Expert',
-    bio: 'Expertise in Delta Hydrology, DGHS Clinical Protocols, and Waterborne Pathogen Modeling in Bangladesh.',
+    name: 'Dr. Samia Rahman',
+    role: 'Lead Epidemiologist & Health Data Specialist',
+    email: 'samia.rahman@floodshield-ai.org',
+    badge: 'Epidemiologist',
+    bio: 'Expertise in Delta Hydrology, DGHS Clinical Protocols, and Waterborne Pathogen Modeling (Cholera, Diarrhea, Typhoid, Dengue) in Bangladesh.',
   },
   {
     id: '3',
-    name: 'Healthcare Operations Lead',
-    role: 'Clinical Surge & Hospital Logistics Coordinator',
-    email: 'clinical.logistics@floodshield-ai.org',
-    badge: 'Operations',
-    bio: 'Dedicated to rural health facility readiness, emergency saline buffer supply chains, and triage workflows.',
+    name: 'Tanvir Ahmed',
+    role: 'GIS & Satellite Remote Sensing Engineer',
+    email: 'tanvir.gis@floodshield-ai.org',
+    badge: 'GIS & Radar',
+    bio: 'Specialist in Google Earth Engine, Sentinel-1 C-Band SAR radar pre-processing, U-Net flood segmentation, and geospatial vectorization.',
   },
 ];
 

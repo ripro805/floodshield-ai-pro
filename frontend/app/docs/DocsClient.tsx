@@ -12,8 +12,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import {
-  TeamMember, ApiEndpointDoc, FeatureItem, DocsConfig,
-  DEFAULT_DOCS_CONFIG, INITIAL_TEAM, FEATURE_MATRIX,
+  TeamMember, ApiEndpointDoc, FeatureItem, DocsConfig, StakeholderRolePitch,
+  DEFAULT_DOCS_CONFIG, INITIAL_TEAM, FEATURE_MATRIX, STAKEHOLDER_ROLES_PITCH,
   API_ENDPOINTS, CHANGELOG_ITEMS
 } from './docsData';
 
@@ -110,27 +110,86 @@ export default function DocsClient() {
   };
 
   const handleDownloadMarkdown = () => {
-    const mdContent = `# FloodShield AI Pro — Technical Whitepaper & Pitch Deck
+    const mdContent = `# FloodShield AI Pro — Comprehensive Pitch Deck & Technical Whitepaper
 Generated: ${new Date().toLocaleString()}
 URL: https://floodshield-ai-pro.vercel.app/docs
+Tagline: From Satellite to Survival: Autonomous Multi-Hazard Early-Warning, Satellite Radar Intelligence and Cross-Agency Outbreak Response System for Bangladesh.
 
-## 1. Executive Problem & Solution
-Bangladesh is a river delta facing catastrophic monsoon flash floods followed by secondary epidemics of Cholera, Diarrhoea, Typhoid, and Dengue.
-FloodShield AI Pro bridges flood forecasting with clinical epidemiology across all 64 districts using Sentinel-1 SAR satellite radar and 6 custom AI models.
+---
 
-## 2. Core AI Models
-- Model 1: Binary Flood Classifier (Random Forest / XGBoost)
-- Model 2 & 2B: Epidemic Outbreak Severity & 6-Pathogen Regressors
-- Model 3: 7-day & 14-day Time-Series LSTM Caseload Forecaster
-- Model 4: Sentinel-1 C-band SAR Radar U-Net Segmentation
-- Model 5: Multi-Hazard Composite Hazard Matrix & DBSCAN Hotspots
-- Model 6: Operational Recommendation Policy Inference Engine
+## 1. The Problem: A Predictable Crisis Handled Unpredictably
+In Bangladesh’s low-lying delta, floods arrive every monsoon season. Disease outbreaks follow the same floods almost as reliably. Floodwater contaminates drinking water sources, damaged sanitation spreads pathogens, families crowd into shelters, and standing water breeds mosquitoes. The result is Cholera, Acute Watery Diarrhoea, Typhoid, Hepatitis A/E, skin infections, and Dengue.
 
-## 3. Technology Stack
-Frontend: Next.js 14, TailwindCSS, Framer Motion, Leaflet, Three.js
-Backend: FastAPI 0.110+, Python 3.12 / 3.14, SQLAlchemy, Pydantic v2
-Database: PostgreSQL with pgvector semantic clinical indexing
-Remote Sensing: Google Earth Engine (Sentinel-1 SAR C-band GRD)
+The response is stubbornly reactive: Health authorities, hospitals, and NGOs usually learn that an outbreak has begun only when patients start arriving at clinics. By then, ORS, antibiotics, IV fluids, and medical teams are already behind the crisis, and the cost is paid in preventable illness, strained hospitals, and lives put at risk.
+
+### Four Structural Bottlenecks of the Disaster Pipeline:
+1. Data Silos & Fragmentation: Meteorology, river hydrology, Sentinel-1 radar, hospital bed stocks, and epidemiological logs sit in disconnected legacy databases.
+2. The Predictive Chasm: Flood tools stop at the flood. Disease surveillance tools only look backward at cases that have already happened. Nobody connects the two to answer: Which districts? Which diseases? How many cases? What supplies to send?
+3. The Unaudited Black Box: Civil Surgeons and district commissioners will not trust opaque AI predictions they cannot audit or explain.
+4. The Broken Last Mile: Rural communities lack complex dashboard literacy and need alerts in plain Bengali, while field health workers in flooded char lands lose critical data due to zero connectivity.
+
+Critical Gap: No accessible, explainable, and localized system exists that links hydrological flood forecasting directly to epidemiological outbreaks and converts that into district-specific operational relief directives.
+
+---
+
+## 2. The Solution: FloodShield AI Pro
+FloodShield AI Pro is an enterprise-grade disaster management and public health intelligence platform designed for all 64 districts of Bangladesh. It unites cloud-penetrating Sentinel-1 SAR satellite radar imagery, an ensemble of 6 custom Machine Learning & LSTM deep learning models, and strict Role-Based Access Control (RBAC) across 6 specialized stakeholder portals.
+
+FloodShield predicts both flood inundation and clinical disease surges 7 to 14 days in advance, transforming reactive relief into proactive, life-saving intervention.
+
+### 6 Specialized Stakeholder Command Portals:
+- Role 1: Citizen Public Safety Portal (GIS Risk Map, GPS Hospital Finder, Crowdsourced Reporting, Bengali Emergency Alerts)
+- Role 2: Field Health Worker Portal (Offline-first char surveys, Triage logs, ORS/Halazone relief distribution counters)
+- Role 3: Hospital Operations Portal (ICU & Bed monitoring, Dynamic Pharmacy Inventory, Atomic Stock Ledger, 14-Day LSTM Surge Restocking)
+- Role 4: NGO Humanitarian Operations Portal (Relief Campaign Manager, Field Warehouse Inventory, Beneficiary Audits, AI-Assisted Quota Allocator)
+- Role 5: Government Emergency Command Room (National Situation Overview, Inter-Agency Requisition Approvals, Verified SMS Broadcasts, Unified Issue Rollup)
+- Role 6: Super Administrator Portal (Enterprise RBAC Directory, Bulk Hospital Geo-Importer, Background Daemon Health Monitors, Tamper-Evident Audit Trail)
+
+---
+
+## 3. Core AI Architecture
+- Model 1 (Flood Classifier): Random Forest & XGBoost ensemble predicting flood probability (0-100%) from rainfall, humidity, river water level, and elevation telemetry.
+- Model 2 & 2B (Epidemic Severity & 6-Disease Breakdown): Predicts overall epidemic risk and quantitative caseloads for Cholera, Diarrhea, Typhoid, Hepatitis A/E, Dengue, and Malaria.
+- Model 3 (Time-Series LSTM): Recurrent neural network projecting 7-day and 14-day hospital patient admission curves.
+- Model 4 (Satellite SAR U-Net Segmentation): Sentinel-1 C-band Synthetic Aperture Radar penetrating 100% monsoon clouds for pixel-level water segmentation masks.
+- Model 5 (Composite Hazard Scoring & DBSCAN): Mathematical multi-hazard weighting and spatial clustering to identify national disease hotspots.
+- Model 6 (Policy Recommendation Engine): Translates model forecasts into role-tailored checklists (bed clearance, ORS pre-positioning, medical kit dispatch).
+- RAG Medical Chatbot: Grounded clinical conversational agent citing WHO and DGHS clinical guidelines, supporting multilingual voice and text queries in English and Bengali.
+- Native Automation Engine: Built-in asynchronous background service running 5 internal daemons for continuous weather ingestion, automated predictions, and alerts.
+
+---
+
+## 4. Market Opportunity
+- TAM: $12.8B (Global Climate Early Warning & AI Disaster Systems)
+- SAM: $1.4B (South & Southeast Asian Transboundary Basin Disaster Intelligence)
+- SOM: $42M (Bangladesh National Disaster Management, DGHS & NGO Procurement)
+
+---
+
+## 5. Business Model & Sustainability
+1. B2G Enterprise Licensing: Annual nationwide SaaS subscription for Ministry of Disaster Management, DGHS, and Civil Surgeon offices.
+2. Humanitarian Consortiums: Institutional seat licenses and logistics optimization APIs for Red Crescent, BRAC, UNICEF, and WFP.
+3. Parametric Micro-Insurance: API integrations for financial institutions and agro-insurance providers to trigger automated payouts (via bKash/Nagad) to vulnerable farmers.
+
+---
+
+## 6. Competitive Advantage & Moat
+- Full Disaster Lifecycle: Only platform connecting satellite radar ➔ flood depth ➔ 6-disease regression ➔ hospital supplies.
+- Cloud-Penetrating SAR: Sentinel-1 radar penetrates 100% monsoon cloud cover where optical satellites are completely blind.
+- 7 to 14-Day Lead Time: Converts frantic disaster reaction into calm, pre-emptive prepositioning.
+- Offline Char Resilience: Mobile-first offline logging enables grassroots workers in remote chars to operate with zero connectivity.
+
+---
+
+## 7. The Team
+- Md. Rifat Hossain — Lead Full-Stack AI Architect & Engineering Lead (rifat@floodshield.ai)
+- Dr. Samia Rahman — Lead Epidemiologist & Health Data Specialist (samia.rahman@floodshield-ai.org)
+- Tanvir Ahmed — GIS & Satellite Remote Sensing Engineer (tanvir.gis@floodshield-ai.org)
+
+---
+
+## 8. Vision & 2030 Impact
+"Zero Preventable Deaths from Flood-Induced Disease Outbreaks by 2030"
 `;
     const blob = new Blob([mdContent], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -434,119 +493,256 @@ Remote Sensing: Google Earth Engine (Sentinel-1 SAR C-band GRD)
           {/* PART 1: YC-STYLE PITCH DECK                                       */}
           {/* ================================================================= */}
           {(activeTab === 'all' || activeTab === 'pitch') && (
-            <div className="space-y-12">
+            <div className="space-y-16">
               
               {/* Problem */}
-              <section id="problem" className="scroll-mt-24 space-y-4">
+              <section id="problem" className="scroll-mt-24 space-y-6">
                 <div className="flex items-center gap-2 text-sm font-mono text-amber-400 uppercase tracking-widest">
                   <AlertTriangle size={16} /> 01. The Problem
                 </div>
-                <h2 className="text-2xl font-bold text-white">A Predictable Crisis Handled Unpredictably</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-white/70 leading-relaxed">
-                  <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2">
-                    <p className="font-semibold text-white">The Secondary Humanitarian Wave</p>
-                    <p>
-                      In Bangladesh’s river delta, floods arrive every monsoon season. However, the deadliest catastrophe is the secondary wave: water contamination, damaged sanitation, and violent outbreaks of Cholera, Diarrhoea, Typhoid, and Dengue.
-                    </p>
+                <h2 className="text-3xl font-black text-white tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                  A Predictable Crisis Handled Unpredictably
+                </h2>
+                
+                {/* Core Problem Narrative */}
+                <div className="p-6 rounded-2xl bg-amber-500/05 border border-amber-500/20 text-white/80 leading-relaxed text-sm space-y-3">
+                  <p className="font-semibold text-amber-300 text-base">The Secondary Humanitarian Catastrophe:</p>
+                  <p>
+                    Bangladesh is a low-lying delta, and floods arrive every monsoon season. Disease outbreaks follow the same floods almost as reliably. Floodwater contaminates drinking water sources, damaged sanitation spreads pathogens, families crowd into shelters, and standing water breeds mosquitoes. The result is <strong className="text-white">Cholera, Acute Watery Diarrhoea, Typhoid, Hepatitis A/E, and Dengue</strong>.
+                  </p>
+                  <p>
+                    <strong className="text-amber-300">The response is stubbornly reactive:</strong> Health authorities, hospitals, and NGOs usually learn that an outbreak has begun only when patients start arriving at clinics. By then ORS, antibiotics, IV fluids, and medical teams are already behind the crisis, and the cost is paid in preventable illness, strained hospitals, and lives put at risk.
+                  </p>
+                </div>
+
+                {/* 4 Root Causes Grid */}
+                <div className="space-y-3">
+                  <p className="text-xs font-mono uppercase tracking-wider text-white/50">Four Structural Bottlenecks of the Disaster Pipeline</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2 hover:border-amber-400/30 transition">
+                      <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                        <Database size={16} /> 1. Data Silos & Fragmentation
+                      </div>
+                      <p className="text-white/70 leading-relaxed">
+                        Meteorology, river hydrology, Sentinel-1 radar, hospital bed stocks, and epidemiological logs sit in disconnected legacy databases. Nobody aggregates them into a single operational picture.
+                      </p>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2 hover:border-amber-400/30 transition">
+                      <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                        <Activity size={16} /> 2. The Predictive Chasm
+                      </div>
+                      <p className="text-white/70 leading-relaxed">
+                        Flood tools stop at the flood. Disease surveillance tools only look backward at cases that have already happened. Nobody connects the two to answer the questions responders actually ask: <em>Which districts? Which diseases? How many cases? What should we send?</em>
+                      </p>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2 hover:border-amber-400/30 transition">
+                      <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                        <Cpu size={16} /> 3. The Unaudited Black Box
+                      </div>
+                      <p className="text-white/70 leading-relaxed">
+                        Civil Surgeons and district commissioners will not trust opaque AI predictions they cannot audit or explain. Without transparent attribution (SHAP/LIME feature weighting), AI alerts are dismissed.
+                      </p>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2 hover:border-amber-400/30 transition">
+                      <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                        <Globe size={16} /> 4. The Broken Last Mile
+                      </div>
+                      <p className="text-white/70 leading-relaxed">
+                        The people who most need early warning are rural, low-income, and more at ease in plain Bangla than complex dashboards. Meanwhile, field health workers in submerged char lands lose critical data due to zero connectivity.
+                      </p>
+                    </div>
                   </div>
-                  <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2">
-                    <p className="font-semibold text-white">The Fragmented Reaction Gap</p>
-                    <p>
-                      Authorities typically mobilize only after clinic wards are overwhelmed with vomiting and dehydrated patients. By then, emergency ORS, antibiotics, and IV fluids are already behind the crisis, leading to preventable loss of life.
-                    </p>
-                  </div>
+                </div>
+
+                {/* The Critical Gap */}
+                <div className="p-5 rounded-2xl bg-gradient-to-r from-red-950/30 via-[#0B1324] to-[#060B14] border border-red-500/30 text-xs text-white/80 space-y-1">
+                  <span className="font-mono text-red-400 font-bold tracking-wide uppercase">The Critical Gap:</span>
+                  <p className="text-sm font-medium text-white/95">
+                    No accessible, explainable, and localized system exists that links hydrological flood forecasting directly to epidemiological outbreaks and converts that into district-specific operational relief directives.
+                  </p>
                 </div>
               </section>
 
               {/* Solution */}
-              <section id="solution" className="scroll-mt-24 space-y-4">
+              <section id="solution" className="scroll-mt-24 space-y-6">
                 <div className="flex items-center gap-2 text-sm font-mono text-cyan-400 uppercase tracking-widest">
                   <Shield size={16} /> 02. The Solution
                 </div>
-                <h2 className="text-2xl font-bold text-white">The 7 to 14-Day Predictive Healthcare Bridge</h2>
-                <p className="text-sm text-white/70 leading-relaxed">
-                  FloodShield AI Pro bridges the gap between hydrological flood prediction and clinical epidemiological response. Rather than stopping at water level charts, FloodShield answers the exact questions frontline responders ask:
-                </p>
+                <h2 className="text-3xl font-black text-white tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                  FloodShield AI Pro: The 7 to 14-Day Predictive Healthcare Bridge
+                </h2>
+                
+                <div className="p-6 rounded-2xl bg-cyan-950/20 border border-cyan-500/30 text-white/80 leading-relaxed text-sm space-y-3">
+                  <p>
+                    <strong className="text-white">FloodShield AI Pro</strong> is an enterprise-grade disaster management and public health intelligence platform designed for all 64 districts of Bangladesh. It unites cloud-penetrating Sentinel-1 SAR satellite radar imagery, an ensemble of 6 custom Machine Learning & LSTM deep learning models, and strict Role-Based Access Control (RBAC) across 6 specialized stakeholder portals.
+                  </p>
+                  <p className="text-cyan-300 font-medium">
+                    FloodShield predicts both flood inundation and clinical disease surges 7 to 14 days in advance, transforming reactive relief into proactive, life-saving intervention.
+                  </p>
+                </div>
+
+                {/* 4 Answers Responders Ask */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                   {[
-                    { q: 'Which Districts?', a: '64-District GIS Map & DBSCAN Hotspots' },
-                    { q: 'Which Diseases?', a: '6 Pathogen Breakdown (Cholera, Diarrhea, etc.)' },
-                    { q: 'How Many Cases?', a: '7 & 14-Day LSTM Projected Numbers' },
-                    { q: 'What to Dispatch?', a: 'AI Resource Engine: ORS, Saline, Bed Quotas' },
+                    { q: '1. Which Districts?', a: '64-District GIS Risk Map + DBSCAN Spatial Hotspot Clustering' },
+                    { q: '2. Which Diseases?', a: '6 Pathogen Caseloads: Cholera, Diarrhea, Typhoid, Hepatitis A/E, Dengue, Malaria' },
+                    { q: '3. How Many Cases?', a: '7 & 14-Day Recursive Time-Series LSTM Hospital Admission Curves' },
+                    { q: '4. What to Dispatch?', a: 'Model 6 Policy Engine: Pre-positioned ORS, IV saline, antibiotics & bed buffers' },
                   ].map((b, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-500/20 space-y-1">
+                    <div key={i} className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/20 space-y-1">
                       <p className="font-bold text-cyan-300">{b.q}</p>
-                      <p className="text-white/60">{b.a}</p>
+                      <p className="text-white/70">{b.a}</p>
                     </div>
                   ))}
+                </div>
+
+                {/* 6 Dedicated Stakeholder Portals */}
+                <div className="space-y-4 pt-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-xl font-bold text-white">6 Specialized Stakeholder Command Portals</h3>
+                      <p className="text-xs text-white/50">Full Role-Based Access Control (RBAC) designed for Bangladesh disaster responders</p>
+                    </div>
+                    <span className="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20 w-fit">
+                      RBAC Enforced
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {STAKEHOLDER_ROLES_PITCH.map((portal) => (
+                      <div
+                        key={portal.roleNumber}
+                        className="p-6 rounded-2xl bg-white/03 border border-white/08 hover:border-cyan-500/40 transition-all space-y-3 flex flex-col justify-between"
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span
+                              className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border"
+                              style={{ borderColor: `${portal.color}50`, color: portal.color, background: `${portal.color}15` }}
+                            >
+                              ROLE {portal.roleNumber}: {portal.badge}
+                            </span>
+                          </div>
+                          <h4 className="text-lg font-bold text-white">{portal.title}</h4>
+                          <p className="text-xs text-white/60">
+                            <strong className="text-white/80">Who it is for:</strong> {portal.targetAudience}
+                          </p>
+                          <p className="text-xs text-cyan-200 font-medium">{portal.summary}</p>
+
+                          <div className="space-y-1.5 pt-2 border-t border-white/06">
+                            <p className="text-[10px] font-mono uppercase tracking-wider text-white/40">Key Capabilities:</p>
+                            {portal.capabilities.map((cap, ci) => (
+                              <div key={ci} className="text-xs flex items-start gap-2 text-white/75">
+                                <span className="text-cyan-400 font-bold shrink-0">✓</span>
+                                <div>
+                                  <span className="font-semibold text-white/95">{cap.title}:</span>{' '}
+                                  <span className="text-white/60">{cap.desc}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </section>
 
               {/* Market Opportunity */}
-              <section id="market" className="scroll-mt-24 space-y-4">
+              <section id="market" className="scroll-mt-24 space-y-6">
                 <div className="flex items-center gap-2 text-sm font-mono text-emerald-400 uppercase tracking-widest">
                   <TrendingUp size={16} /> 03. Market Opportunity
                 </div>
-                <h2 className="text-2xl font-bold text-white">Total Addressable Market (TAM / SAM / SOM)</h2>
+                <h2 className="text-3xl font-black text-white tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                  Total Addressable Market (TAM / SAM / SOM)
+                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="p-6 rounded-2xl bg-white/03 border border-white/08 text-center space-y-1">
-                    <p className="text-3xl font-black font-mono text-emerald-400">$12.8B</p>
-                    <p className="text-xs font-semibold text-white uppercase">TAM</p>
-                    <p className="text-[11px] text-white/40">Global Climate Early Warning & Disaster AI Systems</p>
+                  <div className="p-6 rounded-2xl bg-white/03 border border-white/08 text-center space-y-1 hover:border-emerald-500/30 transition">
+                    <p className="text-4xl font-black font-mono text-emerald-400">$12.8B</p>
+                    <p className="text-xs font-semibold text-white uppercase tracking-wider">TAM</p>
+                    <p className="text-[11px] text-white/50">Global Climate Early Warning & Disaster AI Systems Market</p>
                   </div>
-                  <div className="p-6 rounded-2xl bg-white/03 border border-white/08 text-center space-y-1">
-                    <p className="text-3xl font-black font-mono text-cyan-400">$1.4B</p>
-                    <p className="text-xs font-semibold text-white uppercase">SAM</p>
-                    <p className="text-[11px] text-white/40">South Asian Transboundary Basin Disaster Intelligence</p>
+                  <div className="p-6 rounded-2xl bg-white/03 border border-white/08 text-center space-y-1 hover:border-cyan-500/30 transition">
+                    <p className="text-4xl font-black font-mono text-cyan-400">$1.4B</p>
+                    <p className="text-xs font-semibold text-white uppercase tracking-wider">SAM</p>
+                    <p className="text-[11px] text-white/50">South & Southeast Asian Transboundary Basin Disaster Intelligence</p>
                   </div>
-                  <div className="p-6 rounded-2xl bg-white/03 border border-white/08 text-center space-y-1">
-                    <p className="text-3xl font-black font-mono text-teal-400">$42M</p>
-                    <p className="text-xs font-semibold text-white uppercase">SOM</p>
-                    <p className="text-[11px] text-white/40">Bangladesh National Disaster, DGHS & NGO Procurement</p>
+                  <div className="p-6 rounded-2xl bg-white/03 border border-white/08 text-center space-y-1 hover:border-teal-500/30 transition">
+                    <p className="text-4xl font-black font-mono text-teal-400">$42M</p>
+                    <p className="text-xs font-semibold text-white uppercase tracking-wider">SOM</p>
+                    <p className="text-[11px] text-white/50">Bangladesh National Disaster Management, DGHS & NGO Procurement</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  <div className="p-4 rounded-xl bg-white/02 border border-white/06 space-y-1">
+                    <p className="font-bold text-white">🌊 Climate Vulnerability Surge</p>
+                    <p className="text-white/60">Monsoon volatility in the Meghna & Brahmaputra deltas has increased flood peak frequency by 25% over the past decade.</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/02 border border-white/06 space-y-1">
+                    <p className="font-bold text-white">🏦 Loss & Damage Funds</p>
+                    <p className="text-white/60">COP28 established the $700M+ international Loss & Damage facility, prioritizing early-warning climate health deployments.</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/02 border border-white/06 space-y-1">
+                    <p className="font-bold text-white">📱 Smart Bangladesh 2041</p>
+                    <p className="text-white/60">Government initiatives actively mandate automated inter-agency digitized data pipelines for disaster readiness.</p>
                   </div>
                 </div>
               </section>
 
               {/* Business Model */}
-              <section id="business-model" className="scroll-mt-24 space-y-4">
+              <section id="business-model" className="scroll-mt-24 space-y-6">
                 <div className="flex items-center gap-2 text-sm font-mono text-purple-400 uppercase tracking-widest">
                   <Activity size={16} /> 04. Business Model & Sustainability
                 </div>
-                <h2 className="text-2xl font-bold text-white">Three Diverse Revenue & Impact Streams</h2>
+                <h2 className="text-3xl font-black text-white tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                  Three Diverse Revenue & Impact Streams
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                  <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2">
-                    <span className="font-mono text-purple-300 font-bold">1. B2G Gov Licensing</span>
-                    <p className="text-white/70">
-                      Annual nationwide SaaS subscription for Ministry of Disaster Management, DGHS, and Civil Surgeon offices for centralized emergency command.
+                  <div className="p-6 rounded-2xl bg-white/03 border border-white/08 space-y-3 hover:border-purple-400/30 transition">
+                    <span className="font-mono text-purple-300 font-bold text-sm block">1. B2G Enterprise Licensing</span>
+                    <p className="text-white/70 leading-relaxed">
+                      Annual nationwide SaaS subscription for the Ministry of Disaster Management & Relief (MoDMR), DGHS, and Civil Surgeon offices for centralized emergency command and hospital preparation.
                     </p>
+                    <div className="pt-2 border-t border-white/06 text-[11px] text-white/40">
+                      Tier: Annual Central License per district command center.
+                    </div>
                   </div>
-                  <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2">
-                    <span className="font-mono text-cyan-300 font-bold">2. Humanitarian Consortiums</span>
-                    <p className="text-white/70">
-                      Institutional seat licenses and logistics optimization APIs for Red Crescent, BRAC, UNICEF, and international relief agencies.
+                  <div className="p-6 rounded-2xl bg-white/03 border border-white/08 space-y-3 hover:border-cyan-400/30 transition">
+                    <span className="font-mono text-cyan-300 font-bold text-sm block">2. Humanitarian Consortiums</span>
+                    <p className="text-white/70 leading-relaxed">
+                      Institutional seat licenses and logistics optimization APIs for Red Crescent, BRAC, UNICEF, WFP, and international relief agencies operating field warehouses and relief camps.
                     </p>
+                    <div className="pt-2 border-t border-white/06 text-[11px] text-white/40">
+                      Tier: Per-campaign seats & API resource quota calls.
+                    </div>
                   </div>
-                  <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-2">
-                    <span className="font-mono text-teal-300 font-bold">3. Parametric Micro-Insurance</span>
-                    <p className="text-white/70">
-                      API integrations for financial institutions and agro-insurance providers to trigger automated payouts (bKash/Nagad) to farmers upon river crest.
+                  <div className="p-6 rounded-2xl bg-white/03 border border-white/08 space-y-3 hover:border-teal-400/30 transition">
+                    <span className="font-mono text-teal-300 font-bold text-sm block">3. Parametric Micro-Insurance</span>
+                    <p className="text-white/70 leading-relaxed">
+                      API integrations for financial institutions, MFIs, and agro-insurance providers to trigger automated parametric payouts (via bKash/Nagad) to vulnerable farmers upon river crest telemetry.
                     </p>
+                    <div className="pt-2 border-t border-white/06 text-[11px] text-white/40">
+                      Tier: Per-transaction telemetry verification fee.
+                    </div>
                   </div>
                 </div>
               </section>
 
               {/* Competition & Moat */}
-              <section id="competition" className="scroll-mt-24 space-y-4">
+              <section id="competition" className="scroll-mt-24 space-y-6">
                 <div className="flex items-center gap-2 text-sm font-mono text-cyan-400 uppercase tracking-widest">
                   <Layers size={16} /> 05. Competitive Advantage & Moat
                 </div>
-                <h2 className="text-2xl font-bold text-white">Why FloodShield Wins Against Legacy Systems</h2>
+                <h2 className="text-3xl font-black text-white tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                  Why FloodShield Wins Against Legacy Systems
+                </h2>
                 <div className="overflow-x-auto rounded-2xl border border-white/10">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-white/05 text-white/50 uppercase font-mono">
                       <tr>
                         <th className="p-3">Capability</th>
-                        <th className="p-3 text-cyan-300">FloodShield AI Pro</th>
+                        <th className="p-3 text-cyan-300 font-bold">FloodShield AI Pro</th>
                         <th className="p-3">BWDB (Water Board)</th>
                         <th className="p-3">BMD (Weather Dept)</th>
                         <th className="p-3">Traditional NGOs</th>
@@ -591,18 +787,45 @@ Remote Sensing: Google Earth Engine (Sentinel-1 SAR C-band GRD)
                     </tbody>
                   </table>
                 </div>
+
+                {/* 4 Pillars of Unfair Advantage */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs pt-2">
+                  <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-500/20 space-y-1">
+                    <p className="font-bold text-cyan-300">1. Full Disaster Lifecycle</p>
+                    <p className="text-white/60">Connects satellite detection directly to flood depth, pathogen regression, and hospital pharmacy quotas.</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-500/20 space-y-1">
+                    <p className="font-bold text-cyan-300">2. Cloud-Penetrating SAR</p>
+                    <p className="text-white/60">Sentinel-1 radar penetrates 100% monsoon cloud cover where optical satellites are completely blind.</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-500/20 space-y-1">
+                    <p className="font-bold text-cyan-300">3. 7 to 14-Day Lead Time</p>
+                    <p className="text-white/60">Gives hospitals and relief agencies a 7 to 14 day operational head start to preposition supplies.</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-500/20 space-y-1">
+                    <p className="font-bold text-cyan-300">4. Offline Char Resilience</p>
+                    <p className="text-white/60">Mobile-first offline logging enables grassroots workers in remote chars to operate with zero connectivity.</p>
+                  </div>
+                </div>
               </section>
 
               {/* MANDATORY TEAM SECTION */}
-              <section id="team" className="scroll-mt-24 space-y-4">
+              <section id="team" className="scroll-mt-24 space-y-6">
                 <div className="flex items-center gap-2 text-sm font-mono text-cyan-400 uppercase tracking-widest">
                   <Users size={16} /> 06. The Team (Mandatory Showcase)
                 </div>
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-white">FloodShield Innovation Leadership</h2>
-                  <span className="text-xs text-white/40 font-mono">Core Builders</span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h2 className="text-3xl font-black text-white tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                      FloodShield Core Innovation Team
+                    </h2>
+                    <p className="text-xs text-white/50">Multidisciplinary leadership bridging AI engineering, delta hydrology, and clinical epidemiology</p>
+                  </div>
+                  <span className="text-xs text-cyan-300 font-mono bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/30 w-fit">
+                    3 Core Builders
+                  </span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   {team.map((member) => (
                     <div key={member.id} className="p-6 rounded-2xl bg-white/03 border border-white/08 hover:border-cyan-500/30 transition-all space-y-4 flex flex-col justify-between">
                       <div className="space-y-3">
@@ -626,11 +849,14 @@ Remote Sensing: Google Earth Engine (Sentinel-1 SAR C-band GRD)
                             <h3 className="text-base font-bold text-white mt-1 leading-snug">{member.name}</h3>
                           </div>
                         </div>
-                        <p className="text-xs text-cyan-200/80 font-medium">{member.role}</p>
-                        <p className="text-xs text-white/50 leading-relaxed">{member.bio}</p>
+                        <p className="text-xs text-cyan-200/90 font-medium">{member.role}</p>
+                        <p className="text-xs text-white/60 leading-relaxed">{member.bio}</p>
                       </div>
-                      <div className="pt-3 border-t border-white/08 text-xs font-mono text-white/40 break-all">
-                        📧 {member.email}
+                      <div className="pt-3 border-t border-white/08 text-xs font-mono text-cyan-300/80 break-all flex items-center gap-1.5">
+                        <span>📧</span>
+                        <a href={`mailto:${member.email}`} className="hover:underline hover:text-cyan-200 transition">
+                          {member.email}
+                        </a>
                       </div>
                     </div>
                   ))}
@@ -638,14 +864,20 @@ Remote Sensing: Google Earth Engine (Sentinel-1 SAR C-band GRD)
               </section>
 
               {/* Vision */}
-              <section id="vision" className="scroll-mt-24 space-y-4">
+              <section id="vision" className="scroll-mt-24 space-y-6">
                 <div className="flex items-center gap-2 text-sm font-mono text-teal-400 uppercase tracking-widest">
                   <Globe size={16} /> 07. Vision & 2030 Impact
                 </div>
-                <div className="p-8 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-teal-950/20 to-transparent border border-cyan-500/20 space-y-3">
-                  <h3 className="text-xl font-bold text-white">"Zero Preventable Deaths from Flood-Induced Outbreaks by 2030"</h3>
+                <div className="p-8 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-teal-950/20 to-transparent border border-cyan-500/20 space-y-4">
+                  <p className="text-xs font-mono uppercase tracking-widest text-cyan-300">Our Core Mandate</p>
+                  <h3 className="text-2xl font-black text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                    &ldquo;Zero Preventable Deaths from Flood-Induced Disease Outbreaks by 2030&rdquo;
+                  </h3>
                   <p className="text-sm text-white/70 max-w-3xl leading-relaxed">
-                    By equipping frontline clinics, municipal water engineers, and rural community health workers with advance intelligence, FloodShield AI Pro aims to turn unpredictable natural catastrophes into systematically managed, pre-mitigated events across every river basin in Bangladesh.
+                    Tagline: <em className="text-cyan-300">From Satellite to Survival: Autonomous Multi-Hazard Early-Warning, Satellite Radar Intelligence and Cross-Agency Outbreak Response System for Bangladesh.</em>
+                  </p>
+                  <p className="text-xs text-white/60 max-w-3xl leading-relaxed">
+                    By equipping frontline clinics, municipal water engineers, and rural community health workers with advance intelligence, FloodShield AI Pro aims to turn unpredictable natural catastrophes into systematically managed, pre-mitigated events across every river basin in Bangladesh and expand across the shared Ganges-Brahmaputra-Meghna transboundary delta.
                   </p>
                 </div>
               </section>
