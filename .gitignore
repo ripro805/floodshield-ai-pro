@@ -143,4 +143,5 @@ scratch_tokens.json
 backend/.env
 frontend/.env.local
 ee_service_account.json
+screen record/
 
