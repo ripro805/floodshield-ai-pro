@@ -409,11 +409,17 @@ function WaterLevelSection({ section, loading }: { section: AssessmentSection | 
   if (loading) return <Skeleton lines={2} />;
   if (!section || section.status !== 'ok') return <SectionState status={section} fallback="Loading water level…" />;
   const data = (section.data ?? {}) as { river_level_m?: number | null; water_quality_index?: number | null };
+  const isOverride = section.data_source === 'manual_override';
   return (
     <div className="grid grid-cols-2 gap-3">
       <div className="p-3 rounded-md" style={{ background: 'rgba(56, 189, 248, 0.06)', border: '1px solid rgba(56, 189, 248, 0.18)' }}>
-        <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-white/50">
-          <Droplets size={11} className="text-blue-300" /> River level
+        <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-white/50">
+          <span className="flex items-center gap-1.5"><Droplets size={11} className="text-blue-300" /> River level</span>
+          {isOverride && (
+            <span className="text-[9px] font-mono font-bold text-amber-300 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/30">
+              Manual Override
+            </span>
+          )}
         </div>
         <p className="text-white text-xl font-mono mt-1">
           {data.river_level_m != null ? `${data.river_level_m.toFixed(2)} m` : '—'}
@@ -604,11 +610,22 @@ function HeaderStrip({
 
 interface AssessmentPanelProps {
   district: string;
+  initialRiverLevel?: number;
 }
 
-export default function AssessmentPanel({ district }: AssessmentPanelProps) {
+export default function AssessmentPanel({ district, initialRiverLevel }: AssessmentPanelProps) {
+  const [riverLevel, setRiverLevel] = useState<number>(initialRiverLevel ?? 5.0);
+  const [isOverridden, setIsOverridden] = useState<boolean>(initialRiverLevel != null);
+
+  useEffect(() => {
+    if (initialRiverLevel != null) {
+      setRiverLevel(initialRiverLevel);
+      setIsOverridden(true);
+    }
+  }, [initialRiverLevel]);
+
   // Single, district-scoped query.  Primitives only in the key.
-  const query = useFullAssessmentV2(district);
+  const query = useFullAssessmentV2(district, isOverridden ? riverLevel : null);
   const { data, isLoading, isError, isFetching, refetch, error } = query;
 
   // Defensive: if the user is mid-flip and the response is for a stale
@@ -625,6 +642,68 @@ export default function AssessmentPanel({ district }: AssessmentPanelProps) {
         isFetching={isFetching}
         onRerun={() => refetch()}
       />
+
+      {/* ── River Surge Simulation Scenario Bar ── */}
+      <div className="mb-4 p-3 rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+            <Droplets size={16} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-white">River Surge Scenario</span>
+              {isOverridden ? (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-amber-500/20 border border-amber-500/40 text-amber-300">
+                  Simulated ({riverLevel.toFixed(1)}m)
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-emerald-500/20 border border-emerald-500/40 text-emerald-300">
+                  Live Hydro Baseline
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-white/50">
+              {isOverridden
+                ? 'All 5 ML models (Flood, Outbreak, Breakdown, Overall Risk, Directives) recalculating for this surge height.'
+                : 'Using real-time telemetry from Bangladesh hydrometric stations.'}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2 flex-1 sm:w-48">
+            <span className="text-[11px] text-white/40">0m</span>
+            <input
+              type="range"
+              min={0}
+              max={12}
+              step={0.1}
+              value={riverLevel}
+              onChange={(e) => {
+                setRiverLevel(parseFloat(e.target.value));
+                setIsOverridden(true);
+              }}
+              className="w-full accent-cyan-400 cursor-pointer"
+            />
+            <span className="text-[11px] text-white/40">12m</span>
+            <span className="text-xs font-mono font-bold text-cyan-300 min-w-[3rem] text-right">
+              {riverLevel.toFixed(1)}m
+            </span>
+          </div>
+
+          {isOverridden && (
+            <button
+              onClick={() => {
+                setIsOverridden(false);
+              }}
+              className="px-2.5 py-1 text-[11px] font-medium rounded-lg bg-white/05 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 transition"
+              title="Reset to live river level telemetry"
+            >
+              Reset to live
+            </button>
+          )}
+        </div>
+      </div>
 
       {isError && !fresh && (
         <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/5 text-red-300 text-sm flex items-start gap-2">

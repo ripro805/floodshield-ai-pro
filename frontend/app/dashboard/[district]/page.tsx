@@ -22,6 +22,7 @@
  */
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
   Building2, Loader2, AlertCircle, Map as MapIcon,
@@ -60,6 +61,10 @@ interface PageProps {
 type PullTab = 'overview' | 'history' | 'weather';
 
 export default function DistrictDashboardPage({ params }: PageProps) {
+  const searchParams = useSearchParams();
+  const riverLevelParam = searchParams.get('river_level');
+  const riverLevelOverride = riverLevelParam && !isNaN(parseFloat(riverLevelParam)) ? parseFloat(riverLevelParam) : undefined;
+
   // URL param -- allow any case and the legacy alias "Cumilla" /
   // "Comilla" / etc.; we don't want to 404 the user just because the
   // chatbot's `select_district` happened to emit a legacy spelling.
@@ -168,9 +173,11 @@ export default function DistrictDashboardPage({ params }: PageProps) {
           icon={TrendingUp}
           label="River level"
           value={
-            weather.data
-              ? `${(weather.data.river_level_m ?? 0).toFixed(2)} m`
-              : weather.isLoading ? '…' : '—'
+            riverLevelOverride !== undefined
+              ? `${riverLevelOverride.toFixed(2)} m (Simulation)`
+              : weather.data
+                ? `${(weather.data.river_level_m ?? 0).toFixed(2)} m`
+                : weather.isLoading ? '…' : '—'
           }
           tone="#5EEAD4"
           index={2}
@@ -213,8 +220,8 @@ export default function DistrictDashboardPage({ params }: PageProps) {
         />
 </div>
 
-      {/* ── Full Assessment (auto-runs on mount) ── */}
-      <AssessmentPanel district={district} />
+      {/* ── Full Assessment (auto-runs on mount, supports river level override) ── */}
+      <AssessmentPanel district={district} initialRiverLevel={riverLevelOverride} />
 
 
       {/* ── Pull-on-mount tab strip ── */}

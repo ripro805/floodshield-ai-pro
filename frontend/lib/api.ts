@@ -205,10 +205,12 @@ export async function postFullAssessment(
 // page open.  Bounded by 90s (5 model calls in parallel) and 1 retry.
 export async function getFullAssessmentV2(
   district: string,
+  river_level?: number | null,
 ): Promise<FullAssessmentV2Response> {
+  const params = river_level != null ? { river_level } : {};
   const { data } = await apiClient.get<FullAssessmentV2Response>(
     `/assessment/${encodeURIComponent(district)}`,
-    { timeout: 90_000 },
+    { params, timeout: 90_000 },
   );
   return data;
 }

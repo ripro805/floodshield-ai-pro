@@ -331,7 +331,10 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <button
-                      onClick={() => router.push(`/dashboard/${encodeURIComponent(selectedDistrict)}`)}
+                      onClick={() => {
+                        const q = riverLevelOverridden ? `?river_level=${riverLevel}` : '';
+                        router.push(`/dashboard/${encodeURIComponent(selectedDistrict)}${q}`);
+                      }}
                       className="mt-3 w-full py-2 rounded-lg text-xs font-semibold text-blue-400 border border-blue-400/30 hover:bg-blue-400/10 transition"
                     >
                       Full Assessment →

@@ -89,10 +89,10 @@ export function useFullAssessment() {
 // every render and doesn't mix districts.  `staleTime: 5 min` keeps
 // the "back" button from triggering an instant refetch; "Re-run" is a
 // manual button in the UI.
-export function useFullAssessmentV2(district: string | null) {
+export function useFullAssessmentV2(district: string | null, river_level?: number | null) {
   return useQuery({
-    queryKey: ['fullAssessmentV2', district],
-    queryFn: () => getFullAssessmentV2(district as string),
+    queryKey: ['fullAssessmentV2', district, river_level ?? null],
+    queryFn: () => getFullAssessmentV2(district as string, river_level),
     enabled: Boolean(district),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,

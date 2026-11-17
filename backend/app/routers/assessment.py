@@ -95,32 +95,32 @@ def _error(reason: str) -> AssessmentSection:
     )
 
 
-def _build_disease_payload(district: str, weather: dict, history: list) -> DiseasePredictionRequest:
+def _build_disease_payload(
+    district: str,
+    weather: dict,
+    history: list,
+    river_level_override: Optional[float] = None,
+) -> DiseasePredictionRequest:
     """Build a DiseasePredictionRequest for the district from live weather
-    and the most recent 8 weeks of history.
-
-    Pulling the assembly onto the server is the whole point of this
-    endpoint -- so the dashboard never again hands the model a payload
-    built from scattered defaults.
+    and the most recent 8 weeks of history. Supports manual river level overrides.
     """
     rainfall = weather.get("rainfall") or 0.0
     temp = weather.get("temperature") or 25.0
     humidity = weather.get("humidity") or 70.0
-    river_level = weather.get("river_level_m") or 0.0
+    if river_level_override is not None:
+        river_level = river_level_override
+    else:
+        river_level = weather.get("river_level_m") or 0.0
     population_density = weather.get("population_density") or 1500.0
     water_quality = weather.get("water_quality_index") or 70.0
     sanitation = weather.get("sanitation_score")
     if sanitation is None:
-        # WeeklyHistory stores sanitation 0..1; if the weather service
-        # didn't surface one (e.g. pure OWM call), pull it from the most
-        # recent history row so Model 2B's feature order is honoured.
         sanitation = (history[0].sanitation_score if history else 0.5)
-    # Flood depth: use the most recent week's observation if available,
-    # else 0 (this is a per-district observed value, not a forecast).
     flood_depth = (history[0].flood_depth_cm if history else 0.0)
-    # Previous / two-weeks-prior case counts for Model 2's autoregressive
-    # feature.  WeeklyHistory rows are stored oldest first by the seeder;
-    # if there are < 2 weeks we fall back to the most recent.
+    if river_level_override is not None and river_level_override > 6.0:
+        # If simulated river surge exceeds flood threshold, ensure positive flood depth
+        flood_depth = max(flood_depth, (river_level_override - 5.0) * 20.0)
+
     if len(history) >= 2:
         previous_week = history[-1].weekly_cases
         previous_two_week = history[-2].weekly_cases
@@ -352,10 +352,12 @@ def _load_satellite_extent(db: Session, district: str) -> Optional[dict]:
 @router.get("/{district}", response_model=FullAssessmentV2Response, response_model_exclude_none=True)
 async def full_assessment_for_district(
     district: str,
+    river_level: Optional[float] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """Run the full assessment for `district` in one server-side call.
+    Accepts an optional `river_level` parameter for real-time scenario simulation.
 
     Each section runs independently.  A failure in one section does not
     block the others.  The response carries `is_operational` so the UI
@@ -385,22 +387,23 @@ async def full_assessment_for_district(
         history_rows = []
 
     as_of_water = weather.get("district_conditions_date")
+    effective_river_level = river_level if river_level is not None else weather.get("river_level_m")
     water_level_section = _ok(
         {
-            "river_level_m": weather.get("river_level_m"),
+            "river_level_m": effective_river_level,
             "water_quality_index": weather.get("water_quality_index"),
         },
-        data_source=weather.get("data_source") or "unknown",
+        data_source="manual_override" if river_level is not None else (weather.get("data_source") or "unknown"),
         as_of=as_of_water,
     )
-    if weather.get("river_level_m") is None and weather.get("water_quality_index") is None:
+    if effective_river_level is None and weather.get("water_quality_index") is None:
         water_level_section = _unavailable(
             reason="No river-level / water-quality observation recorded for this district yet.",
             data_source=weather.get("data_source") or "unknown",
             as_of=as_of_water,
         )
 
-    payload = _build_disease_payload(district, weather, history_rows)
+    payload = _build_disease_payload(district, weather, history_rows, river_level_override=river_level)
 
     # ── Run all five model sections in parallel ──────────────────────
     # Each `await` yields the event loop, so concurrent requests stay
