@@ -42,8 +42,19 @@ export default function DocsClient() {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('floodshield_docs_team');
       if (saved) {
-        try { return JSON.parse(saved); } catch (e) { /* fallback */ }
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            const hasLegacy = parsed.some(
+              (m: TeamMember) => m.name === 'Dr. Samia Rahman' || m.name === 'Tanvir Ahmed' || m.name === 'Md. Rifat Hossain'
+            );
+            if (!hasLegacy && parsed.length >= 5) {
+              return parsed;
+            }
+          }
+        } catch (e) { /* fallback */ }
       }
+      localStorage.setItem('floodshield_docs_team', JSON.stringify(INITIAL_TEAM));
     }
     return INITIAL_TEAM;
   });
@@ -77,6 +88,7 @@ export default function DocsClient() {
     name: string;
     role: string;
     email: string;
+    phone: string;
     badge: string;
     bio: string;
     image: string;
@@ -84,6 +96,7 @@ export default function DocsClient() {
     name: '',
     role: '',
     email: '',
+    phone: '',
     badge: 'Team Core',
     bio: '',
     image: '',
@@ -97,6 +110,7 @@ export default function DocsClient() {
       name: newMember.name.trim(),
       role: newMember.role.trim(),
       email: newMember.email.trim(),
+      phone: newMember.phone.trim() || undefined,
       badge: newMember.badge.trim() || 'Team Core',
       bio: newMember.bio.trim() || 'Core contributor to FloodShield AI Pro.',
       image: newMember.image.trim() || undefined,
@@ -106,7 +120,7 @@ export default function DocsClient() {
     if (typeof window !== 'undefined') {
       localStorage.setItem('floodshield_docs_team', JSON.stringify(updated));
     }
-    setNewMember({ name: '', role: '', email: '', badge: 'Team Core', bio: '', image: '' });
+    setNewMember({ name: '', role: '', email: '', phone: '', badge: 'Team Core', bio: '', image: '' });
   };
 
   const handleDeleteMember = (id: string) => {
@@ -310,9 +324,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
 ---
 
 ## 7. The Team
-- Md. Rifat Hossain — Lead Full-Stack AI Architect & Engineering Lead (rifat@floodshield.ai)
-- Dr. Samia Rahman — Lead Epidemiologist & Health Data Specialist (samia.rahman@floodshield-ai.org)
-- Tanvir Ahmed — GIS & Satellite Remote Sensing Engineer (tanvir.gis@floodshield-ai.org)
+${team.map(m => `- **${m.name}** — ${m.role} (${m.email}${m.phone ? `, Phone: ${m.phone}` : ''})`).join('\n')}
 
 ---
 
@@ -1036,7 +1048,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {team.map((member) => (
                     <div key={member.id} className="p-6 rounded-2xl bg-white/03 border border-white/08 hover:border-cyan-500/30 transition-all space-y-4 flex flex-col justify-between relative group">
                       {(user?.role === 'admin' || adminBypass) && (
@@ -1050,11 +1062,11 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                       )}
                       <div className="space-y-3">
                         {/* Uniform Avatar */}
-                        <div className="flex items-center gap-3">
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-teal-400 p-0.5 shadow-lg shadow-cyan-500/20 shrink-0">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-teal-400 p-0.5 shadow-lg shadow-cyan-500/20 shrink-0">
                             <div className="w-full h-full rounded-[14px] bg-[#0B1324] flex items-center justify-center overflow-hidden">
                               {member.image ? (
-                                <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                                <img src={member.image} alt={member.name} className="w-full h-full object-cover object-top" />
                               ) : (
                                 <span className="font-bold text-lg text-cyan-300 font-mono">
                                   {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
@@ -1072,11 +1084,21 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                         <p className="text-xs text-cyan-200/90 font-medium">{member.role}</p>
                         <p className="text-xs text-white/60 leading-relaxed">{member.bio}</p>
                       </div>
-                      <div className="pt-3 border-t border-white/08 text-xs font-mono text-cyan-300/80 break-all flex items-center gap-1.5">
-                        <span>📧</span>
-                        <a href={`mailto:${member.email}`} className="hover:underline hover:text-cyan-200 transition">
-                          {member.email}
-                        </a>
+                      <div className="pt-3 border-t border-white/08 text-xs font-mono text-cyan-300/80 space-y-1.5">
+                        <div className="flex items-center gap-1.5 break-all">
+                          <span className="opacity-70">📧</span>
+                          <a href={`mailto:${member.email}`} className="hover:underline hover:text-cyan-200 transition">
+                            {member.email}
+                          </a>
+                        </div>
+                        {member.phone && (
+                          <div className="flex items-center gap-1.5 text-white/70 hover:text-white transition">
+                            <span className="opacity-70">📞</span>
+                            <a href={`tel:${member.phone.replace(/[^0-9+]/g, '')}`} className="hover:underline">
+                              {member.phone}
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -2118,15 +2140,26 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] uppercase font-mono text-white/50 block mb-0.5">Badge Label</label>
+                          <label className="text-[10px] uppercase font-mono text-white/50 block mb-0.5">Phone Number</label>
                           <input
                             type="text"
-                            placeholder="e.g. Field Operations"
-                            value={newMember.badge}
-                            onChange={e => setNewMember({ ...newMember, badge: e.target.value })}
+                            placeholder="e.g. 01700000000"
+                            value={newMember.phone}
+                            onChange={e => setNewMember({ ...newMember, phone: e.target.value })}
                             className="w-full px-2.5 py-1.5 rounded-lg bg-black/40 border border-white/15 text-white"
                           />
                         </div>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] uppercase font-mono text-white/50 block mb-0.5">Badge Label</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Field Operations"
+                          value={newMember.badge}
+                          onChange={e => setNewMember({ ...newMember, badge: e.target.value })}
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-black/40 border border-white/15 text-white"
+                        />
                       </div>
 
                       <div>
@@ -2172,7 +2205,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
                             </div>
                             <div className="min-w-0">
                               <p className="font-bold text-white truncate">{m.name}</p>
-                              <p className="text-[10px] text-white/50 truncate">{m.role} • {m.email}</p>
+                              <p className="text-[10px] text-white/50 truncate">{m.role} • {m.email}{m.phone ? ` • ${m.phone}` : ''}</p>
                             </div>
                           </div>
                           <button

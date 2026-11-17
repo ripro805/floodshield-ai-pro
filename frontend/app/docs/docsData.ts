@@ -3,6 +3,7 @@ export interface TeamMember {
   name: string;
   role: string;
   email: string;
+  phone?: string;
   image?: string;
   bio?: string;
   badge?: string;
@@ -171,27 +172,53 @@ export const STAKEHOLDER_ROLES_PITCH: StakeholderRolePitch[] = [
 export const INITIAL_TEAM: TeamMember[] = [
   {
     id: '1',
-    name: 'Md. Rifat Hossain',
-    role: 'Lead Full-Stack AI Architect & Engineering Lead',
-    email: 'rifat@floodshield.ai',
-    badge: 'Founder / Core Tech',
-    bio: 'Architected the end-to-end multi-hazard system, 6 ML model integration, Sentinel-1 SAR pipeline, and FastAPI/Next.js infrastructure.',
+    name: 'Md. Rifat Islam Rizvi',
+    role: 'Project Lead and AI ML Engineer',
+    email: 'rifatrizviofficial001@gmail.com',
+    phone: '01305612767',
+    badge: 'Project Lead',
+    image: '/images/team/rifat.jpg',
+    bio: 'Architected the end-to-end multi-hazard early warning system, 6 trained AI/ML models, Sentinel-1 SAR satellite pipeline, and scalable FastAPI/Next.js infrastructure.',
   },
   {
     id: '2',
-    name: 'Dr. Samia Rahman',
-    role: 'Lead Epidemiologist & Health Data Specialist',
-    email: 'samia.rahman@floodshield-ai.org',
-    badge: 'Epidemiologist',
-    bio: 'Expertise in Delta Hydrology, DGHS Clinical Protocols, and Waterborne Pathogen Modeling (Cholera, Diarrhea, Typhoid, Dengue) in Bangladesh.',
+    name: 'Md. Nahid Hossain',
+    role: 'Data Scientist',
+    email: 'nahidhossianofficial14@gmail.com',
+    phone: '01859232959',
+    badge: 'Data Scientist',
+    image: '/images/team/nahid.jpg',
+    bio: 'Expertise in delta hydrological datasets, epidemiological time-series analysis, feature engineering, and statistical predictive modeling for Bangladesh disaster management.',
   },
   {
     id: '3',
-    name: 'Tanvir Ahmed',
-    role: 'GIS & Satellite Remote Sensing Engineer',
-    email: 'tanvir.gis@floodshield-ai.org',
-    badge: 'GIS & Radar',
-    bio: 'Specialist in Google Earth Engine, Sentinel-1 C-Band SAR radar pre-processing, U-Net flood segmentation, and geospatial vectorization.',
+    name: 'Shabaj Islam Raad',
+    role: 'Automation Engineer',
+    email: 'shabaj.raad@dal.ca',
+    phone: '+(1)-902-402-9652',
+    badge: 'Automation Engineer',
+    image: '/images/team/shabaj.png',
+    bio: 'Specializing in end-to-end QA automation pipelines, Playwright test frameworks, n8n background workflow triggers, and continuous system reliability engineering.',
+  },
+  {
+    id: '4',
+    name: 'Arun Kumar Roy',
+    role: 'Full Stack Developer',
+    email: 'arunkumarroy.cse2021@gmail.com',
+    phone: '01866999458',
+    badge: 'Full Stack Developer',
+    image: '/images/team/arun.jpg',
+    bio: 'Building responsive Next.js/Tailwind client applications, state-synchronized dashboards, RESTful microservices, and interactive geospatial mapping interfaces.',
+  },
+  {
+    id: '5',
+    name: 'Asjad Ruhullah',
+    role: 'Market Analyser',
+    email: 'issacprosonno@gmail.com',
+    phone: '0130822658',
+    badge: 'Market Analyser',
+    image: '/images/team/asjad.jpg',
+    bio: 'Focusing on humanitarian market research, stakeholder adoption across government and NGOs, disaster impact metrics, and sustainable product-market strategy.',
   },
 ];
 
