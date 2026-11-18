@@ -49,6 +49,17 @@ export default function DocsClient() {
               (m: TeamMember) => m.name === 'Dr. Samia Rahman' || m.name === 'Tanvir Ahmed' || m.name === 'Md. Rifat Hossain'
             );
             if (!hasLegacy && parsed.length >= 5) {
+              const hasAkifa = parsed.some(
+                (member: TeamMember) => member.id === '6' || member.name === 'Akifa Jahan Odry'
+              );
+              if (!hasAkifa) {
+                const akifa = INITIAL_TEAM.find(member => member.id === '6');
+                if (akifa) {
+                  const updatedTeam = [...parsed, akifa];
+                  localStorage.setItem('floodshield_docs_team', JSON.stringify(updatedTeam));
+                  return updatedTeam;
+                }
+              }
               return parsed;
             }
           }

@@ -220,6 +220,16 @@ export const INITIAL_TEAM: TeamMember[] = [
     image: '/images/team/asjad.jpg',
     bio: 'Focusing on humanitarian market research, stakeholder adoption across government and NGOs, disaster impact metrics, and sustainable product-market strategy.',
   },
+  {
+    id: '6',
+    name: 'Akifa Jahan Odry',
+    role: 'Presentation and Communication Lead',
+    email: 'akifaodrydocuments@gmail.com',
+    phone: '01779298915',
+    badge: 'Presentation and Communication Lead',
+    image: '/images/team/akifa.jpg',
+    bio: 'Leading project presentation, stakeholder communication, and clear documentation of FloodShield AI Pro’s mission, capabilities, and impact.',
+  },
 ];
 
 export const FEATURE_MATRIX: FeatureItem[] = [
