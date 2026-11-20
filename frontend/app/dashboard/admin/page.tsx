@@ -9,7 +9,7 @@ import {
   Settings, AlertCircle, CheckCircle, User, Shield,
   Trash2, ChevronDown, RefreshCw, Users, Database,
   Activity, BookOpen, MessageSquare, UserPlus, Edit3, Plus,
-  Save, X, Inbox, ExternalLink,
+  Save, X, Inbox, ExternalLink, Cpu,
 } from 'lucide-react';
 import { getApiErrorMessage } from '@/lib/api';
 import {
@@ -197,8 +197,16 @@ export default function AdminPage() {
             </div>
             <div className="ml-auto flex items-center gap-2">
               <a
+                href="/dashboard/admin/jobs"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-purple-500/40 bg-purple-500/10 px-3 py-1.5 text-sm text-purple-200 hover:bg-purple-500/20 transition-colors"
+              >
+                <Cpu size={14} />
+                Automation Jobs
+                <ExternalLink size={12} className="opacity-60" />
+              </a>
+              <a
                 href="/dashboard/admin/issues"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-1.5 text-sm text-sky-200 hover:bg-sky-500/20"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-1.5 text-sm text-sky-200 hover:bg-sky-500/20 transition-colors"
               >
                 <Inbox size={14} />
                 Issue inbox

@@ -295,3 +295,19 @@ class AutomationJob(Base):
     failure_runs = Column(Integer, nullable=False, default=0)
     is_active = Column(Boolean, nullable=False, default=True)
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+
+class AutomationExecution(Base):
+    __tablename__ = "automation_executions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    task_id = Column(String(120), unique=True, nullable=False, index=True)
+    event_id = Column(String(120), unique=True, nullable=False, index=True)
+    job_name = Column(String(100), nullable=False, index=True)
+    engine = Column(String(30), nullable=False)  # n8n | native | unknown
+    status = Column(String(30), nullable=False)  # pending | running | success | failed | timeout | unknown
+    result = Column(JSON, nullable=True)
+    error = Column(Text, nullable=True)
+    started_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), index=True)
+    completed_at = Column(DateTime, nullable=True)
+

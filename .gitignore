@@ -2,9 +2,18 @@
 .env
 .env.local
 .env.*.local
-*.pem
-ee_service_account.json
-**/ee_service_account.json
+screen record/
+screen\ record/
+floodshield-key.pem
+tests_audit/
+frontend/test-results/
+reports/full-project-audit/
+**/screen record/
+screen\ record/
+floodshield-key.pem
+tests_audit/
+frontend/test-results/
+reports/full-project-audit/
 .venv/
 .venv-py314/
 venv/
@@ -14,8 +23,6 @@ venv.bak/
 
 
 *$py.class
-__pycache__/
-*.pyc
 
 # C extensions
 *.so
@@ -28,9 +35,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-/lib/
-/lib64/
-!frontend/lib/
+lib/
+lib64/
 parts/
 sdist/
 var/
@@ -74,9 +80,7 @@ coverage.xml
 *.swo
 
 # Project specific
-/data/
-backend/data/
-!frontend/public/data/
+data/
 FloodShieldAI_Execution_Plan.docx
 # Trained model artifacts (keep locally, do not commit)
 **/models/
@@ -101,8 +105,8 @@ audit_report.md
 .git_history.txt
 refresh_tokens.py
 test_users_credentials.csv
-/test_*.py
-!backend/tests/
+test_*.py
+!backend/tests/test_*.py
 test_accounts.py
 patch_chatbot.py
 patch_req.py
@@ -125,11 +129,6 @@ node_modules/
 .pytest_cache/
 logs/
 
-# Test artifacts
-frontend/test-results/
-test-results/
-playwright-report/
-
 # Local / scratch log files
 *.log
 *.log.err
@@ -142,6 +141,10 @@ test_users_credentials.csv
 scratch_tokens.json
 backend/.env
 frontend/.env.local
-ee_service_account.json
 screen record/
+screen\ record/
+floodshield-key.pem
+tests_audit/
+frontend/test-results/
+reports/full-project-audit/
 

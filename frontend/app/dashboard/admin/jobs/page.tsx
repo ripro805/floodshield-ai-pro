@@ -3,18 +3,20 @@
 import { useState, useEffect } from 'react';
 import {
   Cpu, Play, CheckCircle2, AlertCircle, Clock, Shield,
-  RefreshCw, History, Activity, Database
+  RefreshCw, History, Activity, Database, Server, Workflow,
+  AlertTriangle, Check, Layers
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import {
   listAdminJobs, triggerAdminJobRun, listAdminAuditLogs,
-  AutomationJobItem, AuditEventItem
+  AutomationJobItem, AuditEventItem, getAutomationStatus, AutomationStatus
 } from '@/lib/api';
 
 export default function AutomationAdminPage() {
   const { user } = useAuth();
   const [jobs, setJobs] = useState<AutomationJobItem[]>([]);
   const [logs, setLogs] = useState<AuditEventItem[]>([]);
+  const [statusData, setStatusData] = useState<AutomationStatus | null>(null);
   const [activeTab, setActiveTab] = useState<'jobs' | 'audit'>('jobs');
   const [runningJob, setRunningJob] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -27,11 +29,14 @@ export default function AutomationAdminPage() {
   async function loadData() {
     setLoading(true);
     try {
-      const jobsRes = await listAdminJobs();
+      const [jobsRes, logsRes, statusRes] = await Promise.all([
+        listAdminJobs().catch(() => []),
+        listAdminAuditLogs().catch(() => []),
+        getAutomationStatus().catch(() => null),
+      ]);
       setJobs(jobsRes || []);
-
-      const logsRes = await listAdminAuditLogs();
       setLogs(logsRes || []);
+      setStatusData(statusRes);
     } catch (err) {
       console.warn('Error loading automation data:', err);
     } finally {
@@ -44,9 +49,14 @@ export default function AutomationAdminPage() {
     setFeedback(null);
     try {
       const res = await triggerAdminJobRun(jobName);
-      setFeedback(`Job '${jobName}' completed in ${res.details?.duration_seconds?.toFixed(3) || '0.2'}s! Status: ${res.details?.status || 'success'}`);
+      const duration = typeof res.details?.duration_seconds === 'number'
+        ? res.details.duration_seconds.toFixed(3)
+        : '0.200';
+      const engine = (res.details?.engine as string) || (res.details?.accepted ? 'n8n' : 'native');
+      const jobStatus = (res.details?.status as string) || 'completed';
+      setFeedback(`Job '${jobName}' dispatched via ${engine.toUpperCase()} (${jobStatus}) in ${duration}s!`);
       await loadData();
-      setTimeout(() => setFeedback(null), 4000);
+      setTimeout(() => setFeedback(null), 5000);
     } catch (err: any) {
       setFeedback(err.response?.data?.detail || 'Job execution failed.');
     } finally {
@@ -63,24 +73,164 @@ export default function AutomationAdminPage() {
             <Cpu className="text-white" size={28} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Native Automation Engine & System Audit</h1>
-            <p className="text-slate-400 text-sm">N8N-free scheduled tasks, background telemetry workers, and immutable audit logs</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Hybrid Automation & System Telemetry</h1>
+            <p className="text-slate-400 text-sm">
+              Fault-tolerant dual-engine automation: n8n workflow execution with automatic native backend fallback
+            </p>
           </div>
         </div>
 
         <button
           onClick={loadData}
-          className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 transition"
-          title="Refresh Registry"
+          disabled={loading}
+          className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 transition flex items-center gap-2 text-xs font-semibold"
+          title="Refresh Registry and Health"
         >
-          <RefreshCw size={18} />
+          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+          <span>Refresh</span>
         </button>
       </div>
 
       {feedback && (
-        <div className="p-4 rounded-xl bg-blue-500/20 border border-blue-500/40 text-blue-200 text-sm flex items-center gap-2">
-          <CheckCircle2 size={18} className="text-blue-400" />
+        <div className="p-4 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-200 text-sm flex items-center gap-2">
+          <CheckCircle2 size={18} className="text-cyan-400 shrink-0" />
           <span>{feedback}</span>
+        </div>
+      )}
+
+      {/* ── SECTION 8: AUTOMATION MONITORING DASHBOARD ───────────────────────── */}
+      {statusData && (
+        <div className="space-y-4">
+          {/* Top Status Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* 1. Active Engine */}
+            <div className="p-5 rounded-2xl border border-white/10 bg-slate-900/40 backdrop-blur space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase font-mono text-slate-400">Active Engine</span>
+                <Workflow size={16} className="text-cyan-400" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${
+                  statusData.active_engine === 'n8n'
+                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                    : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                }`}>
+                  {statusData.active_engine === 'n8n' ? 'n8n Cloud Engine' : 'Native Backend Engine'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                {statusData.active_engine === 'n8n'
+                  ? 'Eligible tasks routed to n8n webhook workflow'
+                  : 'Native Python scheduler actively executing all tasks'}
+              </p>
+            </div>
+
+            {/* 2. Docker Status */}
+            <div className="p-5 rounded-2xl border border-white/10 bg-slate-900/40 backdrop-blur space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase font-mono text-slate-400">Docker Daemon</span>
+                <Server size={16} className="text-blue-400" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full ${statusData.docker.running ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                <span className="text-sm font-semibold text-white">
+                  {statusData.docker.running ? 'Active & Responsive' : 'Stopped / Standalone Host'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 truncate" title={statusData.docker.status}>
+                {statusData.docker.status}
+              </p>
+            </div>
+
+            {/* 3. n8n Connectivity */}
+            <div className="p-5 rounded-2xl border border-white/10 bg-slate-900/40 backdrop-blur space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase font-mono text-slate-400">n8n Workflow Webhook</span>
+                <Activity size={16} className="text-teal-400" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full ${statusData.n8n.healthy ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                <span className="text-sm font-semibold text-white">
+                  {statusData.n8n.healthy ? 'Healthy (Connected)' : 'Fallback Active'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 truncate" title={statusData.n8n.reason}>
+                {statusData.n8n.reason}
+              </p>
+            </div>
+
+            {/* 4. Native Automation */}
+            <div className="p-5 rounded-2xl border border-white/10 bg-slate-900/40 backdrop-blur space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase font-mono text-slate-400">Native Automation</span>
+                <Shield size={16} className="text-emerald-400" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span className="text-sm font-semibold text-emerald-300 uppercase">
+                  {statusData.native_status}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Independent native handlers ready 24/7 without external dependencies
+              </p>
+            </div>
+          </div>
+
+          {/* Metrics Strip */}
+          <div className="p-5 rounded-2xl border border-white/10 bg-slate-900/40 backdrop-blur grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div>
+              <p className="text-[11px] text-slate-500 uppercase font-mono">Total Tasks</p>
+              <p className="text-lg font-bold text-white mt-0.5">{statusData.counts.total}</p>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-500 uppercase font-mono">n8n Executions</p>
+              <p className="text-lg font-bold text-cyan-300 mt-0.5">{statusData.counts.n8n}</p>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-500 uppercase font-mono">Native Executions</p>
+              <p className="text-lg font-bold text-emerald-300 mt-0.5">{statusData.counts.native}</p>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-500 uppercase font-mono">Success / Failed</p>
+              <p className="text-lg font-bold text-white mt-0.5">
+                <span className="text-emerald-400">{statusData.counts.success}</span>
+                <span className="text-slate-500"> / </span>
+                <span className="text-red-400">{statusData.counts.failed}</span>
+              </p>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-500 uppercase font-mono">Unknown / Pending</p>
+              <p className="text-lg font-bold text-amber-300 mt-0.5">
+                {statusData.counts.unknown + statusData.counts.pending}
+              </p>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-500 uppercase font-mono">Last Health Check</p>
+              <p className="text-xs font-mono text-slate-300 mt-1">
+                {statusData.n8n.last_health_check
+                  ? new Date(statusData.n8n.last_health_check).toLocaleTimeString()
+                  : 'N/A'}
+              </p>
+            </div>
+          </div>
+
+          {/* Recent Errors Banner if any */}
+          {statusData.recent_errors && statusData.recent_errors.length > 0 && (
+            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-200 space-y-1.5 text-xs">
+              <div className="flex items-center gap-2 font-semibold">
+                <AlertTriangle size={15} className="text-amber-400 shrink-0" />
+                <span>Recent Failover / Execution Alerts ({statusData.recent_errors.length})</span>
+              </div>
+              <ul className="list-disc list-inside space-y-1 text-amber-300/80 pl-2">
+                {statusData.recent_errors.map((err, idx) => (
+                  <li key={idx} className="truncate">
+                    <span className="font-mono text-white/90">[{err.job_name}]</span> {err.error}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
 
@@ -155,7 +305,7 @@ export default function AutomationAdminPage() {
                   disabled={isRunning}
                   className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-cyan-600/30 hover:bg-cyan-600/50 border border-cyan-500/40 text-cyan-200 text-xs font-semibold transition disabled:opacity-50"
                 >
-                  <Play size={14} /> {isRunning ? 'Running Job...' : 'Run Manually Now'}
+                  <Play size={14} /> {isRunning ? 'Dispatching Job...' : 'Run Manually Now'}
                 </button>
               </div>
             );
@@ -181,7 +331,7 @@ export default function AutomationAdminPage() {
               {logs.map((log) => (
                 <tr key={log.id} className="hover:bg-white/5 transition">
                   <td className="py-4 px-5 font-mono text-xs text-slate-400">
-                    {new Date(log.created_at).toLocaleString()}
+                    {log.created_at ? new Date(log.created_at).toLocaleString() : '—'}
                   </td>
                   <td className="py-4 px-5 font-medium text-white">{log.user_email}</td>
                   <td className="py-4 px-5 capitalize text-xs">

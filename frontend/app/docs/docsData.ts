@@ -54,7 +54,7 @@ export const DEFAULT_PITCH_CONTENT: PitchDeckContent = {
   problemBody: 'Floodwater contaminates drinking water sources, damaged sanitation spreads pathogens, families crowd into shelters, and standing water breeds mosquitoes. The result is Cholera, Acute Watery Diarrhoea, Typhoid, Hepatitis A/E, skin infections, and Dengue. The response is stubbornly reactive.',
   solutionHeading: 'From Satellite to Survival: Autonomous Multi-Hazard Early-Warning',
   solutionSubheading: 'FloodShield AI Pro is an enterprise-grade disaster management and public health intelligence platform designed for all 64 districts of Bangladesh.',
-  solutionBody: 'It unites cloud-penetrating Sentinel-1 SAR satellite radar imagery, an ensemble of 6 custom Machine Learning & LSTM deep learning models, and strict Role-Based Access Control across 6 specialized stakeholder portals.',
+  solutionBody: 'It unites cloud-penetrating Sentinel-1 SAR satellite radar imagery, an ensemble of 6 custom Machine Learning & LSTM deep learning models, strict Role-Based Access Control across 6 specialized stakeholder portals, and an autonomous Dual-Engine Hybrid Automation platform (n8n Cloud + Native Failover Engine) guaranteeing 100% operational uptime with zero single points of failure.',
   tam: '$12.8B',
   sam: '$1.4B',
   som: '$42M',
@@ -276,10 +276,10 @@ export const FEATURE_MATRIX: FeatureItem[] = [
     description: 'Multilingual grounded conversational AI citing WHO & DGHS clinical guidelines in Bangla, Banglish, and English.',
   },
   {
-    name: 'n8n Workflow Automation Engine',
+    name: 'Dual-Engine Hybrid Automation (n8n + Native Fallback)',
     category: 'Automation',
     status: 'Live',
-    description: 'Enterprise event-driven n8n workflow engine orchestrating 5-min weather cron polls, ML prediction webhooks, and automated multi-channel SMS alerts.',
+    description: 'Enterprise fault-tolerant dual-engine automation framework combining cloud n8n workflows with an autonomous FastAPI native fallback engine. Handles real-time weather ingestion, flood risk recalculations, clinical stock threshold monitoring, and automated emergency escalations with zero single points of failure.',
   },
   {
     name: '6 Role-Based Command Portals',
@@ -396,9 +396,44 @@ export const API_ENDPOINTS: ApiEndpointDoc[] = [
     paramsOrBody: 'None',
     sampleResponse: '{"total_districts": 64, "critical_districts": 3, "open_requisitions": 5, "active_campaigns": 12}',
   },
+  {
+    method: 'GET',
+    path: '/backend-api/admin/automation/status',
+    description: 'Consolidated dual-engine hybrid automation telemetry, Docker daemon responsiveness, n8n health, and execution counters.',
+    auth: 'Authenticated Users',
+    paramsOrBody: 'None',
+    sampleResponse: '{"active_engine": "n8n", "docker": {"running": true}, "n8n": {"healthy": true}, "counts": {"total": 142, "n8n": 120, "native": 22}}',
+  },
+  {
+    method: 'POST',
+    path: '/backend-api/admin/jobs/{job_name}/run-now',
+    description: 'Manually invoke an automation job on demand via the hybrid routing engine (weather, predictions, risk, inventory, escalator).',
+    auth: 'Admin / Operators',
+    paramsOrBody: 'Path: job_name (e.g. "inventory_monitor")',
+    sampleResponse: '{"message": "Job \'inventory_monitor\' completed", "details": {"status": "success", "engine": "n8n"}}',
+  },
+  {
+    method: 'POST',
+    path: '/backend-api/admin/automation/executions/{task_id}/callback',
+    description: 'Secure reconciliation webhook callback from n8n to transition pending tasks to verified completion.',
+    auth: 'X-Webhook-Secret Header',
+    paramsOrBody: '{"status": "success", "result": {"completed_actions": 4}}',
+    sampleResponse: '{"message": "Reconciliation recorded", "task_id": "...", "status": "success"}',
+  },
 ];
 
 export const CHANGELOG_ITEMS = [
+  {
+    version: 'v1.3.0',
+    date: 'November 2026',
+    title: 'Zero-Breakage Dual-Engine n8n Hybrid Automation & Telemetry Dashboard',
+    details: [
+      'Engineered fault-tolerant hybrid routing engine: dispatches tasks to cloud n8n when healthy and falls back instantly to the native backend engine when offline.',
+      'Implemented dynamic multi-tier Docker daemon responsiveness detection and cached health probes.',
+      'Deployed atomic task claiming with PostgreSQL deduplication preventing duplicate emergency alerts and resource mutations.',
+      'Released real-time Dual-Engine Monitoring Dashboard in Admin Portal (/dashboard/admin/jobs) and integrated persistent sidebar navigation.',
+    ],
+  },
   {
     version: 'v1.2.0',
     date: 'November 2026',

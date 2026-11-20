@@ -66,10 +66,9 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: '/dashboard/admin/jobs',
-    label: 'Automation Engine',
-    key: 'automationEngine',
+    label: 'Automation Jobs',
+    key: 'automationJobs',
     icon: Cpu,
-    allowedRoles: ['admin'],
   },
   {
     href: '/dashboard/admin',

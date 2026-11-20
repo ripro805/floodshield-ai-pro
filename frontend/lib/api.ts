@@ -1407,6 +1407,54 @@ export async function listAdminJobs(): Promise<AutomationJobItem[]> {
   return data;
 }
 
+export interface AutomationStatus {
+  active_engine: 'n8n' | 'native';
+  native_status: string;
+  docker: {
+    running: boolean;
+    status: string;
+  };
+  n8n: {
+    enabled: boolean;
+    healthy: boolean;
+    reason: string;
+    status_code?: number | null;
+    last_health_check: string | null;
+  };
+  counts: {
+    total: number;
+    n8n: number;
+    native: number;
+    success: number;
+    failed: number;
+    unknown: number;
+    pending: number;
+    retries: number;
+  };
+  recent_executions: Array<{
+    task_id: string;
+    job_name: string;
+    engine: string;
+    status: string;
+    error: string | null;
+    started_at: string | null;
+    completed_at: string | null;
+  }>;
+  recent_errors: Array<{
+    task_id: string;
+    job_name: string;
+    engine: string;
+    error: string | null;
+    timestamp: string | null;
+  }>;
+  last_successful_execution: string | null;
+}
+
+export async function getAutomationStatus(): Promise<AutomationStatus> {
+  const { data } = await apiClient.get<AutomationStatus>('/admin/automation/status');
+  return data;
+}
+
 export async function triggerAdminJobRun(jobName: string): Promise<{ message: string; details: any }> {
   const { data } = await apiClient.post<{ message: string; details: any }>(`/admin/jobs/${jobName}/run-now`);
   return data;

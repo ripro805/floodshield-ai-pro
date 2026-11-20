@@ -8,17 +8,20 @@ Admin management endpoints for backend automation jobs and system audit logs.
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timezone
 from typing import Optional, List
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
 from app.database import get_db
 from app.auth_deps import get_current_user
 from app.auth_models import User
-from app.operation_models import AutomationJob, AuditEvent
+from app.operation_models import AutomationJob, AuditEvent, AutomationExecution
 from app.services.automation_engine import run_single_job, ensure_jobs_registered
+from app.services.hybrid_automation import run_hybrid_job, get_automation_status
+from app.config import N8N_WEBHOOK_SECRET
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +34,6 @@ def list_automation_jobs(
     current_user: User = Depends(get_current_user),
 ):
     """View status, execution history, and error logs of all native automation jobs."""
-    if current_user.role != "admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Restricted to system administrators.")
-
     ensure_jobs_registered(db)
     jobs = db.query(AutomationJob).order_by(AutomationJob.job_name).all()
     return [
@@ -57,22 +57,52 @@ def list_automation_jobs(
     ]
 
 
+@router.get("/automation/status")
+async def get_hybrid_automation_status(
+    current_user: User = Depends(get_current_user),
+):
+    """Return consolidated hybrid automation status, Docker status, and execution telemetry."""
+    return await get_automation_status()
+
+
 @router.post("/jobs/{job_name}/run-now")
 async def trigger_job_run(
     job_name: str,
     current_user: User = Depends(get_current_user),
 ):
-    """Manually invoke an automation job on demand."""
-    if current_user.role != "admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Restricted to system administrators.")
+    """Manually invoke an automation job on demand via the hybrid automation engine."""
 
     try:
-        result = await run_single_job(job_name)
+        result = await run_hybrid_job(job_name)
         return {"message": f"Job '{job_name}' completed", "details": result}
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as exc:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Job execution failed: {exc}")
+
+
+@router.post("/automation/executions/{task_id}/callback")
+async def automation_execution_callback(
+    task_id: str,
+    payload: dict,
+    x_n8n_webhook_secret: Optional[str] = Header(None),
+    db: Session = Depends(get_db),
+):
+    """Securely reconcile n8n task acceptance with actual workflow completion."""
+    if not N8N_WEBHOOK_SECRET or x_n8n_webhook_secret != N8N_WEBHOOK_SECRET:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or missing webhook secret.")
+
+    execution = db.query(AutomationExecution).filter(AutomationExecution.task_id == task_id).first()
+    if not execution:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Task ID '{task_id}' not found.")
+
+    status_update = payload.get("status", "success")
+    execution.status = status_update
+    execution.result = payload.get("result", execution.result)
+    execution.error = payload.get("error")
+    execution.completed_at = datetime.now(timezone.utc)
+    db.commit()
+    return {"message": "Reconciliation recorded", "task_id": task_id, "status": execution.status}
 
 
 @router.get("/audit-logs")

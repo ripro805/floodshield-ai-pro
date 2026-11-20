@@ -48,18 +48,10 @@ export default function DocsClient() {
             const hasLegacy = parsed.some(
               (m: TeamMember) => m.name === 'Dr. Samia Rahman' || m.name === 'Tanvir Ahmed' || m.name === 'Md. Rifat Hossain'
             );
-            if (!hasLegacy && parsed.length >= 5) {
-              const hasAkifa = parsed.some(
-                (member: TeamMember) => member.id === '6' || member.name === 'Akifa Jahan Odry'
-              );
-              if (!hasAkifa) {
-                const akifa = INITIAL_TEAM.find(member => member.id === '6');
-                if (akifa) {
-                  const updatedTeam = [...parsed, akifa];
-                  localStorage.setItem('floodshield_docs_team', JSON.stringify(updatedTeam));
-                  return updatedTeam;
-                }
-              }
+            const hasAkifa = parsed.some(
+              (m: TeamMember) => m.name === 'Akifa Jahan Odry'
+            );
+            if (!hasLegacy && hasAkifa && parsed.length >= 6) {
               return parsed;
             }
           }
@@ -296,7 +288,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
 - Role 3: Hospital Operations Portal (ICU & Bed monitoring, Dynamic Pharmacy Inventory, Atomic Stock Ledger, 14-Day LSTM Surge Restocking)
 - Role 4: NGO Humanitarian Operations Portal (Relief Campaign Manager, Field Warehouse Inventory, Beneficiary Audits, AI-Assisted Quota Allocator)
 - Role 5: Government Emergency Command Room (National Situation Overview, Inter-Agency Requisition Approvals, Verified SMS Broadcasts, Unified Issue Rollup)
-- Role 6: Super Administrator Portal (Enterprise RBAC Directory, Bulk Hospital Geo-Importer, n8n Workflow Automation Engine, Tamper-Evident Audit Trail)
+- Role 6: Super Administrator Portal (Enterprise RBAC Directory, Bulk Hospital Geo-Importer, Dual-Engine Hybrid Automation, Tamper-Evident Audit Trail)
 
 ---
 
@@ -308,7 +300,7 @@ FloodShield predicts both flood inundation and clinical disease surges 7 to 14 d
 - Model 5 (Composite Hazard Scoring & DBSCAN): Mathematical multi-hazard weighting and spatial clustering to identify national disease hotspots.
 - Model 6 (Policy Recommendation Engine): Translates model forecasts into role-tailored checklists (bed clearance, ORS pre-positioning, medical kit dispatch).
 - RAG Medical Chatbot: Grounded clinical conversational agent citing WHO and DGHS clinical guidelines, supporting multilingual voice and text queries in English and Bengali.
-- n8n Workflow Automation Engine: Enterprise event-driven workflow engine orchestrating 5-minute weather cron triggers, ML prediction webhooks, and multi-channel SMS emergency alerts.
+- Dual-Engine Hybrid Automation (n8n Cloud + Native Fallback): Zero-breakage event-driven workflow orchestration linking cloud-hosted n8n webhooks with an autonomous FastAPI native fallback engine, featuring dynamic Docker daemon detection, atomic PostgreSQL deduplication, and split-brain timeout protection.
 
 ---
 
@@ -789,15 +781,16 @@ ${team.map(m => `- **${m.name}** — ${m.role} (${m.email}${m.phone ? `, Phone: 
                   </p>
                 </div>
 
-                {/* 4 Answers Responders Ask */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                {/* 5 Critical Answers FloodShield Delivers */}
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
                   {[
-                    { q: '1. Which Districts?', a: '64-District GIS Risk Map + DBSCAN Spatial Hotspot Clustering' },
-                    { q: '2. Which Diseases?', a: '6 Pathogen Caseloads: Cholera, Diarrhea, Typhoid, Hepatitis A/E, Dengue, Malaria' },
-                    { q: '3. How Many Cases?', a: '7 & 14-Day Recursive Time-Series LSTM Hospital Admission Curves' },
-                    { q: '4. What to Dispatch?', a: 'Model 6 Policy Engine: Pre-positioned ORS, IV saline, antibiotics & bed buffers' },
+                    { q: '1. Which Districts?', a: '64-District GIS Risk Map + DBSCAN Spatial Clustering' },
+                    { q: '2. Which Diseases?', a: '6 Pathogen Caseloads: Cholera, Diarrhea, Typhoid, Hepatitis, Dengue, Malaria' },
+                    { q: '3. How Many Cases?', a: '7 & 14-Day Recursive Time-Series LSTM Admission Curves' },
+                    { q: '4. What to Dispatch?', a: 'Model 6 Policy Engine: Pre-positioned ORS, Saline & Bed Buffers' },
+                    { q: '5. How Automated?', a: 'Dual-Engine Hybrid: n8n Cloud + Native Failover Engine' },
                   ].map((b, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/20 space-y-1">
+                    <div key={i} className="p-3.5 rounded-xl bg-cyan-950/30 border border-cyan-500/20 space-y-1">
                       <p className="font-bold text-cyan-300">{b.q}</p>
                       <p className="text-white/70">{b.a}</p>
                     </div>
@@ -1501,18 +1494,18 @@ ${team.map(m => `- **${m.name}** — ${m.role} (${m.email}${m.phone ? `, Phone: 
                     </div>
                   </div>
 
-                  {/* n8n Workflow Automation Engine */}
+                  {/* Dual-Engine Hybrid Automation (n8n + Native Fallback) */}
                   <div className="p-5 rounded-2xl bg-white/03 border border-white/08 space-y-3 hover:border-indigo-500/30 transition">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-indigo-300 font-mono text-sm">n8n Workflow Automation Engine</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">n8n Workflows</span>
+                      <span className="font-bold text-indigo-300 font-mono text-sm">Dual-Engine Hybrid Automation (n8n + Native Fallback)</span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">Zero-Breakage Hybrid</span>
                     </div>
                     <p className="text-white/70 leading-relaxed">
-                      Enterprise event-driven workflow engine orchestrating real-time disaster operations: automated 5-minute cron triggers for 64-district weather telemetry ingestion, webhook-based ML prediction pipelines, and automated multi-channel emergency SMS alerts.
+                      Enterprise fault-tolerant dual-engine automation framework combining cloud n8n workflows with an autonomous FastAPI native fallback engine. Dispatches weather ingestion, ML re-prediction, and emergency escalations to n8n when healthy, and seamlessly falls back to the native backend engine when offline or unauthorized.
                     </p>
                     <div className="space-y-1 pt-2 border-t border-white/06 text-[11px] font-mono text-white/50">
-                      <div>● Orchestration: n8n Cron Nodes, Webhook Triggers, REST Connectors</div>
-                      <div>● Pipelines: OpenWeather Telemetry, Model Inference, Anomaly Alerts, Twilio/SMS Dispatch</div>
+                      <div>● Orchestration: n8n Cloud Webhook, Switch Node Routing, FastAPI Lifespan Fallback</div>
+                      <div>● Reliability: Dynamic Docker Daemon Probe, Atomic PostgreSQL Claiming, Split-Brain Timeout Protection</div>
                     </div>
                   </div>
                 </div>

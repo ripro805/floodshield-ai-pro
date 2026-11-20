@@ -39,6 +39,14 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       GEE_SERVICE_ACCOUNT_JSON: ${GEE_SERVICE_ACCOUNT_JSON:-}
       HF_TOKEN: ${HF_TOKEN:-}
+      N8N_ENABLED: ${N8N_ENABLED:-true}
+      N8N_WEBHOOK_URL: ${N8N_WEBHOOK_URL:-}
+      AUTOMATION_MODE: ${AUTOMATION_MODE:-auto}
+      N8N_TIMEOUT: ${N8N_TIMEOUT:-15}
+      N8N_HEALTH_CACHE_SECONDS: ${N8N_HEALTH_CACHE_SECONDS:-30}
+      N8N_WEBHOOK_HEADER_NAME: ${N8N_WEBHOOK_HEADER_NAME:-X-N8N-Webhook-Secret}
+      N8N_WEBHOOK_SECRET: ${N8N_WEBHOOK_SECRET:-}
+      FLOODSHIELD_BACKEND_BASE_URL: ${FLOODSHIELD_BACKEND_BASE_URL:-}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/').status==200 else 1)"]
       interval: 30s

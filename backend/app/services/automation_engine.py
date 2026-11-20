@@ -287,7 +287,12 @@ async def automation_engine_loop() -> None:
             for name in job_names:
                 if name in JOB_HANDLERS:
                     logger.info("Automation engine triggering scheduled job: %s", name)
-                    await run_single_job(name)
+                    try:
+                        from app.services.hybrid_automation import run_hybrid_job
+                        await run_hybrid_job(name)
+                    except Exception as e:
+                        logger.warning("Hybrid execution error for %s, falling back to direct native: %s", name, e)
+                        await run_single_job(name)
 
         except asyncio.CancelledError:
             logger.info("Automation engine loop shutting down.")

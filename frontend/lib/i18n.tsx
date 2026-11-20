@@ -11,14 +11,14 @@ const dictionaries: Record<Language, Dictionary> = {
     liveAlerts: 'Live Alerts', floodCheck: 'Quick Flood Check', environmental: 'Environmental Monitoring', searchLocation: 'Search district or upazila',
     signIn: 'Sign In', logout: 'Log out', floodShield: 'FloodShield AI',
     hospitalOps: 'Hospital Operations', ngoRelief: 'NGO Relief', fieldOps: 'Field Operations',
-    emergencyCommand: 'Emergency Command', citizenReports: 'Citizen Reports', automationEngine: 'Automation Engine',
+    emergencyCommand: 'Emergency Command', citizenReports: 'Citizen Reports', automationEngine: 'Automation Engine', automationJobs: 'Automation Jobs',
   },
   bn: {
     districtMap: 'জেলা মানচিত্র', alerts: 'সতর্কতা', reports: 'রিপোর্ট', hospitalResources: 'হাসপাতাল সম্পদ', adminPanel: 'অ্যাডমিন প্যানেল',
     liveAlerts: 'লাইভ সতর্কতা', floodCheck: 'দ্রুত বন্যা পরীক্ষা', environmental: 'পরিবেশ পর্যবেক্ষণ', searchLocation: 'জেলা বা উপজেলা খুঁজুন',
     signIn: 'সাইন ইন', logout: 'লগ আউট', floodShield: 'ফ্লাডশিল্ড AI',
     hospitalOps: 'হাসপাতাল কার্যক্রম', ngoRelief: 'এনজিও ত্রাণ বিতরণ', fieldOps: 'মাঠপর্যায়ের কার্যক্রম',
-    emergencyCommand: 'জরুরী কমান্ড সেন্টার', citizenReports: 'নাগরিক রিপোর্ট ও ট্র্যাকিং', automationEngine: 'অটোমেশন ইঞ্জিন',
+    emergencyCommand: 'জরুরী কমান্ড সেন্টার', citizenReports: 'নাগরিক রিপোর্ট ও ট্র্যাকিং', automationEngine: 'অটোমেশন ইঞ্জিন', automationJobs: 'অটোমেশন ও জবস (Jobs)',
   },
 };
 
